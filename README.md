@@ -16,7 +16,7 @@ A modern, full-featured website for TinyTalks with a public marketing site and a
 
 ## Tech Stack
 
-- Next.js 15 (App Router), React 19, TypeScript
+- Next.js 16 (App Router), React 19, TypeScript
 - Tailwind CSS v4
 - Supabase (Auth, Postgres, Storage)
 - TipTap Editor
