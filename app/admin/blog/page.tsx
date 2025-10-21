@@ -38,9 +38,18 @@ export default function BlogPage() {
   const fetchPosts = async () => {
     const { data, error } = await db.getBlogPosts();
     if (error) {
-      console.error('Error fetching posts:', error);
+      console.error('❌ Error fetching posts:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
     } else {
-      setPosts(data || []);
+      console.log('✅ Fetched posts:', data?.length || 0);
+      // Map snake_case to camelCase for compatibility
+      const mappedPosts = (data || []).map(post => ({
+        ...post,
+        createdAt: post.created_at,
+        updatedAt: post.updated_at,
+        metaDescription: post.meta_description,
+      }));
+      setPosts(mappedPosts);
     }
     setLoading(false);
   };
@@ -65,22 +74,34 @@ export default function BlogPage() {
         imageUrl = await storage.uploadImage('blog-images', fileName, featuredImage);
       }
 
+      // Map camelCase to snake_case for database
       const postData = {
-        ...formData,
+        title: formData.title,
+        excerpt: formData.excerpt,
+        content: formData.content,
         image: imageUrl,
         slug: formData.slug || generateSlug(formData.title),
+        meta_description: formData.metaDescription || null,
+        published: formData.published,
         updated_at: new Date().toISOString(),
       };
 
+      let result;
       if (editingPost) {
         // Update existing post
-        await db.updateBlogPost(editingPost.id, postData);
+        result = await db.updateBlogPost(editingPost.id, postData);
+        console.log('✅ Post updated successfully:', result);
       } else {
         // Create new post
-        await db.createBlogPost({
+        result = await db.createBlogPost({
           ...postData,
           created_at: new Date().toISOString(),
         });
+        console.log('✅ Post created successfully:', result);
+      }
+
+      if (result.error) {
+        throw result.error;
       }
 
       // Reset form
@@ -95,9 +116,14 @@ export default function BlogPage() {
       setFeaturedImage(null);
       setShowForm(false);
       setEditingPost(null);
+      
+      // Show success message
+      alert(editingPost ? 'Post updated successfully!' : 'Post created successfully!');
     } catch (error) {
-      console.error('Error saving post:', error);
-      alert('Failed to save post');
+      console.error('❌ Error saving post:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`Failed to save post: ${errorMessage}\n\nCheck the console for details.`);
     } finally {
       setUploading(false);
     }

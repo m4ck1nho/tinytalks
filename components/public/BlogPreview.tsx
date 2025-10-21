@@ -18,13 +18,22 @@ export default function BlogPreview() {
         
         if (error) {
           console.error('❌ Supabase error:', error);
+          console.error('Error details:', JSON.stringify(error, null, 2));
           throw error;
         }
         
         console.log('✅ Blog posts fetched:', data?.length || 0, 'posts');
+        console.log('First post data:', data?.[0]);
         
-        // Limit to 3 most recent
-        setPosts((data || []).slice(0, 3));
+        // Map snake_case to camelCase and limit to 3 most recent
+        const mappedPosts = (data || []).map(post => ({
+          ...post,
+          createdAt: post.created_at,
+          updatedAt: post.updated_at,
+          metaDescription: post.meta_description,
+        })).slice(0, 3);
+        
+        setPosts(mappedPosts);
       } catch (error) {
         console.error('❌ Error fetching blog posts:', error);
         console.error('📋 Error details:', JSON.stringify(error, null, 2));

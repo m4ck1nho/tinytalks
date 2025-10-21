@@ -22,14 +22,23 @@ export default function AnalyticsDashboard() {
     const fetchStats = async () => {
       try {
         // Fetch messages stats
-        const { data: messages } = await db.getContactMessages();
+        console.log('📊 Fetching dashboard stats...');
+        const { data: messages, error: messagesError } = await db.getContactMessages();
+        if (messagesError) {
+          console.error('❌ Error fetching messages:', messagesError);
+        }
         const totalMessages = messages?.length || 0;
         const unreadMessages = messages?.filter(m => !m.read).length || 0;
+        console.log('✅ Messages stats:', { totalMessages, unreadMessages });
 
         // Fetch blog posts stats
-        const { data: posts } = await db.getBlogPosts();
+        const { data: posts, error: postsError } = await db.getBlogPosts();
+        if (postsError) {
+          console.error('❌ Error fetching posts:', postsError);
+        }
         const totalPosts = posts?.length || 0;
         const publishedPosts = posts?.filter(p => p.published).length || 0;
+        console.log('✅ Posts stats:', { totalPosts, publishedPosts });
 
         setStats({
           totalMessages,
@@ -38,7 +47,8 @@ export default function AnalyticsDashboard() {
           publishedPosts,
         });
       } catch (error) {
-        console.error('Error fetching stats:', error);
+        console.error('❌ Error fetching stats:', error);
+        console.error('Error details:', JSON.stringify(error, null, 2));
       } finally {
         setLoading(false);
       }

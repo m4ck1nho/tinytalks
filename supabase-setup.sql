@@ -45,19 +45,19 @@ ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 -- Policies for blog_posts
 -- Allow anyone to read published posts
 CREATE POLICY "Anyone can read published blog posts" ON public.blog_posts
-  FOR SELECT USING (published = true OR auth.role() = 'authenticated');
+  FOR SELECT USING (published = true OR auth.uid() IS NOT NULL);
 
 -- Allow authenticated users (admin) to insert
 CREATE POLICY "Authenticated users can insert blog posts" ON public.blog_posts
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 
 -- Allow authenticated users (admin) to update
 CREATE POLICY "Authenticated users can update blog posts" ON public.blog_posts
-  FOR UPDATE USING (auth.role() = 'authenticated');
+  FOR UPDATE USING (auth.uid() IS NOT NULL);
 
 -- Allow authenticated users (admin) to delete
 CREATE POLICY "Authenticated users can delete blog posts" ON public.blog_posts
-  FOR DELETE USING (auth.role() = 'authenticated');
+  FOR DELETE USING (auth.uid() IS NOT NULL);
 
 -- Policies for contact_messages
 -- Allow anyone to insert (submit contact form)
@@ -66,15 +66,15 @@ CREATE POLICY "Anyone can submit contact messages" ON public.contact_messages
 
 -- Only authenticated users can read messages
 CREATE POLICY "Authenticated users can read messages" ON public.contact_messages
-  FOR SELECT USING (auth.role() = 'authenticated');
+  FOR SELECT USING (auth.uid() IS NOT NULL);
 
 -- Only authenticated users can update messages
 CREATE POLICY "Authenticated users can update messages" ON public.contact_messages
-  FOR UPDATE USING (auth.role() = 'authenticated');
+  FOR UPDATE USING (auth.uid() IS NOT NULL);
 
 -- Only authenticated users can delete messages
 CREATE POLICY "Authenticated users can delete messages" ON public.contact_messages
-  FOR DELETE USING (auth.role() = 'authenticated');
+  FOR DELETE USING (auth.uid() IS NOT NULL);
 
 -- Policies for reviews
 -- Allow anyone to read reviews
@@ -83,7 +83,7 @@ CREATE POLICY "Anyone can read reviews" ON public.reviews
 
 -- Only authenticated users can manage reviews
 CREATE POLICY "Authenticated users can manage reviews" ON public.reviews
-  FOR ALL USING (auth.role() = 'authenticated');
+  FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- Create storage buckets for images
 INSERT INTO storage.buckets (id, name, public) 
@@ -96,20 +96,20 @@ CREATE POLICY "Anyone can read blog images" ON storage.objects
   FOR SELECT USING (bucket_id = 'blog-images');
 
 CREATE POLICY "Authenticated users can upload blog images" ON storage.objects
-  FOR INSERT WITH CHECK (bucket_id = 'blog-images' AND auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (bucket_id = 'blog-images' AND auth.uid() IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete blog images" ON storage.objects
-  FOR DELETE USING (bucket_id = 'blog-images' AND auth.role() = 'authenticated');
+  FOR DELETE USING (bucket_id = 'blog-images' AND auth.uid() IS NOT NULL);
 
 -- Storage policies for blog-content
 CREATE POLICY "Anyone can read blog content images" ON storage.objects
   FOR SELECT USING (bucket_id = 'blog-content');
 
 CREATE POLICY "Authenticated users can upload blog content images" ON storage.objects
-  FOR INSERT WITH CHECK (bucket_id = 'blog-content' AND auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (bucket_id = 'blog-content' AND auth.uid() IS NOT NULL);
 
 CREATE POLICY "Authenticated users can delete blog content images" ON storage.objects
-  FOR DELETE USING (bucket_id = 'blog-content' AND auth.role() = 'authenticated');
+  FOR DELETE USING (bucket_id = 'blog-content' AND auth.uid() IS NOT NULL);
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
