@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { db } from '@/lib/supabase';
 import { BlogPost } from '@/types';
 import Image from 'next/image';
+import Link from 'next/link';
 import { CalendarIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 
 export default function BlogPreview() {
@@ -78,9 +79,10 @@ export default function BlogPreview() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {posts.map((post) => (
-            <article
+            <Link
+              href={`/blog/${post.slug}`}
               key={post.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group"
+              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer"
             >
               {post.image && (
                 <div className="relative h-48 overflow-hidden">
@@ -111,12 +113,12 @@ export default function BlogPreview() {
                   {post.excerpt}
                 </p>
                 
-                <button className="text-blue-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
+                <span className="text-blue-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
                   Read More
                   <ArrowRightIcon className="w-4 h-4" />
-                </button>
+                </span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>
