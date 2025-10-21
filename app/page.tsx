@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { initGA, logPageView } from '@/lib/analytics';
+import Navbar from '@/components/public/Navbar';
 import Hero from '@/components/public/Hero';
 import About from '@/components/public/About';
 import Pricing from '@/components/public/Pricing';
@@ -17,14 +18,27 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen">
-      <Hero />
-      <About />
-      <Pricing />
-      <Reviews />
-      <BlogPreview />
-      <Contact />
-      <Footer />
-    </main>
+    <>
+      <Navbar />
+      <main className="min-h-screen">
+        <Hero />
+        <div id="about">
+          <About />
+        </div>
+        <div id="pricing">
+          <Pricing />
+        </div>
+        <div id="reviews">
+          <Reviews />
+        </div>
+        <div id="blog">
+          <BlogPreview />
+        </div>
+        <div id="contact">
+          <Contact />
+        </div>
+        <Footer />
+      </main>
+    </>
   );
 }

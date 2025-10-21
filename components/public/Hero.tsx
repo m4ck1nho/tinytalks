@@ -9,7 +9,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden pt-16">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
@@ -77,21 +77,6 @@ export default function Hero() {
                 className="object-cover"
                 priority
               />
-            </div>
-            
-            {/* Floating Card */}
-            <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl z-20 max-w-xs">
-              <div className="flex items-center gap-3">
-                <div className="bg-green-100 p-3 rounded-full">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <div className="font-semibold text-gray-900">Certified Teacher</div>
-                  <div className="text-sm text-gray-600">Professional & Experienced</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
