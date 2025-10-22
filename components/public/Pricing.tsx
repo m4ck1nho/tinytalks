@@ -1,8 +1,11 @@
 'use client';
 
 import { CheckIcon } from '@heroicons/react/24/outline';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Pricing() {
+  const { t } = useLanguage();
+  
   const plans = [
     {
       name: 'Group Classes',
@@ -72,10 +75,10 @@ export default function Pricing() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
-            Pricing Plans
+            {t('pricing.badge')}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-6 mb-4">
-            Choose Your Learning Path
+            {t('pricing.title')}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Flexible options to fit your schedule, budget, and learning style
@@ -92,7 +95,7 @@ export default function Pricing() {
             >
               {plan.popular && (
                 <div className="absolute top-0 right-0 bg-primary-500 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg">
-                  Most Popular
+                  {t('pricing.individual.popular')}
                 </div>
               )}
               

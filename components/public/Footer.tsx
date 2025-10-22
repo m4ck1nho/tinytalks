@@ -1,6 +1,9 @@
 'use client';
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 export default function Footer() {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -16,7 +19,7 @@ export default function Footer() {
               <span className="text-xl font-bold">TinyTalks</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
-              Your journey to English fluency starts here. Personalized learning from beginner to B1 level.
+              {t('footer.description')}
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary-500 transition-all">
@@ -39,29 +42,29 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#about" className="text-gray-400 hover:text-white transition-colors">About Us</a>
+                <a href="#about" className="text-gray-400 hover:text-white transition-colors">{t('nav.about')}</a>
               </li>
               <li>
-                <a href="#pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</a>
+                <a href="#pricing" className="text-gray-400 hover:text-white transition-colors">{t('nav.pricing')}</a>
               </li>
               <li>
-                <a href="#reviews" className="text-gray-400 hover:text-white transition-colors">Reviews</a>
+                <a href="#reviews" className="text-gray-400 hover:text-white transition-colors">{t('reviews.badge')}</a>
               </li>
               <li>
-                <a href="#blog" className="text-gray-400 hover:text-white transition-colors">Blog</a>
+                <a href="#blog" className="text-gray-400 hover:text-white transition-colors">{t('nav.blog')}</a>
               </li>
               <li>
-                <a href="#contact" className="text-gray-400 hover:text-white transition-colors">Contact</a>
+                <a href="#contact" className="text-gray-400 hover:text-white transition-colors">{t('nav.contact')}</a>
               </li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('footer.contact')}</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <a href="mailto:info@tinytalks.com" className="hover:text-white transition-colors">
@@ -73,8 +76,8 @@ export default function Footer() {
                   +7 (XXX) XXX-XX-XX
                 </a>
               </li>
-              <li>Online Classes</li>
-              <li>Available Worldwide</li>
+              <li>{t('footer.onlineClasses')}</li>
+              <li>{t('footer.availableWorldwide')}</li>
             </ul>
           </div>
         </div>
@@ -83,12 +86,12 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
-              © {currentYear} TinyTalks. All rights reserved.
+              © {currentYear} TinyTalks. {t('footer.rights')}
             </p>
             <div className="flex gap-6 text-sm text-gray-400">
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+              <a href="#" className="hover:text-white transition-colors">{t('footer.privacy')}</a>
+              <a href="#" className="hover:text-white transition-colors">{t('footer.terms')}</a>
+              <a href="#" className="hover:text-white transition-colors">{t('footer.cookies')}</a>
             </div>
           </div>
         </div>

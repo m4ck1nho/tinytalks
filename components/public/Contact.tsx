@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { db } from '@/lib/supabase';
 import { EnvelopeIcon, PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Contact() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -51,13 +53,13 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
-            Get In Touch
+            {t('contact.badge')}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-6 mb-4">
-            Start Your English Journey Today
+            {t('contact.title')}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Have questions? Ready to begin? Send us a message and we&apos;ll get back to you as soon as possible!
+            {t('contact.description')}
           </p>
         </div>
 
@@ -65,9 +67,9 @@ export default function Contact() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">{t('contact.info.title')}</h3>
               <p className="text-gray-600 mb-8">
-                Feel free to reach out through any of these channels. We&apos;re here to help you on your English learning journey!
+                {t('contact.info.description')}
               </p>
             </div>
 
@@ -77,7 +79,7 @@ export default function Contact() {
                   <EnvelopeIcon className="w-6 h-6 text-primary-500" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 mb-1">Email</div>
+                  <div className="font-semibold text-gray-900 mb-1">{t('contact.info.email')}</div>
                   <a href="mailto:info@tinytalks.com" className="text-gray-600 hover:text-primary-500 transition-colors">
                     info@tinytalks.com
                   </a>
@@ -89,7 +91,7 @@ export default function Contact() {
                   <PhoneIcon className="w-6 h-6 text-secondary-900" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 mb-1">Phone</div>
+                  <div className="font-semibold text-gray-900 mb-1">{t('contact.info.phone')}</div>
                   <a href="tel:+1234567890" className="text-gray-600 hover:text-secondary-900 transition-colors">
                     +7 (XXX) XXX-XX-XX
                   </a>
@@ -101,17 +103,17 @@ export default function Contact() {
                   <MapPinIcon className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 mb-1">Location</div>
+                  <div className="font-semibold text-gray-900 mb-1">{t('contact.info.location')}</div>
                   <div className="text-gray-600">
-                    Online Classes<br />
-                    Available Worldwide
+                    {t('contact.info.online')}<br />
+                    {t('contact.info.worldwide')}
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="pt-8">
-              <h4 className="font-semibold text-gray-900 mb-4">Follow Us</h4>
+              <h4 className="font-semibold text-gray-900 mb-4">{t('contact.follow')}</h4>
               <div className="flex gap-4">
                 <a
                   href="#"
@@ -149,7 +151,7 @@ export default function Contact() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-2">
-                  Your Name
+                  {t('contact.form.name')}
                 </label>
                 <input
                   type="text"
@@ -159,13 +161,13 @@ export default function Contact() {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                  placeholder="John Doe"
+                  placeholder={t('contact.form.namePlaceholder')}
                 />
               </div>
 
               <div>
                 <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
-                  Email Address
+                  {t('contact.form.email')}
                 </label>
                 <input
                   type="email"
@@ -175,13 +177,13 @@ export default function Contact() {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                  placeholder="john@example.com"
+                  placeholder={t('contact.form.emailPlaceholder')}
                 />
               </div>
 
               <div>
                 <label htmlFor="message" className="block text-sm font-semibold text-gray-900 mb-2">
-                  Your Message
+                  {t('contact.form.message')}
                 </label>
                 <textarea
                   id="message"
@@ -191,7 +193,7 @@ export default function Contact() {
                   required
                   rows={5}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-none"
-                  placeholder="Tell us about your English learning goals..."
+                  placeholder={t('contact.form.messagePlaceholder')}
                 />
               </div>
 
@@ -200,18 +202,18 @@ export default function Contact() {
                 disabled={status === 'loading'}
                 className="w-full bg-primary-500 text-white py-4 px-6 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Sending...' : 'Send Message'}
+                {status === 'loading' ? t('contact.form.sending') : t('contact.form.send')}
               </button>
 
               {status === 'success' && (
                 <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
-                  Thank you! Your message has been sent successfully.
+                  {t('contact.form.success')}
                 </div>
               )}
 
               {status === 'error' && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                  Sorry, there was an error sending your message. Please try again.
+                  {t('contact.form.error')}
                 </div>
               )}
             </form>

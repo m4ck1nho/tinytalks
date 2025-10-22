@@ -33,9 +33,7 @@ export default function UserDashboard() {
   const [classRequests, setClassRequests] = useState<ClassRequest[]>([]);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
-  const [showSubmitHomework, setShowSubmitHomework] = useState(false);
   const [selectedClass, setSelectedClass] = useState<Class | null>(null);
-  const [selectedHomework, setSelectedHomework] = useState<Homework | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -121,31 +119,6 @@ export default function UserDashboard() {
     } catch (error) {
       console.error('Error submitting payment:', error);
       alert(t('payment.modal.error'));
-    }
-  };
-
-  const submitHomework = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user || !selectedHomework) return;
-
-    const form = e.target as HTMLFormElement;
-    const submissionText = (form.elements.namedItem('submission_text') as HTMLTextAreaElement).value;
-
-    try {
-      await db.updateHomework(selectedHomework.id, {
-        submission_text: submissionText,
-        submitted_at: new Date().toISOString(),
-        status: 'submitted',
-      });
-      alert('Homework submitted successfully!');
-      setShowSubmitHomework(false);
-      setSelectedHomework(null);
-      if (user.id) {
-        fetchStudentData(user.id);
-      }
-    } catch (error) {
-      console.error('Error submitting homework:', error);
-      alert('Failed to submit homework. Please try again.');
     }
   };
 
@@ -414,42 +387,11 @@ export default function UserDashboard() {
                         <span className={`text-xs px-3 py-1 rounded-full font-semibold flex-shrink-0 ${
                           hw.status === 'submitted' ? 'bg-blue-100 text-blue-800' : 
                           hw.status === 'reviewed' ? 'bg-green-100 text-green-800' :
-                          'bg-yellow-100 text-yellow-800'
+                          'bg-gray-100 text-gray-800'
                         }`}>
                           {t(`dashboard.status.${hw.status}`)}
                         </span>
                       </div>
-
-                      {/* Show submission if exists */}
-                      {hw.submission_text && hw.status !== 'assigned' && (
-                        <div className="mt-4 p-4 bg-white rounded border border-gray-200">
-                          <p className="text-sm font-semibold text-gray-900 mb-2">Your Submission:</p>
-                          <p className="text-sm text-gray-700 whitespace-pre-wrap">{hw.submission_text}</p>
-                          {hw.submitted_at && (
-                            <p className="text-xs text-gray-500 mt-2">
-                              Submitted: {new Date(hw.submitted_at).toLocaleString()}
-                            </p>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Submit button for assigned homework */}
-                      {hw.status === 'assigned' && (
-                        <div className="mt-4">
-                          <button
-                            onClick={() => {
-                              setSelectedHomework(hw);
-                              setShowSubmitHomework(true);
-                            }}
-                            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-                          >
-                            <CheckCircleIcon className="w-5 h-5" />
-                            Submit Homework
-                          </button>
-                        </div>
-                      )}
-
-                      {/* Teacher feedback */}
                       {hw.teacher_feedback && (
                         <div className="mt-4 p-4 bg-blue-50 rounded border border-blue-200">
                           <p className="text-sm font-semibold text-blue-900 mb-1">{t('dashboard.teacherFeedback')}: {hw.grade}</p>
@@ -690,53 +632,6 @@ export default function UserDashboard() {
                   className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
                 >
                   {t('payment.modal.cancel')}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Homework Submission Modal */}
-      {showSubmitHomework && selectedHomework && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full">
-            <h3 className="text-lg font-semibold mb-4">Submit Homework: {selectedHomework.title}</h3>
-            <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm font-medium text-gray-700 mb-1">Assignment:</p>
-              <p className="text-sm text-gray-600">{selectedHomework.description}</p>
-              <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
-                <ClockIcon className="w-4 h-4" />
-                Due: {new Date(selectedHomework.due_date).toLocaleString()}
-              </div>
-            </div>
-            <form onSubmit={submitHomework} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Your Answer / Submission</label>
-                <textarea
-                  name="submission_text"
-                  required
-                  rows={10}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Write your homework answer here..."
-                />
-              </div>
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-                >
-                  Submit Homework
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowSubmitHomework(false);
-                    setSelectedHomework(null);
-                  }}
-                  className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-                  Cancel
                 </button>
               </div>
             </form>

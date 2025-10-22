@@ -6,8 +6,10 @@ import { BlogPost } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CalendarIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function BlogPreview() {
+  const { t } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,10 +69,10 @@ export default function BlogPreview() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="bg-accent-green text-green-800 text-sm font-semibold px-4 py-2 rounded-full bg-green-100">
-            Learning Resources
+            {t('blog.badge')}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-6 mb-4">
-            Latest Articles & Tips
+            {t('blog.title')}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Discover helpful tips, learning strategies, and insights to accelerate your English journey
@@ -113,10 +115,10 @@ export default function BlogPreview() {
                   {post.excerpt}
                 </p>
                 
-                <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
-                  Read More
-                  <ArrowRightIcon className="w-4 h-4" />
-                </span>
+                    <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
+                      {t('blog.readMore')}
+                      <ArrowRightIcon className="w-4 h-4" />
+                    </span>
               </div>
             </Link>
           ))}

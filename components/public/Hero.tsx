@@ -2,8 +2,11 @@
 
 import Image from 'next/image';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Hero() {
+  const { t } = useLanguage();
+  
   const scrollToContact = () => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -18,19 +21,18 @@ export default function Hero() {
           <div className="space-y-8 z-10">
             <div className="inline-block">
               <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
-                Learn English with Confidence
+                {t('hero.badge')}
               </span>
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-              Achieve <span className="text-primary-500">B1 Level</span> English
+              {t('hero.title')} <span className="text-primary-500">B1</span>
               <br />
-              <span className="text-secondary-900">Through Personalized Learning</span>
+              <span className="text-secondary-900">{t('hero.subtitle')}</span>
             </h1>
             
             <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-              Welcome to TinyTalks! Whether you&apos;re a complete beginner or looking to improve your skills, 
-              our tailored approach helps you reach B1 proficiency with confidence and ease.
+              {t('hero.description')}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -38,7 +40,7 @@ export default function Hero() {
                 onClick={scrollToContact}
                 className="group bg-primary-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
-                Start Your Journey
+                {t('hero.cta')}
                 <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               
@@ -46,7 +48,7 @@ export default function Hero() {
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
                 className="border-2 border-secondary-900 text-secondary-900 px-8 py-4 rounded-lg font-semibold hover:bg-secondary-900 hover:text-white transition-all duration-300"
               >
-                View Pricing
+                {t('hero.pricing')}
               </button>
             </div>
             

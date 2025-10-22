@@ -1,8 +1,10 @@
 'use client';
 
 import { StarIcon } from '@heroicons/react/24/solid';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Reviews() {
+  const { t } = useLanguage();
   const reviews = [
     {
       name: 'Anna K.',
@@ -47,10 +49,10 @@ export default function Reviews() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="bg-secondary-100 text-secondary-900 text-sm font-semibold px-4 py-2 rounded-full">
-            Student Success Stories
+            {t('reviews.badge')}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-6 mb-4">
-            What Our Students Say
+            {t('reviews.title')}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Join hundreds of satisfied students who achieved their English learning goals with TinyTalks
@@ -93,11 +95,11 @@ export default function Reviews() {
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
             <div className="text-4xl font-bold text-primary-500 mb-2">100+</div>
-            <div className="text-gray-600">Happy Students</div>
+            <div className="text-gray-600">{t('reviews.stats.students')}</div>
           </div>
           <div>
             <div className="text-4xl font-bold text-secondary-900 mb-2">95%</div>
-            <div className="text-gray-600">Success Rate</div>
+            <div className="text-gray-600">{t('reviews.stats.rate')}</div>
           </div>
           <div>
             <div className="text-4xl font-bold text-green-600 mb-2">5+</div>
@@ -105,7 +107,7 @@ export default function Reviews() {
           </div>
           <div>
             <div className="text-4xl font-bold text-primary-500 mb-2">4.9/5</div>
-            <div className="text-gray-600">Average Rating</div>
+            <div className="text-gray-600">{t('reviews.stats.rating')}</div>
           </div>
         </div>
       </div>

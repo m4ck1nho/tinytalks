@@ -1,0 +1,306 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "contact": "Contact",
+    "login": "Login / Sign Up",
+    "dashboard": "Dashboard"
+  },
+  "hero": {
+    "badge": "Learn English with Confidence",
+    "title": "Achieve B1 Level English",
+    "subtitle": "Through Personalized Learning",
+    "description": "Master English with one-on-one lessons tailored to your needs. From beginner to B1 level, we'll guide you every step of the way.",
+    "cta": "Start Your Journey",
+    "pricing": "View Pricing"
+  },
+  "about": {
+    "badge": "About TinyTalks",
+    "title": "Meet Your English Teacher",
+    "intro1": "Hello! I'm Evgenia Penkova, the founder of TinyTalks. With over 5 years of experience teaching English, I've helped hundreds of students achieve their language learning goals.",
+    "intro2": "My teaching philosophy is simple: language learning should be enjoyable, personalized, and focused on real communication. I believe that every student has the potential to master English when given the right support and guidance.",
+    "intro3": "At TinyTalks, we specialize in taking beginners to B1 level proficiency through a combination of structured lessons, conversational practice, and engaging activities. Whether you're learning for work, travel, or personal growth, I'm here to support you every step of the way.",
+    "cta": "Let's embark on this English learning journey together!",
+    "trustBadge": "students trust TinyTalks",
+    "features": {
+      "expert": {
+        "title": "Expert Teaching",
+        "description": "Years of experience in teaching English to beginners of all ages"
+      },
+      "personalized": {
+        "title": "Personalized Approach",
+        "description": "Every student gets a customized learning plan tailored to their goals"
+      },
+      "engaging": {
+        "title": "Engaging Methods",
+        "description": "Interactive lessons that make learning English enjoyable and effective"
+      },
+      "speaking": {
+        "title": "Speaking Focus",
+        "description": "Emphasis on conversational English and real-world communication"
+      }
+    }
+  },
+  "pricing": {
+    "badge": "Pricing Plans",
+    "title": "Choose Your Learning Path",
+    "description": "Flexible pricing options designed to fit your needs and budget",
+    "group": {
+      "name": "Group Lessons",
+      "price": "1,250",
+      "period": "/lesson",
+      "description": "Learn with peers in small groups",
+      "cta": "Join Group",
+      "features": {
+        "f1": "90-minute lesson",
+        "f2": "Small groups (3-5 students)",
+        "f3": "Interactive activities",
+        "f4": "All learning materials included",
+        "f5": "Homework & feedback",
+        "f6": "Progress tracking",
+        "f7": "Speaking practice with peers",
+        "f8": "Flexible scheduling"
+      }
+    },
+    "individual": {
+      "name": "Individual Lessons",
+      "price": "2,500",
+      "period": "/lesson",
+      "description": "One-on-one personalized learning",
+      "cta": "Book Individual",
+      "popular": "Most Popular",
+      "features": {
+        "f1": "60-minute private lesson",
+        "f2": "100% personalized content",
+        "f3": "Flexible scheduling",
+        "f4": "Homework with detailed feedback",
+        "f5": "Progress tracking & reports",
+        "f6": "All learning materials",
+        "f7": "Speaking-focused approach",
+        "f8": "Available online worldwide"
+      }
+    },
+    "intensive": {
+      "name": "Intensive Course",
+      "price": "10,000",
+      "period": "/month",
+      "description": "Accelerated learning program",
+      "cta": "Start Intensive",
+      "features": {
+        "f1": "12 individual lessons per month",
+        "f2": "3 lessons per week",
+        "f3": "Priority scheduling",
+        "f4": "Weekly progress assessments",
+        "f5": "Personalized study plan",
+        "f6": "Daily homework assignments",
+        "f7": "Direct teacher messaging",
+        "f8": "Certificate upon completion"
+      }
+    },
+    "custom": {
+      "text": "Need a custom plan?",
+      "cta": "Contact us for a personalized quote"
+    }
+  },
+  "reviews": {
+    "badge": "Student Success Stories",
+    "title": "What Our Students Say",
+    "description": "Don't just take our word for it - hear from students who have transformed their English skills",
+    "stats": {
+      "students": "Happy Students",
+      "rate": "Success Rate",
+      "experience": "Years Experience",
+      "rating": "Average Rating"
+    },
+    "anna": {
+      "content": "Evgenia is an amazing teacher! She helped me improve my English from beginner to B1 level in just 8 months. Her lessons are always engaging and fun. I highly recommend TinyTalks!",
+      "role": "Marketing Manager"
+    },
+    "dmitry": {
+      "content": "I was always afraid to speak English, but Evgenia created such a comfortable learning environment. Now I can confidently communicate with international clients. Thank you!",
+      "role": "Business Owner"
+    },
+    "maria": {
+      "content": "The personalized approach made all the difference. Every lesson was tailored to my needs and interests. I've never enjoyed learning a language this much!",
+      "role": "Student"
+    },
+    "pavel": {
+      "content": "After trying several English courses, I finally found TinyTalks. The one-on-one lessons helped me progress faster than I ever thought possible. Worth every penny!",
+      "role": "Software Developer"
+    },
+    "elena": {
+      "content": "Evgenia's teaching methods are fantastic! She uses real-life situations and interesting materials. My speaking skills have improved dramatically in just 3 months.",
+      "role": "Teacher"
+    },
+    "sergei": {
+      "content": "Professional, patient, and always prepared. Evgenia is the best English teacher I've ever had. I went from struggling with basics to holding conversations!",
+      "role": "Engineer"
+    }
+  },
+  "blog": {
+    "badge": "Learning Resources",
+    "title": "Tips & Guides for English Learners",
+    "description": "Explore our collection of helpful resources and articles to support your English learning journey",
+    "readMore": "Read More"
+  },
+  "contact": {
+    "badge": "Get In Touch",
+    "title": "Start Your English Journey Today",
+    "description": "Have questions? Ready to begin? Send us a message and we'll get back to you as soon as possible!",
+    "info": {
+      "title": "Contact Information",
+      "description": "Feel free to reach out through any of these channels. We're here to help you on your English learning journey!",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "online": "Online Classes",
+      "worldwide": "Available Worldwide"
+    },
+    "follow": "Follow Us",
+    "form": {
+      "name": "Your Name",
+      "namePlaceholder": "John Doe",
+      "email": "Email Address",
+      "emailPlaceholder": "john@example.com",
+      "message": "Your Message",
+      "messagePlaceholder": "Tell us about your English learning goals...",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Thank you! Your message has been sent successfully.",
+      "error": "Sorry, there was an error sending your message. Please try again."
+    }
+  },
+  "footer": {
+    "description": "Your journey to English fluency starts here. Personalized learning from beginner to B1 level.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "onlineClasses": "Online Classes",
+    "availableWorldwide": "Available Worldwide",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy",
+    "rights": "All rights reserved."
+  },
+  "auth": {
+    "login": "User Login",
+    "signup": "User Sign Up",
+    "loginSubtitle": "Sign in to your account",
+    "signupSubtitle": "Create a new account",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "password": "Password",
+    "signInButton": "Sign In",
+    "signUpButton": "Sign Up",
+    "signingIn": "Signing in...",
+    "signingUp": "Signing up...",
+    "googleSignIn": "Sign in with Google",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "backToSite": "← Back to main site",
+    "signupSuccess": "Registration successful! Please check your email to confirm your account."
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "upcomingClasses": "Upcoming Classes",
+    "homework": "Homework",
+    "stats": {
+      "completed": "Lessons Completed",
+      "homeworkCompleted": "Homework Completed",
+      "paidClasses": "Paid Classes"
+    },
+    "noClasses": "No upcoming classes scheduled",
+    "noHomework": "No pending homework",
+    "notifyPayment": "Notify Payment",
+    "paymentPending": "Payment Pending",
+    "paid": "Paid",
+    "due": "Due",
+    "teacherFeedback": "Teacher Feedback",
+    "logout": "Logout",
+    "englishClass": "English Class",
+    "minutes": "minutes",
+    "status": {
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "pending": "Pending",
+      "submitted": "Submitted",
+      "reviewed": "Reviewed"
+    }
+  },
+  "payment": {
+    "modal": {
+      "title": "Notify Teacher of Payment",
+      "class": "Class",
+      "amount": "Amount Paid (₽)",
+      "method": "Payment Method",
+      "date": "Payment Date",
+      "reference": "Reference/Transaction Number (Optional)",
+      "referencePlaceholder": "e.g., Transaction ID",
+      "message": "Message to Teacher (Optional)",
+      "messagePlaceholder": "Any additional information...",
+      "submit": "Submit Notification",
+      "cancel": "Cancel",
+      "success": "Payment notification sent to teacher!",
+      "error": "Failed to submit payment notification"
+    },
+    "methods": {
+      "bankTransfer": "Bank Transfer",
+      "cash": "Cash",
+      "paypal": "PayPal",
+      "venmo": "Venmo",
+      "other": "Other"
+    }
+  },
+  "classRequest": {
+    "button": "Request a Class",
+    "title": "My Class Requests",
+    "preferredDate": "Preferred Date",
+    "topic": "Topic",
+    "submitted": "Submitted",
+    "adminNotes": "Teacher's Notes",
+    "noRequests": "No class requests yet. Click 'Request a Class' to send your first request!",
+    "success": "Class request submitted successfully! The teacher will review it soon.",
+    "error": "Failed to submit class request. Please try again.",
+    "status": {
+      "pending": "Waiting for Approval",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "modal": {
+      "title": "Request a New Class",
+      "preferredDate": "Preferred Date (Optional)",
+      "preferredTime": "Preferred Time (Optional)",
+      "topic": "Topic (Optional)",
+      "topicPlaceholder": "e.g., Business English, Grammar Practice",
+      "message": "Additional Message (Optional)",
+      "messagePlaceholder": "Let the teacher know about your learning goals, schedule preferences, or any special requests...",
+      "submit": "Submit Request",
+      "cancel": "Cancel"
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "legend": {
+      "classes": "Classes",
+      "payments": "Payments",
+      "today": "Today"
+    },
+    "detail": {
+      "classes": "Classes",
+      "payments": "Payments"
+    }
+  },
+  "admin": {
+    "dashboard": "Teacher Dashboard",
+    "subtitle": "Manage your classes, homework, and payments",
+    "schedule": "Schedule",
+    "homework": "Homework",
+    "payments": "Payments",
+    "messages": "Messages",
+    "blog": "Blog Posts",
+    "logout": "Logout"
+  }
+}
+

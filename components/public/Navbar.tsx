@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { auth } from '@/lib/supabase';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, LanguageIcon } from '@heroicons/react/24/outline';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<{ email?: string } | null>(null);
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,28 +73,39 @@ export default function Navbar() {
               onClick={() => scrollToSection('about')}
               className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
             >
-              <span className="relative z-10">About</span>
+              <span className="relative z-10">{t('nav.about')}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
             <button
               onClick={() => scrollToSection('pricing')}
               className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
             >
-              <span className="relative z-10">Pricing</span>
+              <span className="relative z-10">{t('nav.pricing')}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
             <button
               onClick={() => scrollToSection('reviews')}
               className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
             >
-              <span className="relative z-10">Reviews</span>
+              <span className="relative z-10">{t('reviews.badge')}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
             <button
               onClick={() => scrollToSection('blog')}
               className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
             >
-              <span className="relative z-10">Blog</span>
+              <span className="relative z-10">{t('nav.blog')}</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </button>
+
+            {/* Language Switcher */}
+            <button
+              onClick={() => setLanguage(language === 'en' ? 'ru' : 'en')}
+              className="relative px-4 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden flex items-center gap-2"
+              title={language === 'en' ? 'Switch to Russian' : 'Переключить на английский'}
+            >
+              <LanguageIcon className="w-5 h-5 relative z-10" />
+              <span className="relative z-10 font-bold">{language === 'en' ? 'РУС' : 'ENG'}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
             
@@ -100,21 +113,21 @@ export default function Navbar() {
             {user ? (
               <Link
                 href="/dashboard"
-                className="relative ml-4 px-6 py-3 rounded-xl font-bold text-white overflow-hidden group flex items-center gap-2"
+                className="relative ml-2 px-6 py-3 rounded-xl font-bold text-white overflow-hidden group flex items-center gap-2"
               >
                 <div className="absolute inset-0 bg-primary-500 group-hover:bg-primary-600 transition-colors"></div>
                 <div className="absolute inset-0 bg-primary-500 blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
                 <UserCircleIcon className="relative z-10 w-5 h-5" />
-                <span className="relative z-10">Dashboard</span>
+                <span className="relative z-10">{t('nav.dashboard')}</span>
               </Link>
             ) : (
               <Link
                 href="/auth"
-                className="relative ml-4 px-8 py-3 rounded-xl font-bold text-white overflow-hidden group"
+                className="relative ml-2 px-8 py-3 rounded-xl font-bold text-white overflow-hidden group"
               >
                 <div className="absolute inset-0 bg-primary-500 group-hover:bg-primary-600 transition-colors"></div>
                 <div className="absolute inset-0 bg-primary-500 blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-                <span className="relative z-10">Login / Sign Up</span>
+                <span className="relative z-10">{t('nav.login')}</span>
               </Link>
             )}
           </div>
@@ -148,25 +161,34 @@ export default function Navbar() {
               onClick={() => scrollToSection('about')}
               className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
             >
-              About
+              {t('nav.about')}
             </button>
             <button
               onClick={() => scrollToSection('pricing')}
               className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
             >
-              Pricing
+              {t('nav.pricing')}
             </button>
             <button
               onClick={() => scrollToSection('reviews')}
               className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
             >
-              Reviews
+              {t('reviews.badge')}
             </button>
             <button
               onClick={() => scrollToSection('blog')}
               className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
             >
-              Blog
+              {t('nav.blog')}
+            </button>
+
+            {/* Mobile Language Switcher */}
+            <button
+              onClick={() => setLanguage(language === 'en' ? 'ru' : 'en')}
+              className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300 flex items-center gap-2"
+            >
+              <LanguageIcon className="w-5 h-5" />
+              <span className="font-bold">{language === 'en' ? 'Русский' : 'English'}</span>
             </button>
             
             {/* Mobile Auth Button */}
@@ -176,7 +198,7 @@ export default function Navbar() {
                 className="block w-full text-center px-5 py-3 mt-3 rounded-xl font-bold text-white bg-primary-500 hover:bg-primary-600 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transition-all duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Dashboard
+                {t('nav.dashboard')}
               </Link>
             ) : (
               <Link
@@ -184,7 +206,7 @@ export default function Navbar() {
                 className="block w-full text-center px-5 py-3 mt-3 rounded-xl font-bold text-white bg-primary-500 hover:bg-primary-600 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transition-all duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Login / Sign Up
+                {t('nav.login')}
               </Link>
             )}
           </div>

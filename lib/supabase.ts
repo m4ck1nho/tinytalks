@@ -110,6 +110,54 @@ export const db = {
   deleteContactMessage: (id: string) =>
     supabase.from('contact_messages').delete().eq('id', id),
 
+  // Classes
+  getClasses: () =>
+    supabase
+      .from('classes')
+      .select('*')
+      .order('class_date', { ascending: true }),
+
+  createClass: (data: Record<string, unknown>) =>
+    supabase.from('classes').insert(data).select().single(),
+
+  updateClass: (id: string, data: Record<string, unknown>) =>
+    supabase.from('classes').update(data).eq('id', id).select().single(),
+
+  deleteClass: (id: string) =>
+    supabase.from('classes').delete().eq('id', id),
+
+  // Homework
+  getHomework: () =>
+    supabase
+      .from('homework')
+      .select('*')
+      .order('due_date', { ascending: true }),
+
+  createHomework: (data: Record<string, unknown>) =>
+    supabase.from('homework').insert(data).select().single(),
+
+  updateHomework: (id: string, data: Record<string, unknown>) =>
+    supabase.from('homework').update(data).eq('id', id).select().single(),
+
+  deleteHomework: (id: string) =>
+    supabase.from('homework').delete().eq('id', id),
+
+  // Payment Notifications
+  getPaymentNotifications: () =>
+    supabase
+      .from('payment_notifications')
+      .select('*')
+      .order('created_at', { ascending: false }),
+
+  createPaymentNotification: (data: Record<string, unknown>) =>
+    supabase.from('payment_notifications').insert(data).select().single(),
+
+  updatePaymentNotification: (id: string, data: Record<string, unknown>) =>
+    supabase.from('payment_notifications').update(data).eq('id', id).select().single(),
+
+  deletePaymentNotification: (id: string) =>
+    supabase.from('payment_notifications').delete().eq('id', id),
+
   // Real-time subscriptions
   subscribeToBlogPosts: (callback: (payload: unknown) => void) =>
     supabase
@@ -122,6 +170,64 @@ export const db = {
       .channel('messages_changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, callback)
       .subscribe(),
+
+  subscribeToClasses: (callback: (payload: unknown) => void) =>
+    supabase
+      .channel('classes_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'classes' }, callback)
+      .subscribe(),
+
+  subscribeToHomework: (callback: (payload: unknown) => void) =>
+    supabase
+      .channel('homework_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'homework' }, callback)
+      .subscribe(),
+
+  subscribeToPaymentNotifications: (callback: (payload: unknown) => void) =>
+    supabase
+      .channel('payment_notifications_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'payment_notifications' }, callback)
+      .subscribe(),
+
+  // Class Requests
+  getClassRequests: () =>
+    supabase
+      .from('class_requests')
+      .select('*')
+      .order('created_at', { ascending: false }),
+
+  createClassRequest: (data: Record<string, unknown>) =>
+    supabase.from('class_requests').insert(data).select().single(),
+
+  updateClassRequest: (id: string, data: Record<string, unknown>) =>
+    supabase.from('class_requests').update(data).eq('id', id).select().single(),
+
+  deleteClassRequest: (id: string) =>
+    supabase.from('class_requests').delete().eq('id', id),
+
+  subscribeToClassRequests: (callback: (payload: unknown) => void) =>
+    supabase
+      .channel('class_requests_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'class_requests' }, callback)
+      .subscribe(),
+
+  // Users - Admin only
+  getAllUsers: async () => {
+    // This will fetch users from auth.users via admin API
+    // For now, we'll query from a perspective that students have classes/homework
+    const { data: usersData } = await supabase
+      .from('classes')
+      .select('student_id, student_name, student_email')
+      .order('student_name');
+    
+    // Get unique users
+    const uniqueUsers = Array.from(
+      new Map((usersData || []).map(item => [item.student_id, item]))
+        .values()
+    );
+    
+    return { data: uniqueUsers, error: null };
+  },
 };
 
 // Storage helpers

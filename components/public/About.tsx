@@ -2,28 +2,31 @@
 
 import Image from 'next/image';
 import { AcademicCapIcon, UserGroupIcon, SparklesIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/outline';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function About() {
+  const { t } = useLanguage();
+  
   const features = [
     {
       icon: AcademicCapIcon,
-      title: 'Expert Teaching',
-      description: 'Years of experience in teaching English to beginners of all ages',
+      title: t('about.features.expert.title'),
+      description: t('about.features.expert.description'),
     },
     {
       icon: UserGroupIcon,
-      title: 'Personalized Approach',
-      description: 'Every student gets a customized learning plan tailored to their goals',
+      title: t('about.features.personalized.title'),
+      description: t('about.features.personalized.description'),
     },
     {
       icon: SparklesIcon,
-      title: 'Engaging Methods',
-      description: 'Interactive lessons that make learning English enjoyable and effective',
+      title: t('about.features.engaging.title'),
+      description: t('about.features.engaging.description'),
     },
     {
       icon: ChatBubbleBottomCenterTextIcon,
-      title: 'Speaking Focus',
-      description: 'Emphasis on conversational English and real-world communication',
+      title: t('about.features.speaking.title'),
+      description: t('about.features.speaking.description'),
     },
   ];
 
@@ -47,36 +50,29 @@ export default function About() {
           <div className="space-y-6 order-1 md:order-2">
             <div className="inline-block">
               <span className="bg-secondary-100 text-secondary-900 text-sm font-semibold px-4 py-2 rounded-full">
-                About TinyTalks
+                {t('about.badge')}
               </span>
             </div>
             
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Meet Your English Teacher
+              {t('about.title')}
             </h2>
             
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
-                Hello! I&apos;m <span className="font-semibold text-gray-900">Evgenia Penkova</span>, 
-                the founder of TinyTalks. With over 5 years of experience teaching English, 
-                I&apos;ve helped hundreds of students achieve their language learning goals.
+                {t('about.intro1')}
               </p>
               
               <p>
-                My teaching philosophy is simple: language learning should be enjoyable, 
-                personalized, and focused on real communication. I believe that every student 
-                has the potential to master English when given the right support and guidance.
+                {t('about.intro2')}
               </p>
               
               <p>
-                At TinyTalks, we specialize in taking beginners to B1 level proficiency through 
-                a combination of structured lessons, conversational practice, and engaging activities. 
-                Whether you&apos;re learning for work, travel, or personal growth, I&apos;m here to support 
-                you every step of the way.
+                {t('about.intro3')}
               </p>
               
               <p className="font-semibold text-gray-900">
-                Let&apos;s embark on this English learning journey together!
+                {t('about.cta')}
               </p>
             </div>
             
@@ -87,7 +83,7 @@ export default function About() {
                 ))}
               </div>
               <div className="text-sm text-gray-600">
-                <span className="font-semibold text-gray-900">100+</span> students trust TinyTalks
+                <span className="font-semibold text-gray-900">100+</span> {t('about.trustBadge')}
               </div>
             </div>
           </div>
