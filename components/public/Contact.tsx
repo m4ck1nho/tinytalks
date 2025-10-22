@@ -17,11 +17,16 @@ export default function Contact() {
     setStatus('loading');
 
     try {
-      await db.createContactMessage({
-        ...formData,
+      const { data, error } = await db.createContactMessage({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
         read: false,
-        created_at: new Date().toISOString(),
       });
+
+      if (error) {
+        throw error;
+      }
 
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
@@ -45,7 +50,7 @@ export default function Contact() {
     <section id="contact" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-4 py-2 rounded-full">
+          <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
             Get In Touch
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-6 mb-4">
@@ -68,24 +73,24 @@ export default function Contact() {
 
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <EnvelopeIcon className="w-6 h-6 text-blue-600" />
+                <div className="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                  <EnvelopeIcon className="w-6 h-6 text-primary-500" />
                 </div>
                 <div>
                   <div className="font-semibold text-gray-900 mb-1">Email</div>
-                  <a href="mailto:info@tinytalks.com" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <a href="mailto:info@tinytalks.com" className="text-gray-600 hover:text-primary-500 transition-colors">
                     info@tinytalks.com
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <PhoneIcon className="w-6 h-6 text-purple-600" />
+                <div className="flex-shrink-0 w-12 h-12 bg-secondary-100 rounded-lg flex items-center justify-center">
+                  <PhoneIcon className="w-6 h-6 text-secondary-900" />
                 </div>
                 <div>
                   <div className="font-semibold text-gray-900 mb-1">Phone</div>
-                  <a href="tel:+1234567890" className="text-gray-600 hover:text-purple-600 transition-colors">
+                  <a href="tel:+1234567890" className="text-gray-600 hover:text-secondary-900 transition-colors">
                     +7 (XXX) XXX-XX-XX
                   </a>
                 </div>
@@ -110,7 +115,7 @@ export default function Contact() {
               <div className="flex gap-4">
                 <a
                   href="#"
-                  className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"
+                  className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-primary-500 hover:text-white transition-all"
                   aria-label="Telegram"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -119,7 +124,7 @@ export default function Contact() {
                 </a>
                 <a
                   href="#"
-                  className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-purple-600 hover:text-white transition-all"
+                  className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-secondary-900 hover:text-white transition-all"
                   aria-label="Instagram"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -153,7 +158,7 @@ export default function Contact() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
                   placeholder="John Doe"
                 />
               </div>
@@ -169,7 +174,7 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
                   placeholder="john@example.com"
                 />
               </div>
@@ -185,7 +190,7 @@ export default function Contact() {
                   onChange={handleChange}
                   required
                   rows={5}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-none"
                   placeholder="Tell us about your English learning goals..."
                 />
               </div>
@@ -193,7 +198,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="w-full bg-primary-500 text-white py-4 px-6 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
                 {status === 'loading' ? 'Sending...' : 'Send Message'}
               </button>

@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { auth } from '@/lib/supabase';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [user, setUser] = useState<{ email?: string } | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,6 +16,22 @@ export default function Navbar() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const checkUser = async () => {
+      const { data: { user } } = await auth.getUser();
+      setUser(user);
+    };
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = auth.onAuthStateChange((user) => {
+      setUser(user as { email?: string } | null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -39,10 +58,10 @@ export default function Navbar() {
           {/* Logo with gradient */}
           <div className="flex-shrink-0 group">
             <Link href="/" className="relative inline-block">
-              <span className="text-3xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+              <span className="text-3xl font-black bg-gradient-to-r from-primary-500 via-secondary-900 to-primary-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
                 TinyTalks
               </span>
-              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></div>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-900 group-hover:w-full transition-all duration-300"></div>
             </Link>
           </div>
 
@@ -50,54 +69,61 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => scrollToSection('about')}
-              className="relative px-5 py-2.5 text-gray-700 font-semibold rounded-xl hover:text-blue-600 transition-all duration-300 group overflow-hidden"
+              className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
             >
               <span className="relative z-10">About</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
             <button
               onClick={() => scrollToSection('pricing')}
-              className="relative px-5 py-2.5 text-gray-700 font-semibold rounded-xl hover:text-blue-600 transition-all duration-300 group overflow-hidden"
+              className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
             >
               <span className="relative z-10">Pricing</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
             <button
               onClick={() => scrollToSection('reviews')}
-              className="relative px-5 py-2.5 text-gray-700 font-semibold rounded-xl hover:text-blue-600 transition-all duration-300 group overflow-hidden"
+              className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
             >
               <span className="relative z-10">Reviews</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
             <button
               onClick={() => scrollToSection('blog')}
-              className="relative px-5 py-2.5 text-gray-700 font-semibold rounded-xl hover:text-blue-600 transition-all duration-300 group overflow-hidden"
+              className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
             >
               <span className="relative z-10">Blog</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
             
-            {/* CTA Button with futuristic glow */}
-            <button
-              onClick={() => scrollToSection('contact')}
-              className="relative ml-4 px-8 py-3 rounded-xl font-bold text-white overflow-hidden group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-[length:200%_auto] animate-gradient"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-              <span className="relative z-10 flex items-center gap-2">
-                Contact Us
-                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-            </button>
+            {/* User Auth Button */}
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="relative ml-4 px-6 py-3 rounded-xl font-bold text-white overflow-hidden group flex items-center gap-2"
+              >
+                <div className="absolute inset-0 bg-primary-500 group-hover:bg-primary-600 transition-colors"></div>
+                <div className="absolute inset-0 bg-primary-500 blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
+                <UserCircleIcon className="relative z-10 w-5 h-5" />
+                <span className="relative z-10">Dashboard</span>
+              </Link>
+            ) : (
+              <Link
+                href="/auth"
+                className="relative ml-4 px-8 py-3 rounded-xl font-bold text-white overflow-hidden group"
+              >
+                <div className="absolute inset-0 bg-primary-500 group-hover:bg-primary-600 transition-colors"></div>
+                <div className="absolute inset-0 bg-primary-500 blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
+                <span className="relative z-10">Login / Sign Up</span>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button with futuristic design */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 text-gray-700 hover:from-blue-100 hover:to-purple-100 transition-all duration-300"
+              className="p-2 rounded-xl bg-gradient-to-br from-primary-50 to-secondary-50 text-secondary-900 hover:from-primary-100 hover:to-secondary-100 transition-all duration-300"
               aria-label="Toggle menu"
             >
               {isMenuOpen ? (
@@ -116,38 +142,51 @@ export default function Navbar() {
 
       {/* Mobile Menu with futuristic glass effect */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-blue-100/50">
+        <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-primary-100/50">
           <div className="px-4 pt-3 pb-4 space-y-2">
             <button
               onClick={() => scrollToSection('about')}
-              className="block w-full text-left px-5 py-3 text-gray-700 font-semibold hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 rounded-xl transition-all duration-300"
+              className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
             >
               About
             </button>
             <button
               onClick={() => scrollToSection('pricing')}
-              className="block w-full text-left px-5 py-3 text-gray-700 font-semibold hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 rounded-xl transition-all duration-300"
+              className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
             >
               Pricing
             </button>
             <button
               onClick={() => scrollToSection('reviews')}
-              className="block w-full text-left px-5 py-3 text-gray-700 font-semibold hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 rounded-xl transition-all duration-300"
+              className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
             >
               Reviews
             </button>
             <button
               onClick={() => scrollToSection('blog')}
-              className="block w-full text-left px-5 py-3 text-gray-700 font-semibold hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 rounded-xl transition-all duration-300"
+              className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
             >
               Blog
             </button>
-            <button
-              onClick={() => scrollToSection('contact')}
-              className="block w-full text-center px-5 py-3 mt-3 rounded-xl font-bold text-white bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-[length:200%_auto] animate-gradient shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
-            >
-              Contact Us
-            </button>
+            
+            {/* Mobile Auth Button */}
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="block w-full text-center px-5 py-3 mt-3 rounded-xl font-bold text-white bg-primary-500 hover:bg-primary-600 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transition-all duration-300"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                href="/auth"
+                className="block w-full text-center px-5 py-3 mt-3 rounded-xl font-bold text-white bg-primary-500 hover:bg-primary-600 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transition-all duration-300"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Login / Sign Up
+              </Link>
+            )}
           </div>
         </div>
       )}

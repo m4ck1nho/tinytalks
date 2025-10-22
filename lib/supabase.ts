@@ -26,6 +26,37 @@ export const auth = {
   signIn: (email: string, password: string) => 
     supabase.auth.signInWithPassword({ email, password }),
   
+  signUp: (email: string, password: string, fullName?: string) => 
+    supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+          role: 'student', // All sign-ups are students by default
+        },
+      },
+    }),
+  
+  signInWithGoogle: () => 
+    supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`,
+        data: {
+          role: 'student', // Google sign-ups are students by default
+        },
+      },
+    }),
+  
+  signInWithGoogleAdmin: () => 
+    supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback?next=/admin/dashboard`,
+      },
+    }),
+  
   signOut: () => 
     supabase.auth.signOut(),
   

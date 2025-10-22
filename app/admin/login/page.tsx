@@ -18,8 +18,18 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const { error } = await auth.signIn(email, password);
+      const { data, error } = await auth.signIn(email, password);
       if (error) throw error;
+      
+      // Verify user is admin
+      const userRole = data?.user?.user_metadata?.role || 'student';
+      if (userRole !== 'admin') {
+        await auth.signOut();
+        setError('Access denied. Only administrators can access this panel.');
+        setLoading(false);
+        return;
+      }
+      
       router.push('/admin/dashboard');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
@@ -31,12 +41,12 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-400 rounded-xl font-bold text-2xl text-white mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-400 to-secondary-800 rounded-xl font-bold text-2xl text-white mb-4">
               TT
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Admin Login</h1>
@@ -83,14 +93,14 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-primary-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-gray-600">
-            <Link href="/" className="text-blue-600 hover:underline">
+            <Link href="/" className="text-primary-500 hover:underline">
               ← Back to main site
             </Link>
           </div>

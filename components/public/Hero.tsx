@@ -9,7 +9,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden pt-16">
+    <section className="relative bg-gradient-to-br from-orange-50 via-white to-blue-50 overflow-hidden pt-16">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
@@ -17,15 +17,15 @@ export default function Hero() {
           {/* Left Content */}
           <div className="space-y-8 z-10">
             <div className="inline-block">
-              <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-4 py-2 rounded-full">
+              <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
                 Learn English with Confidence
               </span>
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-              Achieve <span className="text-blue-600">B1 Level</span> English
+              Achieve <span className="text-primary-500">B1 Level</span> English
               <br />
-              <span className="text-purple-600">Through Personalized Learning</span>
+              <span className="text-secondary-900">Through Personalized Learning</span>
             </h1>
             
             <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
@@ -36,7 +36,7 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={scrollToContact}
-                className="group bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                className="group bg-primary-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
                 Start Your Journey
                 <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -44,7 +44,7 @@ export default function Hero() {
               
               <button
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
-                className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg font-semibold hover:border-blue-600 hover:text-blue-600 transition-all duration-300"
+                className="border-2 border-secondary-900 text-secondary-900 px-8 py-4 rounded-lg font-semibold hover:bg-secondary-900 hover:text-white transition-all duration-300"
               >
                 View Pricing
               </button>
@@ -68,8 +68,8 @@ export default function Hero() {
           
           {/* Right Image */}
           <div className="relative">
-            <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-purple-600/20 z-10"></div>
+            <div className="relative h-[600px] md:h-[700px] rounded-2xl overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-secondary-900/20 z-10"></div>
               <Image
                 src="/images/teacher-hero.jpg"
                 alt="English Teacher"

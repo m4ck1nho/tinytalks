@@ -63,10 +63,10 @@ export default function BlogPreview() {
   }
 
   return (
-    <section id="blog" className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+    <section id="blog" className="py-20 bg-gradient-to-br from-orange-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="bg-green-100 text-green-800 text-sm font-semibold px-4 py-2 rounded-full">
+          <span className="bg-accent-green text-green-800 text-sm font-semibold px-4 py-2 rounded-full bg-green-100">
             Learning Resources
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-6 mb-4">
@@ -105,7 +105,7 @@ export default function BlogPreview() {
                   })}
                 </div>
                 
-                <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-500 transition-colors">
                   {post.title}
                 </h3>
                 
@@ -113,7 +113,7 @@ export default function BlogPreview() {
                   {post.excerpt}
                 </p>
                 
-                <span className="text-blue-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
+                <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
                   Read More
                   <ArrowRightIcon className="w-4 h-4" />
                 </span>

@@ -25,6 +25,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // Check current session
     auth.getUser().then(({ data: { user } }) => {
       if (user && 'email' in user) {
+        // Check if user is admin
+        const userRole = user.user_metadata?.role || 'student';
+        if (userRole !== 'admin') {
+          // Not an admin, redirect to student dashboard
+          router.push('/dashboard');
+          return;
+        }
         setAuthenticated(true);
         setUserEmail((user as { email?: string | null }).email || '');
         setLoading(false);
@@ -40,6 +47,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // Listen for auth changes
     const { data: { subscription } } = auth.onAuthStateChange((user) => {
       if (user && typeof user === 'object' && 'email' in user) {
+        // Check if user is admin
+        const userRole = (user as { user_metadata?: { role?: string } }).user_metadata?.role || 'student';
+        if (userRole !== 'admin') {
+          // Not an admin, redirect to student dashboard
+          router.push('/dashboard');
+          return;
+        }
         setAuthenticated(true);
         setUserEmail((user as { email?: string | null }).email || '');
         setLoading(false);

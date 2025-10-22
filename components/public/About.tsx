@@ -46,7 +46,7 @@ export default function About() {
           {/* Content */}
           <div className="space-y-6 order-1 md:order-2">
             <div className="inline-block">
-              <span className="bg-purple-100 text-purple-800 text-sm font-semibold px-4 py-2 rounded-full">
+              <span className="bg-secondary-100 text-secondary-900 text-sm font-semibold px-4 py-2 rounded-full">
                 About TinyTalks
               </span>
             </div>
@@ -83,7 +83,7 @@ export default function About() {
             <div className="flex items-center gap-4 pt-4">
               <div className="flex -space-x-2">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 border-2 border-white"></div>
+                  <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-secondary-800 border-2 border-white"></div>
                 ))}
               </div>
               <div className="text-sm text-gray-600">
@@ -97,8 +97,8 @@ export default function About() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <div key={index} className="text-center p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-lg transition-all duration-300">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full mb-4">
-                <feature.icon className="w-8 h-8 text-blue-600" />
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-100 to-secondary-100 rounded-full mb-4">
+                <feature.icon className="w-8 h-8 text-primary-500" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
               <p className="text-gray-600 text-sm">{feature.description}</p>

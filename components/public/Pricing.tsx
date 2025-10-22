@@ -68,10 +68,10 @@ export default function Pricing() {
   };
 
   return (
-    <section id="pricing" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <section id="pricing" className="py-20 bg-gradient-to-br from-gray-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-4 py-2 rounded-full">
+          <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
             Pricing Plans
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-6 mb-4">
@@ -87,11 +87,11 @@ export default function Pricing() {
             <div
               key={index}
               className={`relative bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl ${
-                plan.popular ? 'ring-2 ring-blue-600 scale-105' : ''
+                plan.popular ? 'ring-2 ring-primary-500 scale-105' : ''
               }`}
             >
               {plan.popular && (
-                <div className="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg">
+                <div className="absolute top-0 right-0 bg-primary-500 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg">
                   Most Popular
                 </div>
               )}
@@ -112,7 +112,7 @@ export default function Pricing() {
                   onClick={scrollToContact}
                   className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 mb-8 ${
                     plan.popular
-                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                      ? 'bg-primary-500 text-white hover:bg-primary-600 shadow-md hover:shadow-lg'
                       : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                   }`}
                 >
@@ -138,7 +138,7 @@ export default function Pricing() {
         <div className="mt-12 text-center">
           <p className="text-gray-600">
             Not sure which plan is right for you?{' '}
-            <button onClick={scrollToContact} className="text-blue-600 font-semibold hover:underline">
+            <button onClick={scrollToContact} className="text-primary-500 font-semibold hover:underline">
               Contact us for a free consultation
             </button>
           </p>

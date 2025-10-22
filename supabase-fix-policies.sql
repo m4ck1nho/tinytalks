@@ -11,6 +11,7 @@ DROP POLICY IF EXISTS "Authenticated users can insert blog posts" ON public.blog
 DROP POLICY IF EXISTS "Authenticated users can update blog posts" ON public.blog_posts;
 DROP POLICY IF EXISTS "Authenticated users can delete blog posts" ON public.blog_posts;
 
+DROP POLICY IF EXISTS "Anyone can submit contact messages" ON public.contact_messages;
 DROP POLICY IF EXISTS "Authenticated users can read messages" ON public.contact_messages;
 DROP POLICY IF EXISTS "Authenticated users can update messages" ON public.contact_messages;
 DROP POLICY IF EXISTS "Authenticated users can delete messages" ON public.contact_messages;
@@ -38,6 +39,10 @@ CREATE POLICY "Authenticated users can delete blog posts" ON public.blog_posts
   FOR DELETE USING (auth.uid() IS NOT NULL);
 
 -- Policies for contact_messages
+-- Allow anyone to submit contact form
+CREATE POLICY "Anyone can submit contact messages" ON public.contact_messages
+  FOR INSERT WITH CHECK (true);
+
 CREATE POLICY "Authenticated users can read messages" ON public.contact_messages
   FOR SELECT USING (auth.uid() IS NOT NULL);
 

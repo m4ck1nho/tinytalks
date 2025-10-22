@@ -106,7 +106,7 @@ export default function MessageList() {
                 <div className="text-sm text-gray-600 truncate mb-1">{message.email}</div>
                 <div className="text-sm text-gray-500 truncate">{message.message}</div>
                 <div className="text-xs text-gray-400 mt-2">
-                  {new Date(message.createdAt).toLocaleDateString('en-US', {
+                  {new Date(message.created_at).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
                     hour: '2-digit',
@@ -133,7 +133,7 @@ export default function MessageList() {
                     {selectedMessage.email}
                   </a>
                   <div className="text-sm text-gray-500 mt-2">
-                    {new Date(selectedMessage.createdAt).toLocaleString('en-US', {
+                    {new Date(selectedMessage.created_at).toLocaleString('en-US', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
