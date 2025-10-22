@@ -72,7 +72,7 @@ export default function DashboardPage() {
 
       {/* Tab Content */}
       <div>
-        {activeTab === 'calendar' && <Calendar classes={classes} payments={payments} isAdmin={true} />}
+        {activeTab === 'calendar' && <Calendar classes={classes} payments={payments} />}
         {activeTab === 'schedule' && <ScheduleManager />}
         {activeTab === 'homework' && <HomeworkManager />}
         {activeTab === 'payments' && <PaymentManager />}

@@ -328,7 +328,7 @@ export default function UserDashboard() {
           {/* Calendar Tab */}
           {activeTab === 'calendar' && (
             <div className="p-8">
-              <Calendar classes={classes} payments={[]} isAdmin={false} />
+              <Calendar classes={classes} payments={[]} />
             </div>
           )}
 

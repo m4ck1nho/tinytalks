@@ -8,7 +8,6 @@ import {
   PlusIcon,
   PencilIcon,
   TrashIcon,
-  CheckCircleIcon,
   ClockIcon,
   UserIcon
 } from '@heroicons/react/24/outline';

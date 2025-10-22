@@ -15,7 +15,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 interface CalendarProps {
   classes: Class[];
   payments?: PaymentNotification[];
-  isAdmin?: boolean;
 }
 
 interface DayDetails {
@@ -24,7 +23,7 @@ interface DayDetails {
   payments: PaymentNotification[];
 }
 
-export default function Calendar({ classes, payments = [], isAdmin = false }: CalendarProps) {
+export default function Calendar({ classes, payments = [] }: CalendarProps) {
   const { t, language } = useLanguage();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<DayDetails | null>(null);

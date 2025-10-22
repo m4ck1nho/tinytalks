@@ -19,7 +19,7 @@ export default function Contact() {
     setStatus('loading');
 
     try {
-      const { data, error } = await db.createContactMessage({
+      const { error } = await db.createContactMessage({
         name: formData.name,
         email: formData.email,
         message: formData.message,

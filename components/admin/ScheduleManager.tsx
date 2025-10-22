@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { db } from '@/lib/supabase';
-import { Class, ClassRequest, User } from '@/types';
+import { Class, ClassRequest } from '@/types';
 import { 
   CalendarIcon, 
   ClockIcon, 
@@ -176,16 +176,6 @@ export default function ScheduleManager() {
     }
   };
 
-  const handleRequestDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this request?')) return;
-    
-    try {
-      await db.deleteClassRequest(id);
-      fetchClassRequests();
-    } catch (error) {
-      console.error('Error deleting request:', error);
-    }
-  };
 
   const handleEdit = (classItem: Class) => {
     setEditingClass(classItem);

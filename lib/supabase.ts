@@ -43,9 +43,6 @@ export const auth = {
       provider: 'google',
       options: {
         redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`,
-        data: {
-          role: 'student', // Google sign-ups are students by default
-        },
       },
     }),
   

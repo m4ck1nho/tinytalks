@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/supabase';
 import { PaymentNotification, Class } from '@/types';
 import { 
@@ -25,6 +25,11 @@ export default function PaymentManager() {
   const [selectedPayment, setSelectedPayment] = useState<PaymentNotification | null>(null);
   const [selectedMonth, setSelectedMonth] = useState(new Date());
 
+  const fetchData = useCallback(async () => {
+    await Promise.all([fetchPayments(), fetchClasses()]);
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
     fetchData();
 
@@ -40,12 +45,7 @@ export default function PaymentManager() {
       paymentsSubscription.unsubscribe();
       classesSubscription.unsubscribe();
     };
-  }, []);
-
-  const fetchData = async () => {
-    await Promise.all([fetchPayments(), fetchClasses()]);
-    setLoading(false);
-  };
+  }, [fetchData]);
 
   const fetchPayments = async () => {
     const { data, error } = await db.getPaymentNotifications();
