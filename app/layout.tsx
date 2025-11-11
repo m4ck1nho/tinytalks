@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { HtmlLangWrapper } from '@/components/shared/HtmlLangWrapper';
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -43,6 +44,7 @@ export default function RootLayout({
             {children}
           </HtmlLangWrapper>
         </LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );
