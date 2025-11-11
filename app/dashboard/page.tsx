@@ -52,6 +52,7 @@ export default function UserDashboard() {
   const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
   const [paymentPreference, setPaymentPreference] = useState<'weekly' | 'all_at_once'>('all_at_once');
   const [showCompletionModal, setShowCompletionModal] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [completedPackage, setCompletedPackage] = useState<{ id: string; weekly_schedule: string } | null>(null);
   const router = useRouter();
 

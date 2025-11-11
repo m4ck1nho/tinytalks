@@ -50,16 +50,18 @@ export default function AdminLogin() {
       
       console.log('Admin verified, redirecting...');
       router.push('/admin/dashboard');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Login error:', error);
       
       let errorMessage = 'Invalid email or password';
       
-      if (error?.message) {
+      if (error instanceof Error) {
         errorMessage = error.message;
-      } else if (error?.toString().includes('Failed to fetch')) {
+      } else if (typeof error === 'object' && error !== null && 'message' in error) {
+        errorMessage = String(error.message);
+      } else if (String(error).includes('Failed to fetch')) {
         errorMessage = 'Failed to connect to server. Please check your internet connection and Supabase configuration.';
-      } else if (error?.toString().includes('Network')) {
+      } else if (String(error).includes('Network')) {
         errorMessage = 'Network error. Please check your internet connection.';
       }
       

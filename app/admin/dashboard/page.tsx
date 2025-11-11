@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/supabase';
-import { Class, PaymentNotification } from '@/types';
+import { Class, PaymentNotification, ClassRequest } from '@/types';
 import ScheduleManager from '@/components/admin/ScheduleManager';
 import HomeworkManager from '@/components/admin/HomeworkManager';
 import PaymentManager from '@/components/admin/PaymentManager';
@@ -34,7 +34,7 @@ export default function DashboardPage() {
     setPayments(paymentsData || []);
     
     // Count pending items
-    const pendingRequests = (requestsData || []).filter((r: any) => 
+    const pendingRequests = (requestsData || []).filter((r: ClassRequest) => 
       r.status === 'pending' || r.status === 'teacher_edited' || r.status === 'awaiting_payment'
     ).length;
     const pendingPayments = (paymentsData || []).filter((p: PaymentNotification) => p.status === 'pending').length;

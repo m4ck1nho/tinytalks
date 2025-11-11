@@ -377,7 +377,7 @@ export const db = {
           errorInfo.allProperties = Object.getOwnPropertyNames(error);
           errorInfo.errorString = JSON.stringify(error, Object.getOwnPropertyNames(error));
           errorInfo.errorType = error.constructor?.name || typeof error;
-        } catch (e) {
+        } catch {
           errorInfo.stringifyError = 'Could not stringify error';
         }
         

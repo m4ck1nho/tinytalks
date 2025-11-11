@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { db } from '@/lib/supabase';
 import { Class, ClassRequest } from '@/types';
-import { formatDateLong, formatTime, formatDateTime } from '@/lib/dateUtils';
+import { formatDateLong, formatTime } from '@/lib/dateUtils';
 import Notification from '@/components/shared/Notification';
 import { 
   CalendarIcon, 
@@ -79,7 +79,7 @@ const buildScheduleItems = (request: ClassRequest): ScheduleItem[] => {
     try {
       const schedule = JSON.parse(request.weekly_schedule);
       if (Array.isArray(schedule)) {
-        schedule.forEach((slot: any, idx: number) => {
+        schedule.forEach((slot: { day_of_week?: number | string; time?: string }, idx: number) => {
           if (slot == null) return;
           const rawDay = typeof slot.day_of_week === 'number' ? slot.day_of_week : Number(slot.day_of_week);
           const dayIndex = Number.isFinite(rawDay) ? ((rawDay % 7) + 7) % 7 : undefined;
@@ -105,7 +105,7 @@ const buildScheduleItems = (request: ClassRequest): ScheduleItem[] => {
     try {
       const preferred = JSON.parse(request.preferred_schedules);
       if (Array.isArray(preferred)) {
-        preferred.forEach((slot: any, idx: number) => {
+        preferred.forEach((slot: { date?: string; time?: string }, idx: number) => {
           if (slot == null) return;
           const dateLabel = slot.date ? formatDateDisplay(slot.date) : 'Preferred date';
           let weekdayLabel: string | undefined;
@@ -551,7 +551,7 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
       }
 
       const normalizedSchedule = weeklySchedule
-        .map((slot: any) => ({
+        .map((slot: { day_of_week?: number | string; time?: string }) => ({
           day_of_week: Number(slot.day_of_week),
           time: typeof slot.time === 'string' ? slot.time : '',
         }))

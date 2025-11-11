@@ -17,6 +17,7 @@ export function HtmlLangWrapper({ children }: { children: React.ReactNode }) {
         : language;
       document.documentElement.lang = initialLang;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

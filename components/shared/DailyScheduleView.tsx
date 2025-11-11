@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Class, PaymentNotification } from '@/types';
 import { db } from '@/lib/supabase';
 import { formatDateLong } from '@/lib/dateUtils';
@@ -16,7 +16,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 interface DailyScheduleViewProps {
   date: Date;
   classes: Class[];
-  payments: PaymentNotification[];
+  payments?: PaymentNotification[];
   onClose: () => void;
 }
 
@@ -29,7 +29,7 @@ interface TimeSlot {
   isAvailable: boolean;
 }
 
-export default function DailyScheduleView({ date, classes, payments, onClose }: DailyScheduleViewProps) {
+export default function DailyScheduleView({ date, classes, onClose }: DailyScheduleViewProps) {
   const { t, language } = useLanguage();
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,16 +39,7 @@ export default function DailyScheduleView({ date, classes, payments, onClose }: 
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      const loadTimeSlots = async () => {
-        await generateTimeSlots();
-      };
-      loadTimeSlots();
-    }
-  }, [date, classes, mounted]);
-
-  const generateTimeSlots = async () => {
+  const generateTimeSlots = useCallback(async () => {
     setLoading(true);
     const slots: TimeSlot[] = [];
     
@@ -117,7 +108,13 @@ export default function DailyScheduleView({ date, classes, payments, onClose }: 
     
     setTimeSlots(slots);
     setLoading(false);
-  };
+  }, [date, classes]);
+
+  useEffect(() => {
+    if (mounted) {
+      generateTimeSlots();
+    }
+  }, [mounted, generateTimeSlots]);
 
   const formatTimeForDisplay = (time: string) => {
     if (language === 'ru') {

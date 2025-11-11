@@ -2,16 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { Class, PaymentNotification } from '@/types';
-import { db } from '@/lib/supabase';
 import { formatTime } from '@/lib/dateUtils';
 import { 
   ChevronLeftIcon, 
   ChevronRightIcon,
-  CalendarIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
-  XMarkIcon,
-  CheckCircleIcon
+  CalendarIcon
 } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
 import DailyScheduleView from './DailyScheduleView';

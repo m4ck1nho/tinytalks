@@ -1,0 +1,9 @@
+# Git attributes for better handling of files
+# This helps Git handle binary files more efficiently
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.pdf binary
+*.sql text
+*.md text

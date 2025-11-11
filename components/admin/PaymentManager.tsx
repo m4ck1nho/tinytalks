@@ -119,7 +119,6 @@ export default function PaymentManager({ onDataChange }: { onDataChange?: () => 
           );
 
           // Validate: Check if class count matches expected (allowing for first class being free)
-          const expectedClassCount = request.total_lessons || 4;
           const paidClassCount = requestClasses.filter(c => c.payment_amount && c.payment_amount > 0).length;
           const freeClassCount = requestClasses.filter(c => !c.payment_amount || c.payment_amount === 0).length;
           
