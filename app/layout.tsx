@@ -10,11 +10,6 @@ export const metadata: Metadata = {
   title: 'TinyTalks - Learn English with Confidence | Beginner to B1',
   description: 'Achieve B1 level English through personalized learning. Expert teaching, engaging methods, and flexible online classes for beginners of all ages.',
   keywords: 'English learning, B1 level, online English classes, beginner English, English teacher, language learning',
-  icons: {
-    icon: '/images/favicon.png',
-    shortcut: '/images/favicon.png',
-    apple: '/images/favicon.png',
-  },
 };
 
 export default function RootLayout({
