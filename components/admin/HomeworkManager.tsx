@@ -19,10 +19,12 @@ export default function HomeworkManager() {
   const [showForm, setShowForm] = useState(false);
   const [editingHomework, setEditingHomework] = useState<Homework | null>(null);
   const [selectedHomework, setSelectedHomework] = useState<Homework | null>(null);
-  const [useExistingStudent, setUseExistingStudent] = useState(false);
+  const [useExistingStudent, setUseExistingStudent] = useState(true);
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     student_name: '',
     student_email: '',
@@ -66,20 +68,67 @@ export default function HomeworkManager() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setSuccess(null);
+    
+    // Validate required fields
+    if (!formData.title || !formData.description || !formData.due_date) {
+      setError('Please fill in all required fields (Title, Description, and Due Date).');
+      return;
+    }
+    
+    // For new homework, student_id is mandatory
+    if (!editingHomework && !formData.student_id) {
+      setError('Student ID is required. Please check "Select from registered students" and choose a student from the list. If no students appear, create a class for the student first.');
+      return;
+    }
+    
+    // Warn if due date is in the past (but allow it)
+    const dueDate = new Date(formData.due_date);
+    if (dueDate < new Date()) {
+      console.warn('Warning: Due date is in the past');
+    }
     
     try {
-      if (editingHomework) {
-        await db.updateHomework(editingHomework.id, formData);
-      } else {
-        await db.createHomework({
-          ...formData,
-          status: 'assigned',
-        });
+      // Convert due_date from datetime-local to ISO string
+      const dueDateISO = new Date(formData.due_date).toISOString();
+      
+      const homeworkData = {
+        ...formData,
+        due_date: dueDateISO,
+        status: 'assigned',
+      };
+      
+      // For new homework, student_id is required
+      if (!editingHomework && !homeworkData.student_id) {
+        setError('Student ID is required. Please select a registered student.');
+        return;
       }
       
-      resetForm();
-      fetchHomework();
+      if (editingHomework) {
+        const { error: updateError } = await db.updateHomework(editingHomework.id, homeworkData);
+        if (updateError) {
+          setError(`Failed to update homework: ${updateError.message}`);
+          console.error('Error updating homework:', updateError);
+        } else {
+          setSuccess('Homework updated successfully!');
+          resetForm();
+          fetchHomework();
+        }
+      } else {
+        const { error: createError } = await db.createHomework(homeworkData);
+        if (createError) {
+          setError(`Failed to create homework: ${createError.message}`);
+          console.error('Error creating homework:', createError);
+        } else {
+          setSuccess('Homework assigned successfully!');
+          resetForm();
+          fetchHomework();
+        }
+      }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      setError(`Error saving homework: ${errorMessage}`);
       console.error('Error saving homework:', error);
     }
   };
@@ -106,10 +155,12 @@ export default function HomeworkManager() {
       description: '',
       due_date: '',
     });
-    setUseExistingStudent(false);
+    setUseExistingStudent(true); // Default to true so users select from list
     setSelectedStudentId('');
     setEditingHomework(null);
     setShowForm(false);
+    setError(null);
+    setSuccess(null);
   };
 
   const handleEdit = (hw: Homework) => {
@@ -195,6 +246,19 @@ export default function HomeworkManager() {
       {showForm && (
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold mb-4">{editingHomework ? 'Edit Homework' : 'Assign New Homework'}</h3>
+          
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-800 text-sm">{error}</p>
+            </div>
+          )}
+          
+          {success && (
+            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-green-800 text-sm">{success}</p>
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit} className="space-y-4">
             {!editingHomework && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -202,26 +266,69 @@ export default function HomeworkManager() {
                   <input
                     type="checkbox"
                     checked={useExistingStudent}
-                    onChange={(e) => setUseExistingStudent(e.target.checked)}
+                    onChange={(e) => {
+                      setUseExistingStudent(e.target.checked);
+                      if (!e.target.checked) {
+                        // Reset student selection when unchecked
+                        setSelectedStudentId('');
+                        setFormData({
+                          ...formData,
+                          student_id: '',
+                          student_name: '',
+                          student_email: '',
+                        });
+                      }
+                    }}
                     className="w-4 h-4 text-primary-500 rounded"
                   />
                   <span className="text-sm font-medium text-gray-700">Select from registered students</span>
                 </label>
                 
-                {useExistingStudent && users.length > 0 && (
+                {useExistingStudent && (
                   <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Select Student <span className="text-red-500">*</span>
+                    </label>
                     <select
                       value={selectedStudentId}
                       onChange={(e) => handleStudentSelect(e.target.value)}
+                      required={useExistingStudent}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     >
                       <option value="">Choose a student...</option>
-                      {users.map((user) => (
-                        <option key={user.student_id} value={user.student_id}>
-                          {user.student_name} ({user.student_email})
-                        </option>
-                      ))}
+                      {users.length === 0 ? (
+                        <option value="" disabled>No registered students found</option>
+                      ) : (
+                        users.map((user) => (
+                          <option key={user.student_id} value={user.student_id}>
+                            {user.student_name} ({user.student_email})
+                          </option>
+                        ))
+                      )}
                     </select>
+                    {users.length === 0 && (
+                      <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p className="text-xs text-yellow-800 font-medium mb-1">
+                          No registered students found
+                        </p>
+                        <p className="text-xs text-yellow-700">
+                          Students must have at least one class or homework assignment to appear in this list. 
+                          Please create a class for the student first, then return to assign homework.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {!useExistingStudent && (
+                  <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <p className="text-xs text-amber-800 font-medium mb-1">
+                      ⚠️ Manual Entry Not Recommended
+                    </p>
+                    <p className="text-xs text-amber-700">
+                      Manual entry requires a valid student UUID. For best results, please use the "Select from registered students" option above. 
+                      If a student is not in the list, they need to have at least one class or homework assignment first.
+                    </p>
                   </div>
                 )}
               </div>
@@ -229,10 +336,12 @@ export default function HomeworkManager() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Student Name {!editingHomework && !useExistingStudent && <span className="text-red-500">*</span>}
+                </label>
                 <input
                   type="text"
-                  required
+                  required={!editingHomework}
                   value={formData.student_name}
                   onChange={(e) => setFormData({ ...formData, student_name: e.target.value })}
                   disabled={useExistingStudent && selectedStudentId !== ''}
@@ -240,10 +349,12 @@ export default function HomeworkManager() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Student Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Student Email {!editingHomework && !useExistingStudent && <span className="text-red-500">*</span>}
+                </label>
                 <input
                   type="email"
-                  required
+                  required={!editingHomework}
                   value={formData.student_email}
                   onChange={(e) => setFormData({ ...formData, student_email: e.target.value })}
                   disabled={useExistingStudent && selectedStudentId !== ''}
@@ -251,6 +362,18 @@ export default function HomeworkManager() {
                 />
               </div>
             </div>
+            
+            {!editingHomework && !formData.student_id && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-800 font-medium mb-1">
+                  ⚠️ Student ID Required
+                </p>
+                <p className="text-sm text-red-700">
+                  Homework can only be assigned to registered students with a valid student ID. 
+                  Please check the "Select from registered students" checkbox above and choose a student from the dropdown list.
+                </p>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <div>

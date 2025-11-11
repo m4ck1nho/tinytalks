@@ -338,16 +338,29 @@ export const db = {
 
   // Users - Admin only
   getAllUsers: async () => {
-    // This will fetch users from auth.users via admin API
-    // For now, we'll query from a perspective that students have classes/homework
-    const { data: usersData } = await supabase
+    // Fetch users from classes table
+    const { data: classesData } = await supabase
       .from('classes')
       .select('student_id, student_name, student_email')
       .order('student_name');
     
-    // Get unique users
+    // Also fetch users from homework table (in case they have homework but no classes)
+    const { data: homeworkData } = await supabase
+      .from('homework')
+      .select('student_id, student_name, student_email')
+      .order('student_name');
+    
+    // Combine both sources
+    const allUsers = [
+      ...(classesData || []),
+      ...(homeworkData || [])
+    ];
+    
+    // Get unique users by student_id
     const uniqueUsers = Array.from(
-      new Map((usersData || []).map(item => [item.student_id, item]))
+      new Map(allUsers
+        .filter(item => item.student_id) // Only include items with student_id
+        .map(item => [item.student_id, item]))
         .values()
     );
     
