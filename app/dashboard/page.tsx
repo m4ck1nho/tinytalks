@@ -396,6 +396,11 @@ export default function UserDashboard() {
       // We'll check with a sample date (next occurrence of that day)
       const today = new Date();
       for (const schedule of validWeeklySchedules) {
+        // Type guard: ensure time and day_of_week are defined (they should be from the filter above, but TypeScript doesn't know)
+        if (!schedule.time || schedule.day_of_week === undefined || schedule.day_of_week < 0 || schedule.day_of_week > 6) {
+          continue;
+        }
+        
         // Find next occurrence of this day of week
         const daysUntilNext = (schedule.day_of_week - today.getDay() + 7) % 7 || 7;
         const nextDate = new Date(today);
@@ -406,10 +411,14 @@ export default function UserDashboard() {
         const availability = await db.checkTeacherAvailability(dateTime, 50);
         
         if (!availability.available) {
+          const dayName = dayNames[schedule.day_of_week] || 'Unknown day';
+          const timeStr = schedule.time;
+          const reasonStr = availability.reason || 'Not available';
+          
           setNotification({
             type: 'error',
             title: text.notifications.timeNotAvailableTitle,
-            message: text.notifications.timeNotAvailableMessage(dayNames[schedule.day_of_week], schedule.time, availability.reason),
+            message: text.notifications.timeNotAvailableMessage(dayName, timeStr, reasonStr),
           });
           return;
         }
