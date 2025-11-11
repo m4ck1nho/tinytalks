@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { auth } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -14,6 +15,7 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const router = useRouter();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +28,7 @@ export default function AuthPage() {
         // Sign up
         const { error } = await auth.signUp(email, password, fullName);
         if (error) throw error;
-        setSuccess('Account created! Please check your email to verify your account.');
+        setSuccess(t('auth.signupSuccess'));
         setEmail('');
         setPassword('');
         setFullName('');
@@ -37,7 +39,7 @@ export default function AuthPage() {
         router.push('/dashboard');
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      const errorMessage = error instanceof Error ? error.message : t('auth.error');
       setError(errorMessage);
       console.error('Auth error:', error);
     } finally {
@@ -52,7 +54,7 @@ export default function AuthPage() {
       const { error } = await auth.signInWithGoogle();
       if (error) throw error;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to sign in with Google';
+      const errorMessage = error instanceof Error ? error.message : t('auth.googleError');
       setError(errorMessage);
       console.error('Google sign-in error:', error);
       setLoading(false);
@@ -71,12 +73,10 @@ export default function AuthPage() {
               </div>
             </Link>
             <h1 className="text-2xl font-bold text-gray-900">
-              {isSignUp ? 'Create Account' : 'Welcome Back'}
+              {isSignUp ? t('auth.createAccountHeading') : t('auth.welcomeBack')}
             </h1>
             <p className="text-gray-600 mt-2">
-              {isSignUp 
-                ? 'Start your English learning journey' 
-                : 'Sign in to continue your learning'}
+              {isSignUp ? t('auth.signupIntro') : t('auth.loginIntro')}
             </p>
           </div>
 
@@ -93,13 +93,13 @@ export default function AuthPage() {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Continue with Google
+            {t('auth.continueWithGoogle')}
           </button>
 
           {/* Divider */}
           <div className="my-6 flex items-center">
             <div className="flex-1 border-t border-gray-300"></div>
-            <span className="px-4 text-sm text-gray-500">or</span>
+            <span className="px-4 text-sm text-gray-500">{t('auth.or')}</span>
             <div className="flex-1 border-t border-gray-300"></div>
           </div>
 
@@ -107,7 +107,7 @@ export default function AuthPage() {
             {isSignUp && (
               <div>
                 <label htmlFor="fullName" className="block text-sm font-semibold text-gray-900 mb-2">
-                  Full Name
+                  {t('auth.fullName')}
                 </label>
                 <input
                   type="text"
@@ -116,14 +116,14 @@ export default function AuthPage() {
                   onChange={(e) => setFullName(e.target.value)}
                   required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                  placeholder="John Doe"
+                  placeholder={t('auth.fullNamePlaceholder')}
                 />
               </div>
             )}
 
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
-                Email Address
+                {t('auth.email')}
               </label>
               <input
                 type="email"
@@ -132,13 +132,13 @@ export default function AuthPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                placeholder="you@example.com"
+                placeholder={t('auth.emailPlaceholder')}
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-gray-900 mb-2">
-                Password
+                {t('auth.password')}
               </label>
               <input
                 type="password"
@@ -151,7 +151,7 @@ export default function AuthPage() {
                 placeholder="••••••••"
               />
               {isSignUp && (
-                <p className="text-xs text-gray-500 mt-1">At least 6 characters</p>
+                <p className="text-xs text-gray-500 mt-1">{t('auth.passwordHint')}</p>
               )}
             </div>
 
@@ -172,7 +172,9 @@ export default function AuthPage() {
               disabled={loading}
               className="w-full bg-primary-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              {loading ? (isSignUp ? 'Creating account...' : 'Signing in...') : (isSignUp ? 'Create Account' : 'Sign In')}
+              {loading
+                ? (isSignUp ? t('auth.creatingAccount') : t('auth.signingIn'))
+                : (isSignUp ? t('auth.signUpButton') : t('auth.signInButton'))}
             </button>
           </form>
 
@@ -188,13 +190,13 @@ export default function AuthPage() {
             >
               {isSignUp ? (
                 <>
-                  Already have an account?{' '}
-                  <span className="text-primary-500 font-semibold hover:underline">Sign In</span>
+                  {t('auth.haveAccount')}{' '}
+                  <span className="text-primary-500 font-semibold hover:underline">{t('auth.toggleToSignIn')}</span>
                 </>
               ) : (
                 <>
-                  Don&apos;t have an account?{' '}
-                  <span className="text-primary-500 font-semibold hover:underline">Sign Up</span>
+                  {t('auth.noAccount')}{' '}
+                  <span className="text-primary-500 font-semibold hover:underline">{t('auth.toggleToSignUp')}</span>
                 </>
               )}
             </button>
@@ -202,7 +204,7 @@ export default function AuthPage() {
 
           <div className="mt-6 text-center text-sm text-gray-600">
             <Link href="/" className="text-primary-500 hover:underline">
-              ← Back to home
+              {t('auth.backToHome')}
             </Link>
           </div>
         </div>

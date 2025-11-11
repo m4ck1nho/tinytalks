@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/supabase';
-import { PaymentNotification, Class } from '@/types';
+import { PaymentNotification, Class, ClassRequest } from '@/types';
 import { 
   CurrencyDollarIcon,
   CheckCircleIcon,
@@ -17,16 +17,17 @@ import {
   ChevronRightIcon
 } from '@heroicons/react/24/outline';
 
-export default function PaymentManager() {
+export default function PaymentManager({ onDataChange }: { onDataChange?: () => void }) {
   const [payments, setPayments] = useState<PaymentNotification[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
+  const [classRequests, setClassRequests] = useState<ClassRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'rejected'>('all');
   const [selectedPayment, setSelectedPayment] = useState<PaymentNotification | null>(null);
   const [selectedMonth, setSelectedMonth] = useState(new Date());
 
   const fetchData = useCallback(async () => {
-    await Promise.all([fetchPayments(), fetchClasses()]);
+    await Promise.all([fetchPayments(), fetchClasses(), fetchRequests()]);
     setLoading(false);
   }, []);
 
@@ -38,12 +39,17 @@ export default function PaymentManager() {
     });
 
     const classesSubscription = db.subscribeToClasses(() => {
-      fetchClasses();
+      fetchData();
+    });
+
+    const requestsSubscription = db.subscribeToClassRequests(() => {
+      fetchData();
     });
 
     return () => {
       paymentsSubscription.unsubscribe();
       classesSubscription.unsubscribe();
+      requestsSubscription.unsubscribe();
     };
   }, [fetchData]);
 
@@ -65,36 +71,183 @@ export default function PaymentManager() {
     }
   };
 
+  const fetchRequests = async () => {
+    const { data, error } = await db.getClassRequests();
+    if (error) {
+      console.error('Error fetching class requests:', error);
+    } else {
+      setClassRequests(data || []);
+    }
+  };
+
+  // Extract request ID from payment message
+  const extractRequestIdFromMessage = (message: string | null | undefined): string | null => {
+    if (!message) return null;
+    // Format: "Payment for class request {requestId}. {count} classes."
+    const match = message.match(/class request ([a-f0-9-]{36})/i);
+    return match ? match[1] : null;
+  };
+
   const confirmPayment = async (paymentId: string, classId?: string) => {
     try {
+      const payment = payments.find(p => p.id === paymentId);
+      if (!payment) {
+        console.error('Payment not found:', paymentId);
+        return;
+      }
+
+      // Update payment notification status
       await db.updatePaymentNotification(paymentId, {
         status: 'confirmed',
       });
 
-      if (classId) {
-        await db.updateClass(classId, {
-          payment_status: 'paid',
-        });
+      // Extract request ID from payment message (for request-level payments)
+      const requestId = extractRequestIdFromMessage(payment.message);
+      
+      if (requestId) {
+        // Payment is for a class request - update all classes from that request
+        const request = classRequests.find(r => r.id === requestId);
+        if (request) {
+          // Find classes that belong to this request
+          // Since classes don't have request_id, we match by:
+          // - Same student_id
+          // - Status pending_payment
+          // - Ideally, the count should match request.total_lessons (but first class is free, so count might be total_lessons - 1)
+          const requestClasses = classes.filter(c => 
+            c.student_id === request.student_id && 
+            c.status === 'pending_payment'
+          );
+
+          // Validate: Check if class count matches expected (allowing for first class being free)
+          const expectedClassCount = request.total_lessons || 4;
+          const paidClassCount = requestClasses.filter(c => c.payment_amount && c.payment_amount > 0).length;
+          const freeClassCount = requestClasses.filter(c => !c.payment_amount || c.payment_amount === 0).length;
+          
+          // First class should be free, rest should have payment amount
+          if (requestClasses.length > 0) {
+            // Update all classes from this request to paid and scheduled
+            // Use Promise.all to update all classes in parallel for better performance
+            const updatePromises = requestClasses.map(classItem =>
+              db.updateClass(classItem.id, {
+                status: 'scheduled',
+                payment_status: 'paid',
+              })
+            );
+            
+            // Wait for all class updates to complete
+            await Promise.all(updatePromises);
+
+            // Update request status to payment_confirmed
+            await db.updateClassRequest(requestId, { 
+              status: 'payment_confirmed' 
+            });
+
+            console.log(`Payment confirmed: Updated ${requestClasses.length} classes (${paidClassCount} paid, ${freeClassCount} free) and request ${requestId}`);
+          } else {
+            console.warn(`No pending_payment classes found for request ${requestId}. Student: ${request.student_name}`);
+            // Check if classes might already be scheduled/paid
+            const allStudentClasses = classes.filter(c => c.student_id === request.student_id);
+            const scheduledClasses = allStudentClasses.filter(c => c.status === 'scheduled');
+            console.log(`Student has ${scheduledClasses.length} scheduled classes and ${allStudentClasses.length} total classes`);
+            
+            // Still update request status in case classes were already updated
+            await db.updateClassRequest(requestId, { 
+              status: 'payment_confirmed' 
+            });
+          }
+        } else {
+          console.warn('Request not found for payment:', requestId);
+        }
+      } else if (classId) {
+        // Payment is for a single class
+        const paidClass = classes.find(c => c.id === classId);
+        if (paidClass) {
+          // Update the specific class
+          await db.updateClass(classId, {
+            status: 'scheduled',
+            payment_status: 'paid',
+          });
+
+          // Check if this class belongs to a request that's awaiting payment
+          // Find the most recent awaiting_payment request for this student
+          const awaitingRequest = classRequests
+            .filter(r => r.student_id === paidClass.student_id && r.status === 'awaiting_payment')
+            .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
+          
+          if (awaitingRequest) {
+            // Check if all classes from this request are now paid
+            const requestClasses = classes.filter(c => 
+              c.student_id === awaitingRequest.student_id && 
+              c.status === 'pending_payment'
+            );
+            
+            // If this was the last unpaid class, update request status
+            // For now, we'll update if this class was one of the pending ones
+            if (requestClasses.length === 0 || requestClasses.every(c => c.id === classId)) {
+              // All classes are paid or this was the only one
+              const remainingUnpaid = classes.filter(c => 
+                c.student_id === awaitingRequest.student_id && 
+                (c.status === 'pending_payment' || (c.status === 'scheduled' && c.payment_status !== 'paid'))
+              );
+              
+              if (remainingUnpaid.length === 0) {
+                await db.updateClassRequest(awaitingRequest.id, { 
+                  status: 'payment_confirmed' 
+                });
+              }
+            }
+          }
+        } else {
+          // Class not found, just update payment status
+          await db.updateClass(classId, {
+            payment_status: 'paid',
+            status: 'scheduled',
+          });
+        }
+      } else {
+        // Payment has no class_id and no request ID in message
+        // This shouldn't happen, but handle it gracefully
+        console.warn('Payment has no class_id or request ID:', paymentId);
       }
 
-      fetchData();
+      // Wait a brief moment to ensure all database operations are committed
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Refresh all data to ensure UI is updated
+      await fetchData();
+      onDataChange?.(); // Notify parent to update badge counts
       setSelectedPayment(null);
     } catch (error) {
       console.error('Error confirming payment:', error);
+      alert('Error confirming payment. Please check the console for details.');
     }
   };
 
   const rejectPayment = async (paymentId: string, notes: string) => {
     try {
+      const payment = payments.find(p => p.id === paymentId);
+      if (!payment) {
+        console.error('Payment not found:', paymentId);
+        return;
+      }
+
+      // Update payment notification status to rejected
+      // Classes should remain in pending_payment status when payment is rejected
       await db.updatePaymentNotification(paymentId, {
         status: 'rejected',
         teacher_notes: notes,
       });
 
-      fetchData();
+      // Wait a brief moment to ensure database operation is committed
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Refresh all data to ensure UI is updated
+      await fetchData();
+      onDataChange?.(); // Notify parent to update badge counts
       setSelectedPayment(null);
     } catch (error) {
       console.error('Error rejecting payment:', error);
+      alert('Error rejecting payment. Please check the console for details.');
     }
   };
 
@@ -157,6 +310,7 @@ export default function PaymentManager() {
 
       // Update class payment status
       await db.updateClass(classId, {
+        status: 'scheduled',
         payment_status: 'paid',
       });
 

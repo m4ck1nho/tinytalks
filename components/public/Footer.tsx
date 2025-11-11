@@ -56,9 +56,6 @@ export default function Footer() {
               <li>
                 <a href="#blog" className="text-gray-400 hover:text-white transition-colors">{t('nav.blog')}</a>
               </li>
-              <li>
-                <a href="#contact" className="text-gray-400 hover:text-white transition-colors">{t('nav.contact')}</a>
-              </li>
             </ul>
           </div>
 
@@ -67,13 +64,13 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">{t('footer.contact')}</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="mailto:info@tinytalks.com" className="hover:text-white transition-colors">
-                  info@tinytalks.com
+                <a href="mailto:evgeniatinytalks@mail.ru" className="hover:text-white transition-colors">
+                  evgeniatinytalks@mail.ru
                 </a>
               </li>
               <li>
-                <a href="tel:+1234567890" className="hover:text-white transition-colors">
-                  +7 (XXX) XXX-XX-XX
+                <a href="tel:+79315390543" className="hover:text-white transition-colors">
+                  +7 931 539 0543
                 </a>
               </li>
               <li>{t('footer.onlineClasses')}</li>

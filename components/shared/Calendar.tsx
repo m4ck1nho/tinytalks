@@ -1,16 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Class, PaymentNotification } from '@/types';
+import { db } from '@/lib/supabase';
+import { formatTime } from '@/lib/dateUtils';
 import { 
   ChevronLeftIcon, 
   ChevronRightIcon,
   CalendarIcon,
   ClockIcon,
   CurrencyDollarIcon,
-  XMarkIcon
+  XMarkIcon,
+  CheckCircleIcon
 } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
+import DailyScheduleView from './DailyScheduleView';
 
 interface CalendarProps {
   classes: Class[];
@@ -25,8 +29,14 @@ interface DayDetails {
 
 export default function Calendar({ classes, payments = [] }: CalendarProps) {
   const { t, language } = useLanguage();
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState<Date | null>(null);
   const [selectedDay, setSelectedDay] = useState<DayDetails | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setCurrentDate(new Date());
+  }, []);
 
   const monthNames = language === 'ru' 
     ? ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
@@ -54,7 +64,9 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
            date1.getDate() === date2.getDate();
   };
 
+  // Include all classes, including pending_payment
   const getClassesForDay = (day: number) => {
+    if (!currentDate) return [];
     const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     return classes.filter(c => {
       const classDate = new Date(c.class_date);
@@ -63,6 +75,7 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
   };
 
   const getPaymentsForDay = (day: number) => {
+    if (!currentDate) return [];
     const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     return payments.filter(p => {
       const paymentDate = new Date(p.payment_date);
@@ -71,32 +84,35 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
   };
 
   const handleDayClick = (day: number) => {
+    if (!currentDate) return;
     const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     const dayClasses = getClassesForDay(day);
     const dayPayments = getPaymentsForDay(day);
 
-    if (dayClasses.length > 0 || dayPayments.length > 0) {
-      setSelectedDay({
-        date: targetDate,
-        classes: dayClasses,
-        payments: dayPayments,
-      });
-    }
+    // Always open day view, even if no events
+    setSelectedDay({
+      date: targetDate,
+      classes: dayClasses,
+      payments: dayPayments,
+    });
   };
 
   const previousMonth = () => {
+    if (!currentDate) return;
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
   };
 
   const nextMonth = () => {
+    if (!currentDate) return;
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
   };
 
   const renderCalendar = () => {
+    if (!mounted || !currentDate) return null;
     const daysInMonth = getDaysInMonth(currentDate);
     const firstDay = getFirstDayOfMonth(currentDate);
     const days = [];
-    const today = new Date();
+    const today = currentDate;
 
     // Empty cells for days before the first day of the month
     for (let i = 0; i < firstDay; i++) {
@@ -110,32 +126,53 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
       const currentDayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
       const isToday = isSameDay(currentDayDate, today);
       const hasEvents = dayClasses.length > 0 || dayPayments.length > 0;
+      
+      // Check if there are unpaid classes
+      const hasUnpaidClasses = dayClasses.some(c => 
+        c.payment_status === 'unpaid' || 
+        c.payment_status === 'pending' || 
+        c.status === 'pending_payment'
+      );
+      const hasScheduledClasses = dayClasses.some(c => c.status === 'scheduled');
 
       days.push(
         <div
           key={day}
           onClick={() => handleDayClick(day)}
-          className={`h-24 border border-gray-200 p-2 transition-all ${
-            hasEvents ? 'cursor-pointer hover:bg-blue-50 hover:shadow-md' : 'bg-white'
+          className={`h-24 border border-gray-200 p-2 transition-all cursor-pointer hover:shadow-md ${
+            hasUnpaidClasses 
+              ? 'bg-red-50/50 hover:bg-red-50' 
+              : hasScheduledClasses 
+              ? 'bg-blue-50/30 hover:bg-blue-50' 
+              : hasEvents 
+              ? 'bg-blue-50/30 hover:bg-blue-50' 
+              : 'bg-white hover:bg-gray-50'
           } ${isToday ? 'ring-2 ring-primary-500' : ''}`}
         >
           <div className={`text-sm font-semibold mb-1 ${isToday ? 'text-primary-600' : 'text-gray-700'}`}>
             {day}
           </div>
           <div className="space-y-1">
-            {dayClasses.slice(0, 2).map((c, idx) => (
-              <div key={idx} className="text-xs px-1 py-0.5 bg-blue-100 text-blue-800 rounded truncate">
-                {new Date(c.class_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {c.student_name}
-              </div>
-            ))}
+            {dayClasses.slice(0, 2).map((c, idx) => {
+              // Color code: red for unpaid/pending, blue for scheduled (regardless of payment), blue for others
+              const isUnpaid = c.payment_status === 'unpaid' || c.payment_status === 'pending' || c.status === 'pending_payment';
+              const isScheduled = c.status === 'scheduled';
+              const bgColor = isUnpaid ? 'bg-red-100 text-red-800' : isScheduled ? 'bg-blue-100 text-blue-800' : 'bg-blue-100 text-blue-800';
+              
+              return (
+                <div key={idx} className={`text-xs px-1 py-0.5 ${bgColor} rounded truncate`}>
+                  {mounted ? formatTime(c.class_date) : '--:--'} - {c.student_name}
+                </div>
+              );
+            })}
             {dayPayments.slice(0, 1).map((p, idx) => (
               <div key={idx} className="text-xs px-1 py-0.5 bg-green-100 text-green-800 rounded truncate">
-                ${p.amount} - {p.student_name}
+                ₽{p.amount} - {p.student_name}
               </div>
             ))}
             {(dayClasses.length + dayPayments.length) > 3 && (
               <div className="text-xs text-gray-500 font-semibold">
-                +{dayClasses.length + dayPayments.length - 3} more
+                +{dayClasses.length + dayPayments.length - 3} {t('calendar.more')}
               </div>
             )}
           </div>
@@ -162,7 +199,7 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
             <ChevronLeftIcon className="w-5 h-5 text-gray-600" />
           </button>
           <span className="text-lg font-semibold text-gray-900 min-w-[150px] text-center">
-            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+            {currentDate ? `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}` : ''}
           </span>
           <button
             onClick={nextMonth}
@@ -188,10 +225,14 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex items-center gap-6 text-sm">
+      <div className="mt-4 flex items-center gap-6 text-sm flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-blue-100 border border-blue-300 rounded"></div>
-          <span className="text-gray-600">{t('calendar.legend.classes')}</span>
+          <span className="text-gray-600">{t('calendar.legend.scheduledClasses')}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-red-100 border border-red-300 rounded"></div>
+          <span className="text-gray-600">{t('calendar.legend.unpaidClasses')}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-green-100 border border-green-300 rounded"></div>
@@ -203,114 +244,14 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
         </div>
       </div>
 
-      {/* Day Details Modal */}
+      {/* Day Details Modal - Daily Schedule */}
       {selectedDay && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900">
-                {selectedDay.date.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
-              </h3>
-              <button
-                onClick={() => setSelectedDay(null)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <XMarkIcon className="w-6 h-6 text-gray-600" />
-              </button>
-            </div>
-
-            {/* Classes */}
-            {selectedDay.classes.length > 0 && (
-              <div className="mb-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <CalendarIcon className="w-5 h-5 text-blue-500" />
-                  {t('calendar.detail.classes')} ({selectedDay.classes.length})
-                </h4>
-                <div className="space-y-3">
-                  {selectedDay.classes.map((classItem) => (
-                    <div key={classItem.id} className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className="font-semibold text-gray-900">{classItem.student_name}</div>
-                          <div className="text-sm text-gray-600">{classItem.student_email}</div>
-                        </div>
-                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
-                          classItem.status === 'completed' ? 'bg-green-100 text-green-800' :
-                          classItem.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                          'bg-blue-100 text-blue-800'
-                        }`}>
-                          {t(`dashboard.status.${classItem.status}`)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-700">
-                        <div className="flex items-center gap-1">
-                          <ClockIcon className="w-4 h-4" />
-                          {new Date(classItem.class_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </div>
-                        <div>{classItem.duration_minutes} {t('dashboard.minutes')}</div>
-                        {classItem.topic && <div className="font-medium">{classItem.topic}</div>}
-                      </div>
-                      {classItem.payment_amount && (
-                        <div className="mt-2 flex items-center gap-2 text-sm">
-                          <CurrencyDollarIcon className="w-4 h-4 text-green-600" />
-                          <span className={`font-semibold ${
-                            classItem.payment_status === 'paid' ? 'text-green-600' :
-                            classItem.payment_status === 'pending' ? 'text-yellow-600' :
-                            'text-red-600'
-                          }`}>
-                            ${classItem.payment_amount} - {t(`dashboard.${classItem.payment_status}`)}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Payments */}
-            {selectedDay.payments.length > 0 && (
-              <div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <CurrencyDollarIcon className="w-5 h-5 text-green-500" />
-                  {t('calendar.detail.payments')} ({selectedDay.payments.length})
-                </h4>
-                <div className="space-y-3">
-                  {selectedDay.payments.map((payment) => (
-                    <div key={payment.id} className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className="font-semibold text-gray-900">{payment.student_name}</div>
-                          <div className="text-sm text-gray-600">{payment.student_email}</div>
-                        </div>
-                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
-                          payment.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                          payment.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {payment.status}
-                        </span>
-                      </div>
-                      <div className="text-lg font-bold text-green-600 mb-2">
-                        ${payment.amount}
-                      </div>
-                      <div className="text-sm text-gray-700">
-                        {payment.payment_method && <div>Method: {payment.payment_method}</div>}
-                        {payment.reference_number && <div>Ref: {payment.reference_number}</div>}
-                        {payment.message && <div className="mt-2 text-gray-600">{payment.message}</div>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <DailyScheduleView
+          date={selectedDay.date}
+          classes={selectedDay.classes}
+          payments={selectedDay.payments}
+          onClose={() => setSelectedDay(null)}
+        />
       )}
     </div>
   );

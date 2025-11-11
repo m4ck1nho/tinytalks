@@ -18,8 +18,26 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
+      // Check if Supabase is configured
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('dummy')) {
+        setError('Supabase is not configured. Please check your environment variables.');
+        setLoading(false);
+        console.error('Supabase configuration error:', { supabaseUrl, supabaseKey });
+        return;
+      }
+
+      console.log('Attempting to sign in...');
       const { data, error } = await auth.signIn(email, password);
-      if (error) throw error;
+      
+      if (error) {
+        console.error('Auth error:', error);
+        throw error;
+      }
+      
+      console.log('Sign in successful, checking user role...');
       
       // Verify user is admin
       const userRole = data?.user?.user_metadata?.role || 'student';
@@ -30,12 +48,22 @@ export default function AdminLogin() {
         return;
       }
       
+      console.log('Admin verified, redirecting...');
       router.push('/admin/dashboard');
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
-      setError(errorMessage);
+    } catch (error: any) {
       console.error('Login error:', error);
-    } finally {
+      
+      let errorMessage = 'Invalid email or password';
+      
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.toString().includes('Failed to fetch')) {
+        errorMessage = 'Failed to connect to server. Please check your internet connection and Supabase configuration.';
+      } else if (error?.toString().includes('Network')) {
+        errorMessage = 'Network error. Please check your internet connection.';
+      }
+      
+      setError(errorMessage);
       setLoading(false);
     }
   };

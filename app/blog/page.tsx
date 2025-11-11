@@ -1,0 +1,222 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { db } from '@/lib/supabase';
+import { BlogPost } from '@/types';
+import Image from 'next/image';
+import Link from 'next/link';
+import Navbar from '@/components/public/Navbar';
+import Footer from '@/components/public/Footer';
+import { CalendarIcon, ArrowRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+export default function BlogPage() {
+  const { t, language } = useLanguage();
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        console.log('🔍 Fetching all blog posts...');
+        const { data, error } = await db.getBlogPosts(true); // Only published posts
+        
+        if (error) {
+          console.error('❌ Supabase error:', error);
+          throw error;
+        }
+        
+        console.log('✅ Blog posts fetched:', data?.length || 0, 'posts');
+        
+        // Map snake_case to camelCase and sort by date (newest first)
+        const mappedPosts = (data || []).map(post => ({
+          ...post,
+          createdAt: post.created_at,
+          updatedAt: post.updated_at,
+          metaDescription: post.meta_description,
+        })).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        
+        setPosts(mappedPosts);
+        setFilteredPosts(mappedPosts);
+      } catch (error) {
+        console.error('❌ Error fetching blog posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredPosts(posts);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const filtered = posts.filter(post => 
+      post.title.toLowerCase().includes(query) ||
+      post.excerpt.toLowerCase().includes(query) ||
+      post.content.toLowerCase().includes(query)
+    );
+    setFilteredPosts(filtered);
+  }, [searchQuery, posts]);
+
+  const calculateReadingTime = (content: string): number => {
+    const wordsPerMinute = 200;
+    const text = content.replace(/<[^>]*>/g, ''); // Remove HTML tags
+    const wordCount = text.trim().split(/\s+/).length;
+    return Math.ceil(wordCount / wordsPerMinute);
+  };
+
+  const locale = language === 'ru' ? 'ru-RU' : 'en-US';
+
+  const getArticleWord = (count: number): string => {
+    if (language === 'ru') {
+      const mod10 = count % 10;
+      const mod100 = count % 100;
+      if (mod10 === 1 && mod100 !== 11) return t('blog.articles.one');
+      if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return t('blog.articles.few');
+      return t('blog.articles.many');
+    }
+    return count === 1 ? t('blog.articles.one') : t('blog.articles.few');
+  };
+
+  return (
+    <>
+      <Navbar />
+      <main className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Header */}
+            <div className="text-center mb-16">
+              <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full inline-block mb-4">
+                {t('blog.badge')}
+              </span>
+              <h1 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-4">
+                {t('blog.title')}
+              </h1>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+                {t('blog.description')}
+              </p>
+
+              {/* Search Bar */}
+              <div className="max-w-2xl mx-auto relative">
+                <div className="relative">
+                  <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-primary-500" />
+                  <input
+                    type="text"
+                    placeholder={t('blog.searchPlaceholder')}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all text-lg bg-white/90 backdrop-blur-sm shadow-lg"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Loading State */}
+            {loading && (
+              <div className="text-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary-500 mx-auto mb-4"></div>
+                <p className="text-gray-600 text-lg">{t('blog.loading')}</p>
+              </div>
+            )}
+
+            {/* No Results */}
+            {!loading && filteredPosts.length === 0 && (
+              <div className="text-center py-20">
+                <div className="inline-block mb-4">
+                  <span className="text-6xl">📝</span>
+                </div>
+                <p className="text-xl text-gray-600 mb-4">
+                  {searchQuery ? t('blog.noResults') : t('blog.noPosts')}
+                </p>
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="px-6 py-3 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-600 transition-colors shadow-lg hover:shadow-xl"
+                  >
+                    {t('blog.clearSearch')}
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Blog Posts Grid */}
+            {!loading && filteredPosts.length > 0 && (
+              <>
+                <div className="mb-6 text-gray-600">
+                  {searchQuery ? (
+                    <p>
+                      {t('blog.resultsCount')} {filteredPosts.length} {getArticleWord(filteredPosts.length)}
+                    </p>
+                  ) : (
+                    <p>
+                      {posts.length} {getArticleWord(posts.length)} {t('blog.total')}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredPosts.map((post) => (
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      key={post.id}
+                      className="bg-white/90 backdrop-blur-xl rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-white/60 transition-all duration-300 group cursor-pointer flex flex-col hover:-translate-y-1"
+                    >
+                      {post.image && (
+                        <div className="relative h-56 overflow-hidden">
+                          <Image
+                            src={post.image}
+                            alt={post.title}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-300"
+                            unoptimized
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                      )}
+                      
+                      <div className="p-6 flex-1 flex flex-col">
+                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                          <CalendarIcon className="w-4 h-4 text-primary-500" />
+                          <span>
+                            {new Date(post.createdAt).toLocaleDateString(locale, {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                          </span>
+                          <span className="mx-2">•</span>
+                          <span>{calculateReadingTime(post.content)} {t('blog.minRead')}</span>
+                        </div>
+                        
+                        <h3 className="text-xl font-bold text-secondary-900 mb-3 line-clamp-2 group-hover:text-primary-500 transition-colors">
+                          {post.title}
+                        </h3>
+                        
+                        <p className="text-gray-600 mb-4 line-clamp-3 flex-1 leading-relaxed">
+                          {post.excerpt}
+                        </p>
+                        
+                        <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all mt-auto">
+                          {t('blog.readMore')}
+                          <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}

@@ -51,8 +51,8 @@ export interface Class {
   class_type?: string;
   topic?: string;
   notes?: string;
-  status: 'scheduled' | 'completed' | 'cancelled';
-  payment_status: 'unpaid' | 'pending' | 'paid';
+  status: 'pending_payment' | 'scheduled' | 'completed' | 'cancelled';
+  payment_status: 'pending' | 'unpaid' | 'paid';
   payment_amount?: number;
   created_at: string;
   updated_at: string;
@@ -100,10 +100,44 @@ export interface ClassRequest {
   student_email: string;
   preferred_date?: string;
   preferred_time?: string;
+  preferred_schedules?: string; // JSON string of array of {date, time}
+  weekly_schedule?: string; // JSON string of array of {day_of_week, time} for recurring classes
+  payment_preference?: 'weekly' | 'all_at_once';
   topic?: string;
   message?: string;
-  status: 'pending' | 'approved' | 'rejected';
+  lessons_per_week?: number;
+  total_lessons?: number;
+  first_class_free?: boolean;
+  status: 'pending' | 'awaiting_payment' | 'payment_confirmed' | 'approved' | 'rejected' | 'teacher_edited';
+  teacher_edits?: string; // JSON string of teacher's proposed changes
   admin_notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WeeklyScheduleSlot {
+  day_of_week: number; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  time: string; // HH:MM format
+}
+
+export interface ClassPackage {
+  id: string;
+  student_id: string;
+  weekly_schedule: string; // JSON string of WeeklyScheduleSlot[]
+  total_lessons: number;
+  completed_lessons: number;
+  payment_preference: 'weekly' | 'all_at_once';
+  first_four_paid: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeacherAvailability {
+  id: string;
+  day_of_week: number; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  start_time: string; // HH:MM format
+  end_time: string; // HH:MM format
+  is_available: boolean;
   created_at: string;
   updated_at: string;
 }

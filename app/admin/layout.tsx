@@ -22,14 +22,47 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
 
   useEffect(() => {
-    // Check current session
-    auth.getUser().then(({ data: { user } }) => {
+    // If on login page, skip auth check
+    if (pathname === '/admin/login') {
+      setLoading(false);
+      setAuthenticated(false);
+      return;
+    }
+
+    // Check current session with timeout
+    let authCheckComplete = false;
+    const timeoutId = setTimeout(() => {
+      if (!authCheckComplete) {
+        console.warn('Auth check timeout, showing login page');
+        setLoading(false);
+        setAuthenticated(false);
+        if (pathname !== '/admin/login') {
+          router.push('/admin/login');
+        }
+      }
+    }, 5000); // 5 second timeout
+
+    auth.getUser().then(({ data: { user }, error }) => {
+      authCheckComplete = true;
+      clearTimeout(timeoutId);
+      
+      if (error) {
+        console.error('Auth error:', error);
+        setLoading(false);
+        setAuthenticated(false);
+        if (pathname !== '/admin/login') {
+          router.push('/admin/login');
+        }
+        return;
+      }
+
       if (user && 'email' in user) {
         // Check if user is admin
         const userRole = user.user_metadata?.role || 'student';
         if (userRole !== 'admin') {
           // Not an admin, redirect to student dashboard
           router.push('/dashboard');
+          setLoading(false);
           return;
         }
         setAuthenticated(true);
@@ -42,10 +75,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           router.push('/admin/login');
         }
       }
+    }).catch((error) => {
+      authCheckComplete = true;
+      clearTimeout(timeoutId);
+      console.error('Auth check failed:', error);
+      setLoading(false);
+      setAuthenticated(false);
+      if (pathname !== '/admin/login') {
+        router.push('/admin/login');
+      }
     });
 
     // Listen for auth changes
     const { data: { subscription } } = auth.onAuthStateChange((user) => {
+      if (pathname === '/admin/login') {
+        return; // Don't handle auth changes on login page
+      }
+
       if (user && typeof user === 'object' && 'email' in user) {
         // Check if user is admin
         const userRole = (user as { user_metadata?: { role?: string } }).user_metadata?.role || 'student';
@@ -66,7 +112,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(timeoutId);
+      subscription.unsubscribe();
+    };
   }, [router, pathname]);
 
   const handleLogout = async () => {

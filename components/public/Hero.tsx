@@ -6,38 +6,36 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Hero() {
   const { t } = useLanguage();
-  
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
-    <section className="relative bg-gradient-to-br from-orange-50 via-white to-blue-50 overflow-hidden pt-16">
+    <section className="relative bg-gradient-to-br from-orange-50 via-white to-blue-50 overflow-hidden pt-20">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-20 md:pt-6 md:pb-28">
+        <div className="grid md:grid-cols-2 gap-12 items-start">
           {/* Left Content */}
-          <div className="space-y-8 z-10">
+          <div className="space-y-8 z-10 pt-0">
             <div className="inline-block">
               <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
                 {t('hero.badge')}
               </span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-              {t('hero.title')} <span className="text-primary-500">B1</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
+                {t('hero.title')}
+              </span>
               <br />
               <span className="text-secondary-900">{t('hero.subtitle')}</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-600 leading-relaxed whitespace-pre-line">
               {t('hero.description')}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
               <button
-                onClick={scrollToContact}
+                onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
                 className="group bg-primary-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
                 {t('hero.cta')}
@@ -51,32 +49,16 @@ export default function Hero() {
                 {t('hero.pricing')}
               </button>
             </div>
-            
-            <div className="flex items-center gap-8 pt-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">100+</div>
-                <div className="text-sm text-gray-600">Happy Students</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">5+</div>
-                <div className="text-sm text-gray-600">Years Experience</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">95%</div>
-                <div className="text-sm text-gray-600">Success Rate</div>
-              </div>
-            </div>
           </div>
           
           {/* Right Image */}
           <div className="relative">
-            <div className="relative h-[600px] md:h-[700px] rounded-2xl overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-secondary-900/20 z-10"></div>
+            <div className="relative h-[620px] md:h-[720px] rounded-2xl overflow-hidden shadow-2xl">
               <Image
                 src="/images/teacher-hero.jpg"
-                alt="English Teacher"
+                alt={t('hero.imageAlt')}
                 fill
-                className="object-cover"
+                className="object-cover object-bottom"
                 priority
               />
             </div>

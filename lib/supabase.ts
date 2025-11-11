@@ -7,13 +7,26 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 let supabase: SupabaseClient;
 
 try {
-  if (supabaseUrl && supabaseAnonKey && (supabaseUrl.startsWith('http://') || supabaseUrl.startsWith('https://'))) {
-    supabase = createClient(supabaseUrl, supabaseAnonKey);
+  if (supabaseUrl && supabaseAnonKey && 
+      supabaseUrl.startsWith('https://') && 
+      !supabaseUrl.includes('dummy') &&
+      supabaseAnonKey.length > 20) {
+    supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+    console.log('✅ Supabase client initialized successfully');
   } else {
+    console.warn('⚠️ Supabase credentials missing or invalid. Using dummy client.');
+    console.warn('URL:', supabaseUrl ? 'Set' : 'Missing', 'Key:', supabaseAnonKey ? 'Set' : 'Missing');
     // Create dummy client for build time
     supabase = createClient('https://dummy.supabase.co', 'dummy-key');
   }
-} catch {
+} catch (error) {
+  console.error('❌ Supabase initialization error:', error);
   // Fallback for any initialization errors
   supabase = createClient('https://dummy.supabase.co', 'dummy-key');
 }
@@ -42,7 +55,7 @@ export const auth = {
     supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`,
+        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '/auth/callback',
       },
     }),
   
@@ -116,6 +129,121 @@ export const db = {
 
   createClass: (data: Record<string, unknown>) =>
     supabase.from('classes').insert(data).select().single(),
+
+  // Generate classes automatically based on weekly schedule
+  generateClassesFromWeeklySchedule: async (
+    studentId: string,
+    studentName: string,
+    studentEmail: string,
+    weeklySchedule: Array<{ day_of_week: number; time: string }>,
+    totalLessons: number,
+    startDate?: string
+  ) => {
+    const classes: Array<Record<string, unknown>> = [];
+    const today = startDate ? new Date(startDate) : new Date();
+    
+    // Find the first available date for each day of week
+    const scheduledDates: Date[] = [];
+    let lessonCount = 0;
+    let weekOffset = 0;
+    const maxIterations = 100; // Safety limit to prevent infinite loops
+    let iterations = 0;
+    
+    console.log('Starting class generation:', {
+      totalLessons,
+      weeklySchedule,
+      today: today.toISOString()
+    });
+    
+    while (lessonCount < totalLessons && iterations < maxIterations) {
+      iterations++;
+      for (const schedule of weeklySchedule) {
+        if (lessonCount >= totalLessons) break;
+        
+        // Calculate date for this week's occurrence of this day
+        const currentDay = today.getDay();
+        let daysUntilNext = (schedule.day_of_week - currentDay + 7) % 7;
+        if (daysUntilNext === 0) {
+          // If it's the same day, check if the time has passed
+          const currentTime = today.getHours() * 60 + today.getMinutes();
+          const scheduleTime = parseInt(schedule.time.split(':')[0]) * 60 + parseInt(schedule.time.split(':')[1]);
+          if (currentTime >= scheduleTime) {
+            // Time has passed today, schedule for next week
+            daysUntilNext = 7;
+          }
+        }
+        
+        const classDate = new Date(today);
+        classDate.setDate(today.getDate() + daysUntilNext + (weekOffset * 7));
+        classDate.setHours(parseInt(schedule.time.split(':')[0]), parseInt(schedule.time.split(':')[1]), 0, 0);
+        
+        // Ensure date is not in the past
+        if (classDate < today) {
+          classDate.setDate(classDate.getDate() + 7);
+        }
+        
+        scheduledDates.push(new Date(classDate));
+        lessonCount++;
+      }
+      weekOffset++;
+    }
+    
+    if (iterations >= maxIterations) {
+      console.error('Max iterations reached, stopping class generation');
+      return { data: null, error: { message: 'Max iterations reached while generating classes' } };
+    }
+    
+    console.log(`Generated ${scheduledDates.length} class dates`);
+    
+    // Sort dates chronologically
+    scheduledDates.sort((a, b) => a.getTime() - b.getTime());
+    
+    // Create classes
+    for (let i = 0; i < scheduledDates.length; i++) {
+      const classDate = scheduledDates[i];
+      const isFirstClass = i === 0;
+      
+      // Calculate payment amount (first class is free)
+      const lessonPrice = 2000; // 2000 rubles per lesson
+      const paymentAmount = isFirstClass ? 0 : lessonPrice;
+      
+      classes.push({
+        student_id: studentId,
+        student_name: studentName,
+        student_email: studentEmail,
+        class_date: classDate.toISOString(),
+        duration_minutes: 50,
+        class_type: 'Individual',
+        status: 'pending_payment',
+        payment_status: 'pending',
+        payment_amount: paymentAmount,
+        topic: null,
+        notes: null,
+      });
+    }
+    
+    console.log(`Attempting to insert ${classes.length} classes into database`);
+    console.log('Classes to insert:', classes.map(c => ({
+      student_name: c.student_name,
+      class_date: c.class_date,
+      payment_amount: c.payment_amount
+    })));
+    
+    // Insert all classes
+    const { data, error } = await supabase
+      .from('classes')
+      .insert(classes)
+      .select();
+    
+    if (error) {
+      console.error('Error inserting classes:', error);
+      return { data: null, error };
+    }
+    
+    console.log(`Successfully inserted ${data?.length || 0} classes`);
+    
+    return { data, error };
+  },
 
   updateClass: (id: string, data: Record<string, unknown>) =>
     supabase.from('classes').update(data).eq('id', id).select().single(),
@@ -224,6 +352,240 @@ export const db = {
     );
     
     return { data: uniqueUsers, error: null };
+  },
+
+  // Teacher Availability
+  getTeacherAvailability: async () => {
+    try {
+      const { data, error } = await supabase
+        .from('teacher_availability')
+        .select('*')
+        .order('day_of_week', { ascending: true })
+        .order('start_time', { ascending: true });
+      
+      if (error) {
+        // Log comprehensive error information
+        const errorInfo: Record<string, unknown> = {
+          message: error.message || 'No message',
+          details: error.details || 'No details',
+          hint: error.hint || 'No hint',
+          code: error.code || 'No code',
+        };
+        
+        // Try to get all properties of the error object
+        try {
+          errorInfo.allProperties = Object.getOwnPropertyNames(error);
+          errorInfo.errorString = JSON.stringify(error, Object.getOwnPropertyNames(error));
+          errorInfo.errorType = error.constructor?.name || typeof error;
+        } catch (e) {
+          errorInfo.stringifyError = 'Could not stringify error';
+        }
+        
+        console.error('Supabase error fetching teacher availability:', errorInfo);
+        
+        // Provide helpful error messages based on error code
+        if (error.code === '42P01') {
+          console.error('❌ Table does not exist. Please run the migration: docs/teacher-availability-schema.sql');
+        } else if (error.code === '42501') {
+          console.error('❌ Permission denied. Check RLS policies and user role.');
+        } else if (error.code === 'PGRST116') {
+          console.error('❌ Table not found. Please run the migration: docs/teacher-availability-schema.sql');
+        }
+      }
+      
+      return { data, error };
+    } catch (err) {
+      // Catch any unexpected errors
+      console.error('Unexpected error in getTeacherAvailability:', err);
+      const unexpectedError = err instanceof Error ? err : new Error(String(err));
+      return { 
+        data: null, 
+        error: {
+          message: unexpectedError.message || 'Unexpected error occurred',
+          details: unexpectedError.stack || 'No stack trace',
+          code: 'UNEXPECTED_ERROR'
+        } as { message: string; details?: string; code?: string; hint?: string }
+      };
+    }
+  },
+
+  createTeacherAvailability: (data: Record<string, unknown>) =>
+    supabase.from('teacher_availability').insert(data).select().single(),
+
+  updateTeacherAvailability: (id: string, data: Record<string, unknown>) =>
+    supabase.from('teacher_availability').update(data).eq('id', id).select().single(),
+
+  deleteTeacherAvailability: (id: string) =>
+    supabase.from('teacher_availability').delete().eq('id', id),
+
+  // Check if teacher is available at a specific time
+  checkTeacherAvailability: async (dateTime: string, durationMinutes: number = 50) => {
+    const requestedDate = new Date(dateTime);
+    const dayOfWeek = requestedDate.getDay();
+    const requestedTime = requestedDate.toTimeString().slice(0, 5); // HH:MM format
+    const requestedHour = requestedDate.getHours();
+    
+    const endTime = new Date(requestedDate.getTime() + durationMinutes * 60000);
+    const requestedEndTime = endTime.toTimeString().slice(0, 5);
+    const requestedEndHour = endTime.getHours();
+
+    // Enforce 8 AM - 8 PM restriction
+    if (requestedHour < 8 || requestedEndHour > 20) {
+      return { available: false, reason: 'Classes can only be booked between 8 AM and 8 PM' };
+    }
+
+    // Get teacher availability for this day
+    const { data: availability } = await supabase
+      .from('teacher_availability')
+      .select('*')
+      .eq('day_of_week', dayOfWeek)
+      .eq('is_available', true);
+
+    // If no availability is set, default to available (8 AM - 8 PM)
+    if (!availability || availability.length === 0) {
+      // Default: available between 8 AM and 8 PM
+      const defaultStart = '08:00';
+      const defaultEnd = '20:00';
+      
+      if (requestedTime >= defaultStart && requestedEndTime <= defaultEnd) {
+        // Time is within default hours, continue to check for conflicts
+      } else {
+        return { available: false, reason: 'Requested time is outside available hours (8 AM - 8 PM)' };
+      }
+    } else {
+      // Check if requested time falls within any available slot
+      const isInAvailableSlot = availability.some((slot) => {
+        return requestedTime >= slot.start_time && requestedEndTime <= slot.end_time;
+      });
+
+      if (!isInAvailableSlot) {
+        return { available: false, reason: 'Requested time is outside available hours' };
+      }
+    }
+
+    // Check if teacher has any classes at this time (prevent double-booking)
+    // Get all scheduled classes for the same day
+    const startOfDay = new Date(requestedDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(requestedDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const { data: existingClasses } = await supabase
+      .from('classes')
+      .select('*')
+      .eq('status', 'scheduled')
+      .gte('class_date', startOfDay.toISOString())
+      .lte('class_date', endOfDay.toISOString());
+
+    if (existingClasses && existingClasses.length > 0) {
+      // Check for time conflicts
+      const hasConflict = existingClasses.some((cls) => {
+        const classStart = new Date(cls.class_date);
+        const classDuration = cls.duration_minutes || 50;
+        const classEnd = new Date(classStart.getTime() + classDuration * 60000);
+        
+        // Check if requested time overlaps with existing class
+        return (
+          (requestedDate >= classStart && requestedDate < classEnd) ||
+          (endTime > classStart && endTime <= classEnd) ||
+          (requestedDate <= classStart && endTime >= classEnd)
+        );
+      });
+
+      if (hasConflict) {
+        return { available: false, reason: 'Teacher is already booked at this time' };
+      }
+    }
+
+    return { available: true };
+  },
+
+  // Get available time slots for a specific date
+  getAvailableTimeSlots: async (date: string, durationMinutes: number = 50) => {
+    const requestedDate = new Date(date);
+    const dayOfWeek = requestedDate.getDay();
+
+    // Get teacher availability for this day
+    const { data: availability } = await supabase
+      .from('teacher_availability')
+      .select('*')
+      .eq('day_of_week', dayOfWeek)
+      .eq('is_available', true)
+      .order('start_time', { ascending: true });
+
+    // If no availability is set, default to 8 AM - 8 PM
+    let availabilitySlots = availability || [];
+    if (availabilitySlots.length === 0) {
+      // Default availability: 8 AM to 8 PM
+      availabilitySlots = [{
+        day_of_week: dayOfWeek,
+        start_time: '08:00',
+        end_time: '20:00',
+        is_available: true
+      }];
+    }
+
+    // Get all scheduled classes for this date
+    const startOfDay = new Date(requestedDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(requestedDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const { data: existingClasses } = await supabase
+      .from('classes')
+      .select('*')
+      .eq('status', 'scheduled')
+      .gte('class_date', startOfDay.toISOString())
+      .lte('class_date', endOfDay.toISOString());
+
+    // Generate available time slots
+    const availableSlots: string[] = [];
+    
+    availabilitySlots.forEach((slot) => {
+      const [startHour, startMin] = slot.start_time.split(':').map(Number);
+      const [endHour, endMin] = slot.end_time.split(':').map(Number);
+      
+      const slotStart = new Date(requestedDate);
+      slotStart.setHours(startHour, startMin, 0, 0);
+      
+      const slotEnd = new Date(requestedDate);
+      slotEnd.setHours(endHour, endMin, 0, 0);
+
+      // Generate 50-minute intervals within this slot (8 AM - 8 PM only)
+      let currentTime = new Date(slotStart);
+      while (currentTime.getTime() + durationMinutes * 60000 <= slotEnd.getTime()) {
+        const slotHour = currentTime.getHours();
+        const slotEndTime = new Date(currentTime.getTime() + durationMinutes * 60000);
+        const slotEndHour = slotEndTime.getHours();
+        
+        // Only allow slots between 8 AM and 8 PM
+        if (slotHour >= 8 && slotEndHour <= 20) {
+          const slotTime = currentTime.toISOString();
+          
+          // Check if this slot conflicts with existing classes
+          const conflicts = existingClasses?.some((cls) => {
+            const classStart = new Date(cls.class_date);
+            const classEnd = new Date(classStart.getTime() + (cls.duration_minutes || 50) * 60000);
+            const slotEndTime = new Date(currentTime.getTime() + durationMinutes * 60000);
+            
+            return (
+              (currentTime >= classStart && currentTime < classEnd) ||
+              (slotEndTime > classStart && slotEndTime <= classEnd) ||
+              (currentTime <= classStart && slotEndTime >= classEnd)
+            );
+          });
+
+          if (!conflicts) {
+            availableSlots.push(slotTime);
+          }
+        }
+
+        // Move to next 50-minute slot
+        currentTime = new Date(currentTime.getTime() + 50 * 60000);
+      }
+    });
+
+    return { data: availableSlots, error: null };
   },
 };
 

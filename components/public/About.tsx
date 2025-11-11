@@ -39,9 +39,11 @@ export default function About() {
             <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-xl">
               <Image
                 src="/images/teacher-about.jpg"
-                alt="Evgenia Penkova - English Teacher"
+                alt={t('about.imageAlt')}
                 fill
                 className="object-cover"
+                unoptimized
+                priority
               />
             </div>
           </div>
@@ -54,20 +56,20 @@ export default function About() {
               </span>
             </div>
             
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary-900">
               {t('about.title')}
             </h2>
             
             <div className="space-y-4 text-gray-600 leading-relaxed">
-              <p>
+              <p className="whitespace-pre-line">
                 {t('about.intro1')}
               </p>
               
-              <p>
+              <p className="whitespace-pre-line">
                 {t('about.intro2')}
               </p>
               
-              <p>
+              <p className="whitespace-pre-line">
                 {t('about.intro3')}
               </p>
               
@@ -75,28 +77,21 @@ export default function About() {
                 {t('about.cta')}
               </p>
             </div>
-            
-            <div className="flex items-center gap-4 pt-4">
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-secondary-800 border-2 border-white"></div>
-                ))}
-              </div>
-              <div className="text-sm text-gray-600">
-                <span className="font-semibold text-gray-900">100+</span> {t('about.trustBadge')}
-              </div>
-            </div>
           </div>
         </div>
         
         {/* Features Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="text-center p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-lg transition-all duration-300">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-100 to-secondary-100 rounded-full mb-4">
-                <feature.icon className="w-8 h-8 text-primary-500" />
+            <div 
+              key={index} 
+              className="text-center p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white border-2 border-orange-500 shadow-lg hover:shadow-lg hover:scale-110 transition-all duration-300 relative"
+            >
+              <div className="absolute inset-0 rounded-xl border-2 border-orange-500 animate-pulse opacity-30"></div>
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-100 to-orange-200 rounded-full mb-4 transition-transform duration-300 hover:scale-125">
+                <feature.icon className="w-8 h-8 text-orange-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
+              <h3 className="text-lg font-semibold text-secondary-900 mb-2">{feature.title}</h3>
               <p className="text-gray-600 text-sm">{feature.description}</p>
             </div>
           ))}

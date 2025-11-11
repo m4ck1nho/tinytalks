@@ -21,6 +21,8 @@ export default function HomeworkManager() {
   const [selectedHomework, setSelectedHomework] = useState<Homework | null>(null);
   const [useExistingStudent, setUseExistingStudent] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     student_name: '',
     student_email: '',
@@ -123,12 +125,19 @@ export default function HomeworkManager() {
     setShowForm(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this homework?')) return;
+  const handleDelete = (id: string) => {
+    setPendingDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
     
     try {
-      await db.deleteHomework(id);
+      await db.deleteHomework(pendingDeleteId);
       fetchHomework();
+      setShowDeleteModal(false);
+      setPendingDeleteId(null);
     } catch (error) {
       console.error('Error deleting homework:', error);
     }
@@ -448,6 +457,43 @@ export default function HomeworkManager() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/60 p-8 max-w-md w-full">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center">
+                <TrashIcon className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-secondary-900">Delete Homework?</h3>
+                <p className="text-sm text-gray-600 mt-1">This action cannot be undone</p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete this homework? All associated data will be permanently removed.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setPendingDeleteId(null);
+                }}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl font-semibold hover:from-gray-200 hover:to-gray-300 transition-all duration-300 shadow-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-semibold hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40"
+              >
+                Delete Homework
+              </button>
+            </div>
           </div>
         </div>
       )}

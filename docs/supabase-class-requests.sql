@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS class_requests (
   preferred_time TEXT,
   topic TEXT,
   message TEXT,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'awaiting_payment', 'payment_confirmed', 'approved', 'rejected')),
   admin_notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()

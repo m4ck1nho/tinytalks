@@ -9,7 +9,7 @@ import { CalendarIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function BlogPreview() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,10 +50,11 @@ export default function BlogPreview() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+      <section className="py-20 bg-gradient-to-br from-orange-50 via-white to-blue-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="animate-pulse text-gray-500">Loading articles...</div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary-500 mx-auto mb-4"></div>
+            <div className="text-gray-600">{t('blog.loading')}</div>
           </div>
         </div>
       </section>
@@ -68,15 +69,25 @@ export default function BlogPreview() {
     <section id="blog" className="py-20 bg-gradient-to-br from-orange-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="bg-accent-green text-green-800 text-sm font-semibold px-4 py-2 rounded-full bg-green-100">
+          <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
             {t('blog.badge')}
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-6 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 mt-6 mb-4">
             {t('blog.title')}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover helpful tips, learning strategies, and insights to accelerate your English journey
+            {t('blog.previewDescription')}
           </p>
+        </div>
+
+        <div className="flex flex-col items-center mb-8">
+          <Link
+            href="/blog"
+            className="group inline-flex items-center gap-2 px-6 py-3 bg-primary-500 text-white font-semibold rounded-lg hover:bg-primary-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          >
+            {t('blog.viewAll')}
+            <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -84,7 +95,7 @@ export default function BlogPreview() {
             <Link
               href={`/blog/${post.slug}`}
               key={post.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer"
+              className="bg-white/90 backdrop-blur-xl rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-white/60 transition-all duration-300 group cursor-pointer hover:-translate-y-1"
             >
               {post.image && (
                 <div className="relative h-48 overflow-hidden">
@@ -94,30 +105,31 @@ export default function BlogPreview() {
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-300"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
               )}
               
               <div className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                  <CalendarIcon className="w-4 h-4" />
-                  {new Date(post.createdAt).toLocaleDateString('en-US', {
+                  <CalendarIcon className="w-4 h-4 text-primary-500" />
+                    {new Date(post.createdAt).toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                   })}
                 </div>
                 
-                <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-500 transition-colors">
+                <h3 className="text-xl font-bold text-secondary-900 mb-3 line-clamp-2 group-hover:text-primary-500 transition-colors">
                   {post.title}
                 </h3>
                 
-                <p className="text-gray-600 mb-4 line-clamp-3">
+                <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
                   {post.excerpt}
                 </p>
                 
                     <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
                       {t('blog.readMore')}
-                      <ArrowRightIcon className="w-4 h-4" />
+                      <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </span>
               </div>
             </Link>

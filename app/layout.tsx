@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { HtmlLangWrapper } from '@/components/shared/HtmlLangWrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,9 +18,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="ru" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const savedLanguage = localStorage.getItem('language');
+                  if (savedLanguage === 'en' || savedLanguage === 'ru') {
+                    document.documentElement.lang = savedLanguage;
+                  }
+                } catch (e) {
+                  // localStorage not available, use default
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          <HtmlLangWrapper>
+            {children}
+          </HtmlLangWrapper>
+        </LanguageProvider>
       </body>
     </html>
   );

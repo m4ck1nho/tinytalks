@@ -1,16 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/supabase';
-import { UserCircleIcon, LanguageIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, LanguageIcon, ChevronDownIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [user, setUser] = useState<{ email?: string } | null>(null);
+  const [user, setUser] = useState<{ email?: string; user_metadata?: { full_name?: string } } | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const { language, setLanguage, t } = useLanguage();
+  const languageTooltip = language === 'en' ? t('languageSwitcher.tooltipToRu') : t('languageSwitcher.tooltipToEn');
+  const languageShortLabel = language === 'en' ? t('languageSwitcher.shortRu') : t('languageSwitcher.shortEn');
+  const languageMobileLabel = language === 'en' ? t('languageSwitcher.mobileRu') : t('languageSwitcher.mobileEn');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,17 +31,57 @@ export default function Navbar() {
     // Check if user is logged in
     const checkUser = async () => {
       const { data: { user } } = await auth.getUser();
-      setUser(user);
+      setUser(user as { email?: string; user_metadata?: { full_name?: string } } | null);
     };
     checkUser();
 
     // Listen for auth changes
     const { data: { subscription } } = auth.onAuthStateChange((user) => {
-      setUser(user as { email?: string } | null);
+      setUser(user as { email?: string; user_metadata?: { full_name?: string } } | null);
+      if (!user) {
+        setIsDropdownOpen(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  const getUserFirstName = () => {
+    if (!user) return '';
+    const fullName = user.user_metadata?.full_name;
+    if (fullName) {
+      return fullName.split(' ')[0];
+    }
+    // Fallback to email username
+    return user.email?.split('@')[0] || 'User';
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      setIsDropdownOpen(false);
+      router.push('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -90,11 +137,18 @@ export default function Navbar() {
               <span className="relative z-10">{t('reviews.badge')}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
-            <button
-              onClick={() => scrollToSection('blog')}
+            <Link
+              href="/blog"
               className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
             >
               <span className="relative z-10">{t('nav.blog')}</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </Link>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="relative px-5 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden"
+            >
+              <span className="relative z-10">{t('nav.contact')}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
 
@@ -102,24 +156,47 @@ export default function Navbar() {
             <button
               onClick={() => setLanguage(language === 'en' ? 'ru' : 'en')}
               className="relative px-4 py-2.5 text-secondary-900 font-semibold rounded-xl hover:text-primary-500 transition-all duration-300 group overflow-hidden flex items-center gap-2"
-              title={language === 'en' ? 'Switch to Russian' : 'Переключить на английский'}
+              title={languageTooltip}
             >
               <LanguageIcon className="w-5 h-5 relative z-10" />
-              <span className="relative z-10 font-bold">{language === 'en' ? 'РУС' : 'ENG'}</span>
+              <span className="relative z-10 font-bold">{languageShortLabel}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
             
             {/* User Auth Button */}
             {user ? (
-              <Link
-                href="/dashboard"
-                className="relative ml-2 px-6 py-3 rounded-xl font-bold text-white overflow-hidden group flex items-center gap-2"
-              >
-                <div className="absolute inset-0 bg-primary-500 group-hover:bg-primary-600 transition-colors"></div>
-                <div className="absolute inset-0 bg-primary-500 blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-                <UserCircleIcon className="relative z-10 w-5 h-5" />
-                <span className="relative z-10">{t('nav.dashboard')}</span>
-              </Link>
+              <div className="relative ml-2" ref={dropdownRef}>
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="relative px-4 py-2.5 rounded-xl font-semibold text-secondary-900 bg-white/90 backdrop-blur-sm border border-gray-200 hover:border-primary-300 hover:bg-white transition-all duration-300 flex items-center gap-2 shadow-sm hover:shadow-md"
+                >
+                  <UserCircleIcon className="w-5 h-5 text-primary-500" />
+                  <span>{getUserFirstName()}</span>
+                  <ChevronDownIcon className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isDropdownOpen ? 'transform rotate-180' : ''}`} />
+                </button>
+                
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50 transform transition-all duration-200 ease-out">
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors flex items-center gap-2"
+                    >
+                      <UserCircleIcon className="w-4 h-4" />
+                      {t('nav.dashboard')}
+                    </Link>
+                    <div className="border-t border-gray-100 my-1"></div>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2"
+                    >
+                      <ArrowRightOnRectangleIcon className="w-4 h-4" />
+                      {t('dashboard.logout')}
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <Link
                 href="/auth"
@@ -175,11 +252,18 @@ export default function Navbar() {
             >
               {t('reviews.badge')}
             </button>
-            <button
-              onClick={() => scrollToSection('blog')}
+            <Link
+              href="/blog"
               className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
+              onClick={() => setIsMenuOpen(false)}
             >
               {t('nav.blog')}
+            </Link>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300"
+            >
+              {t('nav.contact')}
             </button>
 
             {/* Mobile Language Switcher */}
@@ -188,18 +272,34 @@ export default function Navbar() {
               className="block w-full text-left px-5 py-3 text-secondary-900 font-semibold hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-500 rounded-xl transition-all duration-300 flex items-center gap-2"
             >
               <LanguageIcon className="w-5 h-5" />
-              <span className="font-bold">{language === 'en' ? 'Русский' : 'English'}</span>
+              <span className="font-bold">{languageMobileLabel}</span>
             </button>
             
             {/* Mobile Auth Button */}
             {user ? (
-              <Link
-                href="/dashboard"
-                className="block w-full text-center px-5 py-3 mt-3 rounded-xl font-bold text-white bg-primary-500 hover:bg-primary-600 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transition-all duration-300"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t('nav.dashboard')}
-              </Link>
+              <div className="mt-3 space-y-2">
+                <div className="px-5 py-2 text-sm text-gray-600 flex items-center gap-2">
+                  <UserCircleIcon className="w-5 h-5 text-primary-500" />
+                  <span className="font-semibold">{getUserFirstName()}</span>
+                </div>
+                <Link
+                  href="/dashboard"
+                  className="block w-full text-center px-5 py-3 rounded-xl font-semibold text-white bg-primary-500 hover:bg-primary-600 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transition-all duration-300"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('nav.dashboard')}
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-center px-5 py-3 rounded-xl font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <ArrowRightOnRectangleIcon className="w-5 h-5" />
+                  {t('dashboard.logout')}
+                </button>
+              </div>
             ) : (
               <Link
                 href="/auth"

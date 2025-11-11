@@ -8,106 +8,106 @@
     "login": "Login / Sign Up",
     "dashboard": "Dashboard"
   },
+  "languageSwitcher": {
+    "tooltipToRu": "Switch to Russian",
+    "tooltipToEn": "Switch to English",
+    "shortEn": "ENG",
+    "shortRu": "РУС",
+    "mobileEn": "English",
+    "mobileRu": "Русский"
+  },
   "hero": {
     "badge": "Learn English with Confidence",
-    "title": "Achieve B1 Level English",
-    "subtitle": "Through Personalized Learning",
-    "description": "Master English with one-on-one lessons tailored to your needs. From beginner to B1 level, we'll guide you every step of the way.",
+    "title": "TinyTalks",
+    "subtitle": "small steps to big English",
+    "description": "I help children and adults learn English at their own pace — calmly, with support and enjoyment.\n\nAsynchronous lessons and live classes make the process flexible, and the result — real.",
     "cta": "Start Your Journey",
-    "pricing": "View Pricing"
+    "pricing": "View Pricing",
+    "imageAlt": "English teacher working with a student"
   },
   "about": {
     "badge": "About TinyTalks",
-    "title": "Meet Your English Teacher",
-    "intro1": "Hello! I'm Evgenia Penkova, the founder of TinyTalks. With over 5 years of experience teaching English, I've helped hundreds of students achieve their language learning goals.",
-    "intro2": "My teaching philosophy is simple: language learning should be enjoyable, personalized, and focused on real communication. I believe that every student has the potential to master English when given the right support and guidance.",
-    "intro3": "At TinyTalks, we specialize in taking beginners to B1 level proficiency through a combination of structured lessons, conversational practice, and engaging activities. Whether you're learning for work, travel, or personal growth, I'm here to support you every step of the way.",
-    "cta": "Let's embark on this English learning journey together!",
+    "title": "I'm Evgenia Penkova, an English teacher and creator of TinyTalks project",
+    "intro1": "TinyTalks grew from my desire to make learning English simple, modern, and understandable.",
+    "intro2": "I see how often students are afraid to \"make mistakes\", lose motivation, or think that \"it's just not for them\".\n\nMy goal is to show that this is not true.\n\nIn my classes, there is no rush or pressure — only support, a friendly atmosphere, and clear steps to results.",
+    "intro3": "I believe that everyone can speak English if they learn at a comfortable pace and receive feedback\nthat inspires, not frightens.",
+    "cta": "TinyTalks is a place where learning is easy, pleasant, and genuine.",
     "trustBadge": "students trust TinyTalks",
     "features": {
       "expert": {
-        "title": "Expert Teaching",
-        "description": "Years of experience in teaching English to beginners of all ages"
+        "title": "Asynchronous Learning",
+        "description": "Daily 15-minute assignments with feedback from the teacher"
       },
       "personalized": {
         "title": "Personalized Approach",
         "description": "Every student gets a customized learning plan tailored to their goals"
       },
       "engaging": {
-        "title": "Engaging Methods",
+        "title": "Online Learning",
         "description": "Interactive lessons that make learning English enjoyable and effective"
       },
       "speaking": {
         "title": "Speaking Focus",
         "description": "Emphasis on conversational English and real-world communication"
       }
-    }
+    },
+    "imageAlt": "Evgenia Penkova - English teacher"
   },
   "pricing": {
     "badge": "Pricing Plans",
     "title": "Choose Your Learning Path",
     "description": "Flexible pricing options designed to fit your needs and budget",
-    "group": {
-      "name": "Group Lessons",
-      "price": "1,250",
-      "period": "/lesson",
-      "description": "Learn with peers in small groups",
-      "cta": "Join Group",
-      "features": {
-        "f1": "90-minute lesson",
-        "f2": "Small groups (3-5 students)",
-        "f3": "Interactive activities",
-        "f4": "All learning materials included",
-        "f5": "Homework & feedback",
-        "f6": "Progress tracking",
-        "f7": "Speaking practice with peers",
-        "f8": "Flexible scheduling"
-      }
+    "trial": {
+      "name": "Trial Lesson",
+      "price": "0",
+      "currency": "₽",
+      "period": "rubles",
+      "subtitle": "Try before you start — free",
+      "duration": "25 minutes",
+      "description": "In the trial lesson, we'll determine your level, discuss goals, and create a learning plan.\n\nYou'll understand which format suits you best.",
+      "cta": "Start for Free"
     },
     "individual": {
-      "name": "Individual Lessons",
-      "price": "2,500",
-      "period": "/lesson",
-      "description": "One-on-one personalized learning",
-      "cta": "Book Individual",
-      "popular": "Most Popular",
-      "features": {
-        "f1": "60-minute private lesson",
-        "f2": "100% personalized content",
-        "f3": "Flexible scheduling",
-        "f4": "Homework with detailed feedback",
-        "f5": "Progress tracking & reports",
-        "f6": "All learning materials",
-        "f7": "Speaking-focused approach",
-        "f8": "Available online worldwide"
-      }
+      "name": "Individual Lesson",
+      "price": "2000",
+      "currency": "₽",
+      "period": "/ lesson",
+      "subtitle": "Full teacher attention just for you",
+      "duration": "60 min",
+      "description": "Individual lessons are your personal pace and program tailored to you.\n\nWe cover grammar, discuss relevant topics, practice pronunciation, and solve the tasks that matter to you.",
+      "cta": "Book Now",
+      "popular": "Popular"
     },
-    "intensive": {
-      "name": "Intensive Course",
-      "price": "10,000",
-      "period": "/month",
-      "description": "Accelerated learning program",
-      "cta": "Start Intensive",
-      "features": {
-        "f1": "12 individual lessons per month",
-        "f2": "3 lessons per week",
-        "f3": "Priority scheduling",
-        "f4": "Weekly progress assessments",
-        "f5": "Personalized study plan",
-        "f6": "Daily homework assignments",
-        "f7": "Direct teacher messaging",
-        "f8": "Certificate upon completion"
-      }
+    "async": {
+      "name": "Asynchronous Microlearning",
+      "price": "1000",
+      "currency": "₽",
+      "period": "/ week",
+      "subtitle": "Learn at your convenience — in small steps",
+      "duration": "15 minutes per day",
+      "description": "Short lessons, practical tasks, and my feedback — all at your pace.\n\nYou complete lessons when convenient and gradually build confidence without losing motivation.\n\nPerfect for those who want to learn English flexibly.",
+      "cta": "Start Learning"
     },
-    "custom": {
-      "text": "Need a custom plan?",
-      "cta": "Contact us for a personalized quote"
+    "group": {
+      "name": "Group Lesson",
+      "price": "1250",
+      "currency": "₽",
+      "period": "/ lesson",
+      "subtitle": "Communication, practice and motivation together with others",
+      "duration": "60 minutes",
+      "description": "Group lessons are live communication, joint practice, and sharing experiences.\n\nYou learn to speak confidently, receive feedback, and see that you're not alone in your difficulties.",
+      "cta": "Join Now"
     }
   },
   "reviews": {
-    "badge": "Student Success Stories",
+    "badge": "Reviews",
     "title": "What Our Students Say",
     "description": "Don't just take our word for it - hear from students who have transformed their English skills",
+    "carousel": {
+      "previous": "Previous review",
+      "next": "Next review",
+      "goTo": "Go to review"
+    },
     "stats": {
       "students": "Happy Students",
       "rate": "Success Rate",
@@ -143,7 +143,29 @@
     "badge": "Learning Resources",
     "title": "Tips & Guides for English Learners",
     "description": "Explore our collection of helpful resources and articles to support your English learning journey",
-    "readMore": "Read More"
+    "previewDescription": "Discover helpful tips, learning strategies, and insights to accelerate your English journey",
+    "loading": "Loading articles...",
+    "loadingSingle": "Loading article...",
+    "clearSearch": "Clear search",
+    "resultsCount": "Found",
+    "articles": {
+      "one": "article",
+      "few": "articles",
+      "many": "articles"
+    },
+    "minRead": "min read",
+    "backToBlog": "Back to blog",
+    "backToAll": "Back to all articles",
+    "readMoreArticles": "Read more articles",
+    "notFoundTitle": "Post Not Found",
+    "notFoundMessage": "The blog post you're looking for doesn't exist or has been removed.",
+    "readMore": "Read More",
+    "viewAll": "View All Articles",
+    "searchPlaceholder": "Search articles...",
+    "searchResults": "Found",
+    "total": "total",
+    "noResults": "No articles found matching your search.",
+    "noPosts": "No articles available yet."
   },
   "contact": {
     "badge": "Get In Touch",
@@ -199,22 +221,60 @@
     "noAccount": "Don't have an account?",
     "haveAccount": "Already have an account?",
     "backToSite": "← Back to main site",
-    "signupSuccess": "Registration successful! Please check your email to confirm your account."
+    "signupSuccess": "Registration successful! Please check your email to confirm your account.",
+    "fullNamePlaceholder": "John Doe",
+    "emailPlaceholder": "you@example.com",
+    "passwordHint": "At least 6 characters",
+    "creatingAccount": "Creating account...",
+    "welcomeBack": "Welcome back",
+    "createAccountHeading": "Create account",
+    "signupIntro": "Start your English learning journey",
+    "loginIntro": "Sign in to continue your learning",
+    "or": "or",
+    "continueWithGoogle": "Continue with Google",
+    "toggleToSignIn": "Sign In",
+    "toggleToSignUp": "Sign Up",
+    "backToHome": "← Back to home",
+    "error": "An error occurred",
+    "googleError": "Failed to sign in with Google"
   },
   "dashboard": {
     "welcome": "Welcome back",
     "upcomingClasses": "Upcoming Classes",
+    "scheduledClasses": "Scheduled Classes",
     "homework": "Homework",
+    "notifications": "Notifications",
+    "noNotifications": "No payment notifications yet",
     "stats": {
       "completed": "Lessons Completed",
       "homeworkCompleted": "Homework Completed",
       "paidClasses": "Paid Classes"
+    },
+    "shortcuts": {
+      "title": "Quick Shortcuts",
+      "requestClass": {
+        "title": "Request a Class",
+        "description": "Schedule a new lesson with your teacher."
+      },
+      "homework": {
+        "title": "Homework",
+        "description": "See pending assignments and submit your work."
+      },
+      "calendar": {
+        "title": "Calendar",
+        "description": "Check your upcoming schedule and deadlines."
+      },
+      "classes": {
+        "title": "My Classes",
+        "description": "Review your upcoming lessons and payments."
+      }
     },
     "noClasses": "No upcoming classes scheduled",
     "noHomework": "No pending homework",
     "notifyPayment": "Notify Payment",
     "paymentPending": "Payment Pending",
     "paid": "Paid",
+    "unpaid": "Unpaid",
     "due": "Due",
     "teacherFeedback": "Teacher Feedback",
     "logout": "Logout",
@@ -225,6 +285,7 @@
       "completed": "Completed",
       "cancelled": "Cancelled",
       "pending": "Pending",
+      "pending_payment": "Pending Payment",
       "submitted": "Submitted",
       "reviewed": "Reviewed"
     }
@@ -243,7 +304,12 @@
       "submit": "Submit Notification",
       "cancel": "Cancel",
       "success": "Payment notification sent to teacher!",
-      "error": "Failed to submit payment notification"
+      "error": "Failed to submit payment notification",
+      "requestPayment": "Payment for Class Request",
+      "totalAmount": "Total Amount",
+      "alreadyPending": "Payment Notification Already Pending",
+      "alreadyPendingMessage": "You have already submitted a payment notification for this class/request. Please wait for the teacher to respond before submitting another notification.",
+      "close": "Close"
     },
     "methods": {
       "bankTransfer": "Bank Transfer",
@@ -251,6 +317,20 @@
       "paypal": "PayPal",
       "venmo": "Venmo",
       "other": "Other"
+    },
+    "notification": {
+      "title": "Payment Notification",
+      "amount": "Amount",
+      "method": "Payment Method",
+      "date": "Payment Date",
+      "reference": "Reference Number",
+      "message": "Message",
+      "teacherNotes": "Teacher's Notes",
+      "submitted": "Submitted",
+      "confirmed": "Confirmed",
+      "rejected": "Rejected",
+      "pending": "Pending",
+      "notSpecified": "Not specified"
     }
   },
   "classRequest": {
@@ -263,13 +343,23 @@
     "noRequests": "No class requests yet. Click 'Request a Class' to send your first request!",
     "success": "Class request submitted successfully! The teacher will review it soon.",
     "error": "Failed to submit class request. Please try again.",
+    "lessonsPerWeek": "Lessons per week",
+    "totalLessons": "Total lessons",
+    "firstClassFree": "First lesson is free!",
+    "minLessons": "Minimum 4 lessons required",
     "status": {
       "pending": "Waiting for Approval",
       "approved": "Approved",
+      "awaiting_payment": "Awaiting Payment",
+      "payment_confirmed": "Payment Confirmed",
+      "teacher_edited": "Teacher Edited",
       "rejected": "Rejected"
     },
     "modal": {
       "title": "Request a New Class",
+      "lessonsPerWeek": "How many lessons per week? *",
+      "totalLessons": "How many lessons do you want to buy? * (Minimum 4, first one is free)",
+      "firstClassFree": "First lesson is free! You'll pay for the remaining lessons.",
       "preferredDate": "Preferred Date (Optional)",
       "preferredTime": "Preferred Time (Optional)",
       "topic": "Topic (Optional)",
@@ -283,13 +373,28 @@
   "calendar": {
     "title": "Calendar",
     "legend": {
-      "classes": "Classes",
+      "scheduledClasses": "Scheduled Classes",
+      "paidClasses": "Paid Classes",
+      "unpaidClasses": "Unpaid Classes",
+      "otherClasses": "Other Classes",
       "payments": "Payments",
       "today": "Today"
     },
     "detail": {
       "classes": "Classes",
       "payments": "Payments"
+    },
+    "more": "more",
+    "daily": {
+      "title": "Daily schedule (08:00–20:00)",
+      "available": "Available",
+      "notAvailable": "Not available",
+      "notes": "Notes",
+      "summary": {
+        "total": "Total classes",
+        "available": "Available slots",
+        "booked": "Booked slots"
+      }
     }
   },
   "admin": {
