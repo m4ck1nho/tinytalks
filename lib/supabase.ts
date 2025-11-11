@@ -497,7 +497,7 @@ export const db = {
       }
     }
 
-    return { available: true };
+    return { available: true, reason: '' };
   },
 
   // Get available time slots for a specific date

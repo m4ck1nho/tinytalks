@@ -75,10 +75,14 @@ export default function DailyScheduleView({ date, classes, onClose }: DailySched
         // Check teacher availability for this time
         // If no availability is set, default to available (8 AM - 8 PM)
         const dateTimeString = slotDate.toISOString();
-        let availability = { available: true, reason: '' }; // Default to available
+        let availability: { available: boolean; reason: string };
         try {
           const availabilityCheck = await db.checkTeacherAvailability(dateTimeString, 50);
-          availability = availabilityCheck;
+          // Normalize the result to always have a reason string
+          availability = {
+            available: availabilityCheck.available,
+            reason: availabilityCheck.reason || '',
+          };
         } catch (error) {
           console.error('Error checking availability:', error);
           // On error, default to available if within 8 AM - 8 PM
