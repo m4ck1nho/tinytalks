@@ -339,7 +339,23 @@ export const db = {
   // Users - Admin only
   getAllUsers: async () => {
     try {
-      // Fetch users from multiple sources to get all registered students
+      // First, try to fetch from API route (uses service role key to get all users)
+      try {
+        const response = await fetch('/api/users');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.data && result.data.length > 0) {
+            console.log('getAllUsers - Fetched from API:', result.data.length, 'students');
+            return { data: result.data, error: null };
+          }
+        } else {
+          console.warn('getAllUsers - API route failed, falling back to table queries');
+        }
+      } catch (apiError) {
+        console.warn('getAllUsers - API route error, falling back to table queries:', apiError);
+      }
+
+      // Fallback: Fetch users from multiple sources (if API route not available or no service key)
       const [classesResult, homeworkResult, classRequestsResult] = await Promise.all([
         supabase
           .from('classes')
