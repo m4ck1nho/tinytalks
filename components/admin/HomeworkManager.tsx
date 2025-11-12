@@ -106,7 +106,7 @@ export default function HomeworkManager() {
       // Convert due_date from datetime-local to ISO string
       const dueDateISO = new Date(formData.due_date).toISOString();
       
-      // Build homework data - include student_id only if we have it
+      // Build homework data - explicitly set student_id to null if not found
       const homeworkData: Record<string, unknown> = {
         student_name: formData.student_name,
         student_email: formData.student_email,
@@ -114,16 +114,13 @@ export default function HomeworkManager() {
         description: formData.description,
         due_date: dueDateISO,
         status: 'assigned',
+        // Explicitly set student_id - null if not found, or the actual ID if found
+        student_id: finalStudentId || null,
       };
       
-      // Only include student_id if we have it
-      // If no student_id, we'll leave it null (database allows NULL after migration)
-      if (finalStudentId) {
-        homeworkData.student_id = finalStudentId;
-      } else if (!editingHomework) {
+      if (!finalStudentId && !editingHomework) {
         // No student_id found - assign by email only
-        // student_id will be NULL, which is allowed after the migration
-        console.log('Assigning homework by email only (no student_id)');
+        console.log('Assigning homework by email only (student_id will be NULL)');
       }
       
       if (editingHomework) {
