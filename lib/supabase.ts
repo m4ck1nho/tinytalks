@@ -338,50 +338,74 @@ export const db = {
 
   // Users - Admin only
   getAllUsers: async () => {
-    // Fetch users from multiple sources to get all registered students
-    const [classesResult, homeworkResult, classRequestsResult] = await Promise.all([
-      supabase
-        .from('classes')
-        .select('student_id, student_name, student_email')
-        .order('student_name'),
-      supabase
-        .from('homework')
-        .select('student_id, student_name, student_email')
-        .order('student_name'),
-      supabase
-        .from('class_requests')
-        .select('student_id, student_name, student_email')
-        .order('student_name')
-    ]);
-    
-    // Combine all sources
-    const allUsers = [
-      ...(classesResult.data || []),
-      ...(homeworkResult.data || []),
-      ...(classRequestsResult.data || [])
-    ];
-    
-    // Get unique users by student_id, prioritizing the most recent name/email
-    const userMap = new Map();
-    
-    allUsers
-      .filter(item => item.student_id) // Only include items with student_id
-      .forEach(item => {
-        const existing = userMap.get(item.student_id);
-        // If user already exists, keep existing entry (classes/homework take priority over requests)
-        if (!existing) {
-          userMap.set(item.student_id, {
-            student_id: item.student_id,
-            student_name: item.student_name,
-            student_email: item.student_email
-          });
-        }
-      });
-    
-    const uniqueUsers = Array.from(userMap.values())
-      .sort((a, b) => (a.student_name || '').localeCompare(b.student_name || ''));
-    
-    return { data: uniqueUsers, error: null };
+    try {
+      // Fetch users from multiple sources to get all registered students
+      const [classesResult, homeworkResult, classRequestsResult] = await Promise.all([
+        supabase
+          .from('classes')
+          .select('student_id, student_name, student_email')
+          .order('student_name'),
+        supabase
+          .from('homework')
+          .select('student_id, student_name, student_email')
+          .order('student_name'),
+        supabase
+          .from('class_requests')
+          .select('student_id, student_name, student_email')
+          .order('student_name')
+      ]);
+      
+      // Log results for debugging
+      console.log('getAllUsers - Classes:', classesResult.data?.length || 0, classesResult.error ? 'ERROR: ' + classesResult.error.message : 'OK');
+      console.log('getAllUsers - Homework:', homeworkResult.data?.length || 0, homeworkResult.error ? 'ERROR: ' + homeworkResult.error.message : 'OK');
+      console.log('getAllUsers - Class Requests:', classRequestsResult.data?.length || 0, classRequestsResult.error ? 'ERROR: ' + classRequestsResult.error.message : 'OK');
+      
+      // Combine all sources (ignore errors, use what we can get)
+      const allUsers: Array<{ student_id: string; student_name: string; student_email: string }> = [
+        ...(classesResult.data || []),
+        ...(homeworkResult.data || []),
+        ...(classRequestsResult.data || [])
+      ];
+      
+      console.log('getAllUsers - Total combined:', allUsers.length);
+      
+      // Get unique users by student_id
+      const userMap = new Map<string, { student_id: string; student_name: string; student_email: string }>();
+      
+      allUsers
+        .filter(item => item && item.student_id) // Only include items with student_id
+        .forEach(item => {
+          if (!userMap.has(item.student_id)) {
+            userMap.set(item.student_id, {
+              student_id: item.student_id,
+              student_name: item.student_name || 'Unknown',
+              student_email: item.student_email || 'No email'
+            });
+          }
+        });
+      
+      const uniqueUsers = Array.from(userMap.values())
+        .sort((a, b) => (a.student_name || '').localeCompare(b.student_name || ''));
+      
+      console.log('getAllUsers - Unique users:', uniqueUsers.length);
+      
+      // Return error if any critical query failed, but still return what we have
+      const hasError = classesResult.error || homeworkResult.error || classRequestsResult.error;
+      if (hasError && uniqueUsers.length === 0) {
+        return { 
+          data: null, 
+          error: classesResult.error || homeworkResult.error || classRequestsResult.error 
+        };
+      }
+      
+      return { data: uniqueUsers, error: null };
+    } catch (error) {
+      console.error('getAllUsers - Unexpected error:', error);
+      return { 
+        data: null, 
+        error: error instanceof Error ? error : new Error('Unknown error fetching users') 
+      };
+    }
   },
 
   // Teacher Availability
