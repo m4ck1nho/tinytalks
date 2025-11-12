@@ -106,7 +106,7 @@ export default function HomeworkManager() {
       // Convert due_date from datetime-local to ISO string
       const dueDateISO = new Date(formData.due_date).toISOString();
       
-      // Build homework data - explicitly set student_id to null if not found
+      // Build homework data
       const homeworkData: Record<string, unknown> = {
         student_name: formData.student_name,
         student_email: formData.student_email,
@@ -114,9 +114,15 @@ export default function HomeworkManager() {
         description: formData.description,
         due_date: dueDateISO,
         status: 'assigned',
-        // Explicitly set student_id - null if not found, or the actual ID if found
-        student_id: finalStudentId || null,
       };
+      
+      // Only include student_id if we have a valid one
+      // If null/empty, don't include it at all (database will use NULL)
+      if (finalStudentId) {
+        homeworkData.student_id = finalStudentId;
+      }
+      // If no student_id, we don't include it - database will use NULL (after migration)
+      // If migration not run, this will fail, but we'll show a helpful error
       
       if (!finalStudentId && !editingHomework) {
         // No student_id found - assign by email only
@@ -136,7 +142,16 @@ export default function HomeworkManager() {
       } else {
         const { error: createError } = await db.createHomework(homeworkData);
         if (createError) {
-          setError(`Failed to create homework: ${createError.message}`);
+          // Check if it's a foreign key constraint error
+          if (createError.message?.includes('foreign key constraint') || createError.message?.includes('homework_student_id_fkey')) {
+            setError(
+              'Database migration required! Please run the migration script in Supabase SQL Editor: ' +
+              'docs/make-homework-student-id-nullable.sql ' +
+              'This will allow assigning homework by email without requiring a registered student.'
+            );
+          } else {
+            setError(`Failed to create homework: ${createError.message}`);
+          }
           console.error('Error creating homework:', createError);
         } else {
           setSuccess('Homework assigned successfully!');

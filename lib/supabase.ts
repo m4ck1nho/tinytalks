@@ -399,25 +399,45 @@ export const db = {
       
       console.log('getAllUsers - Total combined:', allUsers.length);
       
-      // Get unique users by student_id
-      const userMap = new Map<string, { student_id: string; student_name: string; student_email: string }>();
+      // Get unique users by student_id (include those with student_id)
+      // Also group by email for students without student_id
+      const userMapById = new Map<string, { student_id: string; student_name: string; student_email: string }>();
+      const userMapByEmail = new Map<string, { student_id: string; student_name: string; student_email: string }>();
       
       allUsers
-        .filter(item => item && item.student_id) // Only include items with student_id
+        .filter(item => item && (item.student_id || item.student_email)) // Include items with student_id OR email
         .forEach(item => {
-          if (!userMap.has(item.student_id)) {
-            userMap.set(item.student_id, {
-              student_id: item.student_id,
-              student_name: item.student_name || 'Unknown',
-              student_email: item.student_email || 'No email'
-            });
+          if (item.student_id) {
+            // Group by student_id
+            if (!userMapById.has(item.student_id)) {
+              userMapById.set(item.student_id, {
+                student_id: item.student_id,
+                student_name: item.student_name || 'Unknown',
+                student_email: item.student_email || 'No email'
+              });
+            }
+          } else if (item.student_email) {
+            // Group by email for students without student_id
+            const emailKey = item.student_email.toLowerCase();
+            if (!userMapByEmail.has(emailKey)) {
+              userMapByEmail.set(emailKey, {
+                student_id: '', // No student_id
+                student_name: item.student_name || 'Unknown',
+                student_email: item.student_email
+              });
+            }
           }
         });
       
-      const uniqueUsers = Array.from(userMap.values())
-        .sort((a, b) => (a.student_name || '').localeCompare(b.student_name || ''));
+      // Combine both maps, prioritizing student_id entries
+      const uniqueUsers = [
+        ...Array.from(userMapById.values()),
+        ...Array.from(userMapByEmail.values())
+      ].sort((a, b) => (a.student_name || '').localeCompare(b.student_name || ''));
       
-      console.log('getAllUsers - Unique users:', uniqueUsers.length);
+      console.log('getAllUsers - Unique users by ID:', userMapById.size);
+      console.log('getAllUsers - Unique users by email:', userMapByEmail.size);
+      console.log('getAllUsers - Total unique users:', uniqueUsers.length);
       
       // Return error if any critical query failed, but still return what we have
       const hasError = classesResult.error || homeworkResult.error || classRequestsResult.error;
