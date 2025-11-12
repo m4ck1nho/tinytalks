@@ -107,7 +107,7 @@ export default function HomeworkManager() {
       const dueDateISO = new Date(formData.due_date).toISOString();
       
       // Build homework data - include student_id only if we have it
-      const homeworkData: any = {
+      const homeworkData: Record<string, unknown> = {
         student_name: formData.student_name,
         student_email: formData.student_email,
         title: formData.title,
