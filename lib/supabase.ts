@@ -399,6 +399,14 @@ export const db = {
       
       console.log('getAllUsers - Total combined:', allUsers.length);
       
+      // Debug: Show sample of what we're getting
+      if (allUsers.length > 0) {
+        const sampleIds = [...new Set(allUsers.slice(0, 5).map(u => u.student_id).filter(Boolean))];
+        const sampleEmails = [...new Set(allUsers.slice(0, 5).map(u => u.student_email).filter(Boolean))];
+        console.log('getAllUsers - Sample student_ids:', sampleIds);
+        console.log('getAllUsers - Sample emails:', sampleEmails);
+      }
+      
       // Get unique users by student_id (include those with student_id)
       // Also group by email for students without student_id
       const userMapById = new Map<string, { student_id: string; student_name: string; student_email: string }>();
@@ -407,7 +415,7 @@ export const db = {
       allUsers
         .filter(item => item && (item.student_id || item.student_email)) // Include items with student_id OR email
         .forEach(item => {
-          if (item.student_id) {
+          if (item.student_id && item.student_id.trim() !== '') {
             // Group by student_id
             if (!userMapById.has(item.student_id)) {
               userMapById.set(item.student_id, {
@@ -416,9 +424,9 @@ export const db = {
                 student_email: item.student_email || 'No email'
               });
             }
-          } else if (item.student_email) {
+          } else if (item.student_email && item.student_email.trim() !== '') {
             // Group by email for students without student_id
-            const emailKey = item.student_email.toLowerCase();
+            const emailKey = item.student_email.toLowerCase().trim();
             if (!userMapByEmail.has(emailKey)) {
               userMapByEmail.set(emailKey, {
                 student_id: '', // No student_id
@@ -438,6 +446,9 @@ export const db = {
       console.log('getAllUsers - Unique users by ID:', userMapById.size);
       console.log('getAllUsers - Unique users by email:', userMapByEmail.size);
       console.log('getAllUsers - Total unique users:', uniqueUsers.length);
+      if (uniqueUsers.length > 0) {
+        console.log('getAllUsers - First 3 users:', uniqueUsers.slice(0, 3).map(u => ({ name: u.student_name, email: u.student_email, id: u.student_id })));
+      }
       
       // Return error if any critical query failed, but still return what we have
       const hasError = classesResult.error || homeworkResult.error || classRequestsResult.error;

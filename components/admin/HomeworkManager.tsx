@@ -142,17 +142,23 @@ export default function HomeworkManager() {
       } else {
         const { error: createError } = await db.createHomework(homeworkData);
         if (createError) {
-          // Check if it's a foreign key constraint error
-          if (createError.message?.includes('foreign key constraint') || createError.message?.includes('homework_student_id_fkey')) {
+          console.error('Error creating homework - Full error:', createError);
+          // Check for different error types
+          const errorMsg = createError.message || JSON.stringify(createError);
+          if (errorMsg.includes('foreign key constraint') || errorMsg.includes('homework_student_id_fkey')) {
             setError(
               'Database migration required! Please run the migration script in Supabase SQL Editor: ' +
               'docs/make-homework-student-id-nullable.sql ' +
               'This will allow assigning homework by email without requiring a registered student.'
             );
+          } else if (errorMsg.includes('409') || errorMsg.includes('conflict')) {
+            setError(
+              'Conflict error. This might be a duplicate entry or constraint violation. ' +
+              'Please check if the homework already exists or run the migration script to allow NULL student_id.'
+            );
           } else {
-            setError(`Failed to create homework: ${createError.message}`);
+            setError(`Failed to create homework: ${errorMsg}`);
           }
-          console.error('Error creating homework:', createError);
         } else {
           setSuccess('Homework assigned successfully!');
           resetForm();
