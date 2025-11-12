@@ -338,31 +338,48 @@ export const db = {
 
   // Users - Admin only
   getAllUsers: async () => {
-    // Fetch users from classes table
-    const { data: classesData } = await supabase
-      .from('classes')
-      .select('student_id, student_name, student_email')
-      .order('student_name');
+    // Fetch users from multiple sources to get all registered students
+    const [classesResult, homeworkResult, classRequestsResult] = await Promise.all([
+      supabase
+        .from('classes')
+        .select('student_id, student_name, student_email')
+        .order('student_name'),
+      supabase
+        .from('homework')
+        .select('student_id, student_name, student_email')
+        .order('student_name'),
+      supabase
+        .from('class_requests')
+        .select('student_id, student_name, student_email')
+        .order('student_name')
+    ]);
     
-    // Also fetch users from homework table (in case they have homework but no classes)
-    const { data: homeworkData } = await supabase
-      .from('homework')
-      .select('student_id, student_name, student_email')
-      .order('student_name');
-    
-    // Combine both sources
+    // Combine all sources
     const allUsers = [
-      ...(classesData || []),
-      ...(homeworkData || [])
+      ...(classesResult.data || []),
+      ...(homeworkResult.data || []),
+      ...(classRequestsResult.data || [])
     ];
     
-    // Get unique users by student_id
-    const uniqueUsers = Array.from(
-      new Map(allUsers
-        .filter(item => item.student_id) // Only include items with student_id
-        .map(item => [item.student_id, item]))
-        .values()
-    );
+    // Get unique users by student_id, prioritizing the most recent name/email
+    const userMap = new Map();
+    
+    allUsers
+      .filter(item => item.student_id) // Only include items with student_id
+      .forEach(item => {
+        const existing = userMap.get(item.student_id);
+        // If user already exists, keep existing entry (classes/homework take priority over requests)
+        if (!existing) {
+          userMap.set(item.student_id, {
+            student_id: item.student_id,
+            student_name: item.student_name,
+            student_email: item.student_email
+          });
+        }
+      });
+    
+    const uniqueUsers = Array.from(userMap.values())
+      .sort((a, b) => (a.student_name || '').localeCompare(b.student_name || ''));
     
     return { data: uniqueUsers, error: null };
   },

@@ -61,7 +61,9 @@ export default function HomeworkManager() {
     const { data, error } = await db.getAllUsers();
     if (error) {
       console.error('Error fetching users:', error);
+      setUsers([]);
     } else {
+      console.log('Fetched users:', data?.length || 0, 'students found');
       setUsers(data || []);
     }
   };
