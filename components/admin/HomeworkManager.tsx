@@ -326,7 +326,7 @@ export default function HomeworkManager() {
                       ⚠️ Manual Entry Not Recommended
                     </p>
                     <p className="text-xs text-amber-700">
-                      Manual entry requires a valid student UUID. For best results, please use the "Select from registered students" option above. 
+                      Manual entry requires a valid student UUID. For best results, please use the &quot;Select from registered students&quot; option above. 
                       If a student is not in the list, they need to have at least one class or homework assignment first.
                     </p>
                   </div>
@@ -370,7 +370,7 @@ export default function HomeworkManager() {
                 </p>
                 <p className="text-sm text-red-700">
                   Homework can only be assigned to registered students with a valid student ID. 
-                  Please check the "Select from registered students" checkbox above and choose a student from the dropdown list.
+                  Please check the &quot;Select from registered students&quot; checkbox above and choose a student from the dropdown list.
                 </p>
               </div>
             )}
