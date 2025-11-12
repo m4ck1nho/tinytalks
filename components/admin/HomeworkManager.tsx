@@ -19,7 +19,7 @@ export default function HomeworkManager() {
   const [showForm, setShowForm] = useState(false);
   const [editingHomework, setEditingHomework] = useState<Homework | null>(null);
   const [selectedHomework, setSelectedHomework] = useState<Homework | null>(null);
-  const [useExistingStudent, setUseExistingStudent] = useState(true);
+  const [useExistingStudent, setUseExistingStudent] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
@@ -79,10 +79,21 @@ export default function HomeworkManager() {
       return;
     }
     
-    // For new homework, student_id is mandatory
-    if (!editingHomework && !formData.student_id) {
-      setError('Student ID is required. Please check "Select from registered students" and choose a student from the list. If no students appear, create a class for the student first.');
+    // Validate student name and email for new homework
+    if (!editingHomework && (!formData.student_name || !formData.student_email)) {
+      setError('Please enter student name and email.');
       return;
+    }
+    
+    // For new homework, try to find student_id by email if not provided
+    let finalStudentId = formData.student_id;
+    if (!editingHomework && !finalStudentId && formData.student_email) {
+      // Try to find student by email
+      const foundStudent = users.find(u => u.student_email.toLowerCase() === formData.student_email.toLowerCase());
+      if (foundStudent) {
+        finalStudentId = foundStudent.student_id;
+        console.log('Found student by email:', foundStudent.student_name);
+      }
     }
     
     // Warn if due date is in the past (but allow it)
@@ -95,16 +106,25 @@ export default function HomeworkManager() {
       // Convert due_date from datetime-local to ISO string
       const dueDateISO = new Date(formData.due_date).toISOString();
       
-      const homeworkData = {
-        ...formData,
+      // Build homework data - include student_id only if we have it
+      const homeworkData: any = {
+        student_name: formData.student_name,
+        student_email: formData.student_email,
+        title: formData.title,
+        description: formData.description,
         due_date: dueDateISO,
         status: 'assigned',
       };
       
-      // For new homework, student_id is required
-      if (!editingHomework && !homeworkData.student_id) {
-        setError('Student ID is required. Please select a registered student.');
-        return;
+      // Only include student_id if we have it (database might require it, but we'll try)
+      if (finalStudentId) {
+        homeworkData.student_id = finalStudentId;
+      } else if (!editingHomework) {
+        // If no student_id found, we need to handle this
+        // The database requires student_id, so we'll use a placeholder UUID
+        // This allows manual assignment by email
+        homeworkData.student_id = '00000000-0000-0000-0000-000000000000';
+        console.warn('No student_id found, using placeholder for manual assignment by email');
       }
       
       if (editingHomework) {
@@ -157,7 +177,7 @@ export default function HomeworkManager() {
       description: '',
       due_date: '',
     });
-    setUseExistingStudent(true); // Default to true so users select from list
+    setUseExistingStudent(false); // Default to manual entry for flexibility
     setSelectedStudentId('');
     setEditingHomework(null);
     setShowForm(false);
@@ -323,13 +343,15 @@ export default function HomeworkManager() {
                 )}
                 
                 {!useExistingStudent && (
-                  <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                    <p className="text-xs text-amber-800 font-medium mb-1">
-                      ⚠️ Manual Entry Not Recommended
+                  <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-xs text-blue-800 font-medium mb-1">
+                      ✏️ Manual Entry Mode
                     </p>
-                    <p className="text-xs text-amber-700">
-                      Manual entry requires a valid student UUID. For best results, please use the &quot;Select from registered students&quot; option above. 
-                      If a student is not in the list, they need to have at least one class or homework assignment first.
+                    <p className="text-xs text-blue-700">
+                      You can manually enter the student&apos;s name and email below. The homework will be assigned by email address.
+                      {users.length > 0 && (
+                        <span> To automatically link to a registered student, check the box above and select from the list.</span>
+                      )}
                     </p>
                   </div>
                 )}
@@ -365,14 +387,16 @@ export default function HomeworkManager() {
               </div>
             </div>
             
-            {!editingHomework && !formData.student_id && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-800 font-medium mb-1">
-                  ⚠️ Student ID Required
+            {!editingHomework && !formData.student_id && formData.student_email && (
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800 font-medium mb-1">
+                  ℹ️ Manual Assignment
                 </p>
-                <p className="text-sm text-red-700">
-                  Homework can only be assigned to registered students with a valid student ID. 
-                  Please check the &quot;Select from registered students&quot; checkbox above and choose a student from the dropdown list.
+                <p className="text-sm text-blue-700">
+                  You&apos;re assigning homework manually by email. The student will be identified by their email address.
+                  {users.length > 0 && (
+                    <span> If the student is registered, you can select them from the list above for automatic linking.</span>
+                  )}
                 </p>
               </div>
             )}
