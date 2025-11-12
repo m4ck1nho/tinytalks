@@ -9,7 +9,6 @@ import Navbar from '@/components/public/Navbar';
 import Footer from '@/components/public/Footer';
 import { CalendarIcon, ArrowRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
-import BlogSubscribeForm from '@/components/public/BlogSubscribeForm';
 
 export default function BlogPage() {
   const { t, language } = useLanguage();
@@ -90,7 +89,7 @@ export default function BlogPage() {
     <>
       <Navbar />
       <main className="min-h-screen bg-white">
-        <section className="py-12 sm:py-16">
+        <section className="pt-20 pb-12 sm:pt-24 sm:pb-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Header - Clean and Simple */}
             <div className="text-center mb-12">
@@ -261,13 +260,6 @@ export default function BlogPage() {
                   ))}
                 </div>
               </>
-            )}
-
-            {/* Email Subscription Section */}
-            {!loading && !searchQuery && (
-              <div className="mt-16">
-                <BlogSubscribeForm variant="default" />
-              </div>
             )}
           </div>
         </section>

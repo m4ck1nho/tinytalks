@@ -9,7 +9,6 @@ import Navbar from '@/components/public/Navbar';
 import Footer from '@/components/public/Footer';
 import { CalendarIcon, ArrowLeftIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
-import BlogSubscribeForm from '@/components/public/BlogSubscribeForm';
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -127,8 +126,8 @@ export default function BlogPostPage() {
       <Navbar />
       <main className="min-h-screen bg-white">
         {/* Header Section - Clean and Simple */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white border-b border-gray-200 pt-20 sm:pt-24">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
             {/* Back Button */}
             <button
               onClick={() => router.push('/blog')}
@@ -197,11 +196,6 @@ export default function BlogPostPage() {
               prose-blockquote:italic prose-blockquote:text-gray-700"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
-
-          {/* Email Subscription Section */}
-          <div className="mt-16 pt-8 border-t border-gray-200">
-            <BlogSubscribeForm variant="compact" />
-          </div>
 
           {/* CTA Section */}
           <div className="mt-12 pt-8 border-t border-gray-200">

@@ -104,45 +104,6 @@ export const db = {
   deleteBlogPost: (id: string) =>
     supabase.from('blog_posts').delete().eq('id', id),
 
-  // Blog email subscriptions
-  subscribeToBlog: (email: string, name?: string) => {
-    // Check if email already exists
-    return supabase
-      .from('blog_email_subscriptions')
-      .upsert(
-        {
-          email: email.toLowerCase().trim(),
-          name: name || null,
-          subscribed: true,
-          updated_at: new Date().toISOString(),
-        },
-        {
-          onConflict: 'email',
-        }
-      )
-      .select()
-      .single();
-  },
-
-  unsubscribeFromBlog: (email: string) =>
-    supabase
-      .from('blog_email_subscriptions')
-      .update({ subscribed: false, updated_at: new Date().toISOString() })
-      .eq('email', email.toLowerCase().trim()),
-
-  getBlogSubscribers: (activeOnly = true) => {
-    let query = supabase
-      .from('blog_email_subscriptions')
-      .select('*')
-      .order('created_at', { ascending: false });
-    
-    if (activeOnly) {
-      query = query.eq('subscribed', true);
-    }
-    
-    return query;
-  },
-
   // Contact messages
   getContactMessages: () =>
     supabase

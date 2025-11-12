@@ -167,16 +167,6 @@
     "noResults": "No articles found matching your search.",
     "noPosts": "No articles available yet.",
     "mostRecent": "Most Recent Posts",
-    "subscribe": {
-      "title": "Subscribe to Blog Updates",
-      "description": "Get notified when we publish new articles and tips!",
-      "namePlaceholder": "Your name (optional)",
-      "emailPlaceholder": "Enter your email",
-      "button": "Subscribe",
-      "subscribing": "Subscribing...",
-      "success": "Successfully subscribed!",
-      "privacy": "We respect your privacy. Unsubscribe at any time."
-    },
     "ctaTitle": "Ready to Start Learning?",
     "ctaDescription": "Join TinyTalks today and start your language learning journey with expert teachers.",
     "ctaButton": "Get Started"

@@ -90,7 +90,6 @@ export default function BlogPage() {
 
       let result;
       const isNewPost = !editingPost;
-      const wasJustPublished = formData.published && (!editingPost || !editingPost.published);
       
       if (editingPost) {
         // Update existing post
@@ -107,40 +106,6 @@ export default function BlogPage() {
 
       if (result.error) {
         throw result.error;
-      }
-
-      // Notify subscribers if this is a newly published post
-      if (wasJustPublished && result.data) {
-        try {
-          const notifyResponse = await fetch('/api/blog/notify-subscribers', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              postId: result.data.id,
-              postTitle: result.data.title,
-              postSlug: result.data.slug,
-              postExcerpt: result.data.excerpt,
-            }),
-          });
-
-          if (notifyResponse.ok) {
-            const notifyData = await notifyResponse.json();
-            console.log(`📧 Subscribers notified: ${notifyData.count || 0} emails sent`);
-            if (notifyData.failed > 0) {
-              console.warn(`⚠️ ${notifyData.failed} emails failed to send`);
-            }
-          } else {
-            const errorData = await notifyResponse.json().catch(() => ({ error: 'Unknown error' }));
-            console.error('⚠️ Failed to notify subscribers:', errorData);
-            console.warn('⚠️ Post was saved but email notification failed');
-          }
-        } catch (notifyError) {
-          console.error('⚠️ Error notifying subscribers:', notifyError);
-          console.warn('⚠️ Post was saved but email notification failed');
-          // Don't fail the post save if notification fails
-        }
       }
 
       // Reset form
@@ -160,7 +125,7 @@ export default function BlogPage() {
       const successMsg = isNewPost 
         ? 'Post created successfully!' 
         : 'Post updated successfully!';
-      alert(successMsg + (wasJustPublished ? '\n\nSubscribers have been notified.' : ''));
+      alert(successMsg);
     } catch (error) {
       console.error('❌ Error saving post:', error);
       console.error('Error details:', JSON.stringify(error, null, 2));
