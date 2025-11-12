@@ -116,15 +116,14 @@ export default function HomeworkManager() {
         status: 'assigned',
       };
       
-      // Only include student_id if we have it (database might require it, but we'll try)
+      // Only include student_id if we have it
+      // If no student_id, we'll leave it null (database allows NULL after migration)
       if (finalStudentId) {
         homeworkData.student_id = finalStudentId;
       } else if (!editingHomework) {
-        // If no student_id found, we need to handle this
-        // The database requires student_id, so we'll use a placeholder UUID
-        // This allows manual assignment by email
-        homeworkData.student_id = '00000000-0000-0000-0000-000000000000';
-        console.warn('No student_id found, using placeholder for manual assignment by email');
+        // No student_id found - assign by email only
+        // student_id will be NULL, which is allowed after the migration
+        console.log('Assigning homework by email only (no student_id)');
       }
       
       if (editingHomework) {
