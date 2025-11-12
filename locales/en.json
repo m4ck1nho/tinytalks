@@ -165,7 +165,21 @@
     "searchResults": "Found",
     "total": "total",
     "noResults": "No articles found matching your search.",
-    "noPosts": "No articles available yet."
+    "noPosts": "No articles available yet.",
+    "mostRecent": "Most Recent Posts",
+    "subscribe": {
+      "title": "Subscribe to Blog Updates",
+      "description": "Get notified when we publish new articles and tips!",
+      "namePlaceholder": "Your name (optional)",
+      "emailPlaceholder": "Enter your email",
+      "button": "Subscribe",
+      "subscribing": "Subscribing...",
+      "success": "Successfully subscribed!",
+      "privacy": "We respect your privacy. Unsubscribe at any time."
+    },
+    "ctaTitle": "Ready to Start Learning?",
+    "ctaDescription": "Join TinyTalks today and start your language learning journey with expert teachers.",
+    "ctaButton": "Get Started"
   },
   "contact": {
     "badge": "Get In Touch",
@@ -195,7 +209,7 @@
     }
   },
   "footer": {
-    "description": "Your journey to English fluency starts here. Personalized learning from beginner to B1 level.",
+    "description": "Your journey to English fluency starts here. Personalized learning from beginner to advanced level.",
     "quickLinks": "Quick Links",
     "contact": "Contact",
     "onlineClasses": "Online Classes",

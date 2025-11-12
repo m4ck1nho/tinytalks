@@ -9,6 +9,7 @@ import Navbar from '@/components/public/Navbar';
 import Footer from '@/components/public/Footer';
 import { CalendarIcon, ArrowRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
+import BlogSubscribeForm from '@/components/public/BlogSubscribeForm';
 
 export default function BlogPage() {
   const { t, language } = useLanguage();
@@ -88,33 +89,30 @@ export default function BlogPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
-        <section className="py-20">
+      <main className="min-h-screen bg-white">
+        <section className="py-12 sm:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Header */}
-            <div className="text-center mb-16">
-              <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full inline-block mb-4">
-                {t('blog.badge')}
-              </span>
+            {/* Header - Clean and Simple */}
+            <div className="text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-4">
                 {t('blog.title')}
               </h1>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 {t('blog.description')}
               </p>
+            </div>
 
-              {/* Search Bar */}
-              <div className="max-w-2xl mx-auto relative">
-                <div className="relative">
-                  <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-primary-500" />
-                  <input
-                    type="text"
-                    placeholder={t('blog.searchPlaceholder')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all text-lg bg-white/90 backdrop-blur-sm shadow-lg"
-                  />
-                </div>
+            {/* Search Bar - Simplified */}
+            <div className="max-w-2xl mx-auto mb-12">
+              <div className="relative">
+                <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder={t('blog.searchPlaceholder')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-all text-base bg-white"
+                />
               </div>
             </div>
 
@@ -146,44 +144,34 @@ export default function BlogPage() {
               </div>
             )}
 
-            {/* Blog Posts Grid */}
-            {!loading && filteredPosts.length > 0 && (
-              <>
-                <div className="mb-6 text-gray-600">
-                  {searchQuery ? (
-                    <p>
-                      {t('blog.resultsCount')} {filteredPosts.length} {getArticleWord(filteredPosts.length)}
-                    </p>
-                  ) : (
-                    <p>
-                      {posts.length} {getArticleWord(posts.length)} {t('blog.total')}
-                    </p>
-                  )}
-                </div>
-
+            {/* Most Recent Posts Section */}
+            {!loading && filteredPosts.length > 0 && !searchQuery && (
+              <div className="mb-16">
+                <h2 className="text-2xl font-bold text-secondary-900 mb-8">
+                  {t('blog.mostRecent') || 'Most Recent Posts'}
+                </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {filteredPosts.map((post) => (
+                  {filteredPosts.slice(0, 6).map((post) => (
                     <Link
                       href={`/blog/${post.slug}`}
                       key={post.id}
-                      className="bg-white/90 backdrop-blur-xl rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-white/60 transition-all duration-300 group cursor-pointer flex flex-col hover:-translate-y-1"
+                      className="group cursor-pointer"
                     >
                       {post.image && (
-                        <div className="relative h-56 overflow-hidden">
+                        <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
                           <Image
                             src={post.image}
                             alt={post.title}
                             fill
-                            className="object-cover group-hover:scale-110 transition-transform duration-300"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                             unoptimized
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                       )}
                       
-                      <div className="p-6 flex-1 flex flex-col">
-                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                          <CalendarIcon className="w-4 h-4 text-primary-500" />
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <CalendarIcon className="w-4 h-4" />
                           <span>
                             {new Date(post.createdAt).toLocaleDateString(locale, {
                               year: 'numeric',
@@ -195,15 +183,76 @@ export default function BlogPage() {
                           <span>{calculateReadingTime(post.content)} {t('blog.minRead')}</span>
                         </div>
                         
-                        <h3 className="text-xl font-bold text-secondary-900 mb-3 line-clamp-2 group-hover:text-primary-500 transition-colors">
+                        <h3 className="text-xl font-bold text-secondary-900 group-hover:text-primary-500 transition-colors leading-tight">
                           {post.title}
                         </h3>
                         
-                        <p className="text-gray-600 mb-4 line-clamp-3 flex-1 leading-relaxed">
+                        <p className="text-gray-600 line-clamp-3 leading-relaxed">
                           {post.excerpt}
                         </p>
                         
-                        <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all mt-auto">
+                        <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all inline-block">
+                          {t('blog.readMore')}
+                          <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Search Results or All Posts */}
+            {!loading && filteredPosts.length > 0 && searchQuery && (
+              <>
+                <div className="mb-8 text-gray-600">
+                  <p>
+                    {t('blog.resultsCount')} {filteredPosts.length} {getArticleWord(filteredPosts.length)}
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredPosts.map((post) => (
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      key={post.id}
+                      className="group cursor-pointer"
+                    >
+                      {post.image && (
+                        <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
+                          <Image
+                            src={post.image}
+                            alt={post.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            unoptimized
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <CalendarIcon className="w-4 h-4" />
+                          <span>
+                            {new Date(post.createdAt).toLocaleDateString(locale, {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                          </span>
+                          <span className="mx-2">•</span>
+                          <span>{calculateReadingTime(post.content)} {t('blog.minRead')}</span>
+                        </div>
+                        
+                        <h3 className="text-xl font-bold text-secondary-900 group-hover:text-primary-500 transition-colors leading-tight">
+                          {post.title}
+                        </h3>
+                        
+                        <p className="text-gray-600 line-clamp-3 leading-relaxed">
+                          {post.excerpt}
+                        </p>
+                        
+                        <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all inline-block">
                           {t('blog.readMore')}
                           <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </span>
@@ -212,6 +261,13 @@ export default function BlogPage() {
                   ))}
                 </div>
               </>
+            )}
+
+            {/* Email Subscription Section */}
+            {!loading && !searchQuery && (
+              <div className="mt-16">
+                <BlogSubscribeForm variant="default" />
+              </div>
             )}
           </div>
         </section>
