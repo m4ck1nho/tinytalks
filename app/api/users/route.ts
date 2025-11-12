@@ -1,10 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
   try {
-    // Get the current user's session
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -16,35 +14,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Create client to check authentication
-    const cookieStore = await cookies();
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    });
+    // Get authorization header
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.replace('Bearer ', '');
 
-    // Check if user is authenticated and is admin
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const userRole = user.user_metadata?.role || 'student';
-    if (userRole !== 'admin') {
-      return NextResponse.json(
-        { error: 'Forbidden - Admin access required' },
-        { status: 403 }
-      );
-    }
-
-    // If service role key is available, use it to query auth.users directly
+    // If service role key is available, use it to verify user and get all users
     if (supabaseServiceKey) {
       const adminClient = createClient(supabaseUrl, supabaseServiceKey, {
         auth: {
@@ -52,6 +26,32 @@ export async function GET(request: NextRequest) {
           persistSession: false,
         },
       });
+
+      // If we have a token, verify the user is admin
+      if (token) {
+        const { data: { user }, error: userError } = await adminClient.auth.getUser(token);
+        
+        if (userError || !user) {
+          return NextResponse.json(
+            { error: 'Unauthorized' },
+            { status: 401 }
+          );
+        }
+
+        const userRole = user.user_metadata?.role || 'student';
+        if (userRole !== 'admin') {
+          return NextResponse.json(
+            { error: 'Forbidden - Admin access required' },
+            { status: 403 }
+          );
+        }
+      } else {
+        // No token provided - require authentication
+        return NextResponse.json(
+          { error: 'Unauthorized - No token provided' },
+          { status: 401 }
+        );
+      }
 
       // Query auth.users to get all users with role 'student' or no role
       const { data: users, error: usersError } = await adminClient.auth.admin.listUsers();

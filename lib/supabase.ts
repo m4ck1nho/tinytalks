@@ -341,15 +341,29 @@ export const db = {
     try {
       // First, try to fetch from API route (uses service role key to get all users)
       try {
-        const response = await fetch('/api/users');
-        if (response.ok) {
-          const result = await response.json();
-          if (result.data && result.data.length > 0) {
-            console.log('getAllUsers - Fetched from API:', result.data.length, 'students');
-            return { data: result.data, error: null };
+        // Get the current session token
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+
+        if (token) {
+          const response = await fetch('/api/users', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            if (result.data && result.data.length > 0) {
+              console.log('getAllUsers - Fetched from API:', result.data.length, 'students');
+              return { data: result.data, error: null };
+            }
+          } else {
+            const errorData = await response.json().catch(() => ({}));
+            console.warn('getAllUsers - API route failed:', response.status, errorData);
           }
         } else {
-          console.warn('getAllUsers - API route failed, falling back to table queries');
+          console.warn('getAllUsers - No session token, falling back to table queries');
         }
       } catch (apiError) {
         console.warn('getAllUsers - API route error, falling back to table queries:', apiError);
