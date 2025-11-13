@@ -197,11 +197,22 @@ export default function SettingsPage() {
     );
   }
 
+  const getPricingValue = (key: string): { price: string; currency: string } | null => {
+    const value = getSettingValue(key);
+    if (!value || typeof value !== 'object') return null;
+    const price = value.price;
+    const currency = value.currency;
+    if (typeof price === 'string' && typeof currency === 'string') {
+      return { price, currency };
+    }
+    return null;
+  };
+
   const pricingPlans = [
-    { key: 'trial', label: 'Trial Lesson', current: getSettingValue('pricing_trial') },
-    { key: 'individual', label: 'Individual Lesson', current: getSettingValue('pricing_individual') },
-    { key: 'async', label: 'Asynchronous Learning', current: getSettingValue('pricing_async') },
-    { key: 'group', label: 'Group Lesson', current: getSettingValue('pricing_group') },
+    { key: 'trial', label: 'Trial Lesson', current: getPricingValue('pricing_trial') },
+    { key: 'individual', label: 'Individual Lesson', current: getPricingValue('pricing_individual') },
+    { key: 'async', label: 'Asynchronous Learning', current: getPricingValue('pricing_async') },
+    { key: 'group', label: 'Group Lesson', current: getPricingValue('pricing_group') },
   ];
 
   return (
@@ -424,7 +435,7 @@ export default function SettingsPage() {
                 <div className="flex items-end">
                   <div className="text-sm text-gray-600">
                     Current: <span className="font-semibold">
-                      {plan.current?.price || '0'} {plan.current?.currency || '₽'}
+                      {plan.current ? `${plan.current.price} ${plan.current.currency}` : '0 ₽'}
                     </span>
                   </div>
                 </div>
