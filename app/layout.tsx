@@ -4,6 +4,8 @@ import './globals.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { HtmlLangWrapper } from '@/components/shared/HtmlLangWrapper';
 import { Analytics } from '@vercel/analytics/next';
+import FaviconUpdater from '@/components/shared/FaviconUpdater';
+import TitleUpdater from '@/components/shared/TitleUpdater';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -39,6 +41,8 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
+        <FaviconUpdater />
+        <TitleUpdater />
         <LanguageProvider>
           <HtmlLangWrapper>
             {children}

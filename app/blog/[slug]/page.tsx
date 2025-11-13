@@ -13,7 +13,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export default function BlogPostPage() {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const slug = params?.slug as string;
   const { t, language } = useLanguage();
   
   const [post, setPost] = useState<BlogPost | null>(null);
@@ -21,24 +21,66 @@ export default function BlogPostPage() {
   const [error, setError] = useState<'not_found' | 'failed' | null>(null);
 
   useEffect(() => {
+    if (!slug) {
+      setError('not_found');
+      setLoading(false);
+      return;
+    }
+
     const fetchPost = async () => {
       try {
-        console.log('📖 Fetching blog post with slug:', slug);
+        // Decode URL-encoded slug
+        const decodedSlug = decodeURIComponent(slug);
         
-        const { data, error } = await db.getPublishedBlogPostBySlug(slug);
+        // Try exact match first
+        let { data, error } = await db.getPublishedBlogPostBySlug(decodedSlug);
 
-        if (error) {
-          console.error('❌ Error fetching post:', error);
-          throw error;
+        // If not found, try with original slug
+        if ((error || !data) && decodedSlug !== slug) {
+          const result = await db.getPublishedBlogPostBySlug(slug);
+          if (!result.error && result.data) {
+            data = result.data;
+            error = null;
+          }
         }
 
-        if (!data) {
-          console.error('❌ Post not found or unpublished with slug:', slug);
+        if (error || !data) {
+          // Fallback: Try fetching all posts and match manually
+          const { data: allPosts, error: allError } = await db.getBlogPosts();
+          if (!allError && allPosts) {
+            const matchingPost = allPosts.find((p: any) => {
+              if (!p.published) return false;
+              
+              // Try multiple matching strategies
+              const dbSlug = p.slug || '';
+              const urlSlug = decodedSlug || slug;
+              
+              return (
+                dbSlug === urlSlug ||
+                dbSlug === slug ||
+                dbSlug.toLowerCase() === urlSlug.toLowerCase() ||
+                decodeURIComponent(dbSlug) === decodeURIComponent(urlSlug) ||
+                encodeURIComponent(dbSlug) === encodeURIComponent(urlSlug)
+              );
+            });
+            
+            if (matchingPost) {
+              const mappedPost = {
+                ...matchingPost,
+                createdAt: matchingPost.created_at,
+                updatedAt: matchingPost.updated_at,
+                metaDescription: matchingPost.meta_description,
+              };
+              setPost(mappedPost);
+              setLoading(false);
+              return;
+            }
+          }
+          
+          if (error) throw error;
           setError('not_found');
           return;
         }
-
-        console.log('✅ Blog post loaded:', data.title);
 
         // Map database fields to component format
         const mappedPost = {
@@ -50,7 +92,6 @@ export default function BlogPostPage() {
         
         setPost(mappedPost);
       } catch (err) {
-        console.error('❌ Error loading blog post:', err);
         setError('failed');
       } finally {
         setLoading(false);
@@ -161,6 +202,7 @@ export default function BlogPostPage() {
                 src={post.image}
                 alt={post.title}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 896px"
                 className="object-cover"
                 priority
               />
@@ -180,7 +222,7 @@ export default function BlogPostPage() {
               prose-strong:text-secondary-900 prose-strong:font-semibold
               prose-ul:my-6 prose-ul:space-y-2 prose-li:text-gray-700 prose-li:leading-relaxed
               prose-ol:my-6 prose-ol:space-y-2 prose-li:text-gray-700 prose-li:leading-relaxed
-              prose-img:rounded-lg prose-img:my-8 prose-img:shadow-md
+              prose-img:rounded-lg prose-img:my-8 prose-img:shadow-md prose-img:max-w-full prose-img:h-auto prose-img:w-auto prose-img:block
               prose-blockquote:border-l-4 prose-blockquote:border-primary-500 
               prose-blockquote:bg-primary-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:my-6
               prose-blockquote:italic prose-blockquote:text-gray-700"

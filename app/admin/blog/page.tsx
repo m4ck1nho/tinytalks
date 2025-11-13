@@ -20,6 +20,8 @@ export default function BlogPage() {
     published: false,
   });
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
+  const [featuredImageUrl, setFeaturedImageUrl] = useState<string>('');
+  const [useImageUrl, setUseImageUrl] = useState<boolean>(false);
   const [uploading, setUploading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
@@ -57,14 +59,73 @@ export default function BlogPage() {
   };
 
   const generateSlug = (title: string) => {
-    return title
+    // Transliterate Cyrillic characters to Latin
+    const transliteration: { [key: string]: string } = {
+      'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+      'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+      'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+      'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch',
+      'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+    };
+
+    let slug = title
       .toLowerCase()
+      .split('')
+      .map(char => transliteration[char] || char)
+      .join('')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
+
+    // If slug is empty after processing, use a fallback
+    if (!slug) {
+      slug = 'post-' + Date.now();
+    }
+
+    return slug;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation: Check required fields
+    if (!formData.title.trim()) {
+      alert('Please enter a title for the blog post.');
+      return;
+    }
+
+    if (!formData.excerpt.trim()) {
+      alert('Please enter an excerpt for the blog post.');
+      return;
+    }
+
+    if (!formData.content.trim()) {
+      alert('Please enter content for the blog post.');
+      return;
+    }
+
+    // Validation: Check featured image
+    if (!editingPost?.image && !featuredImage && !featuredImageUrl && formData.published) {
+      const proceed = window.confirm(
+        'No featured image is set. Featured images help posts look better and perform better. Do you want to continue without one?'
+      );
+      if (!proceed) {
+        return;
+      }
+    }
+
+    // Validation: Featured image URL format
+    if (useImageUrl && featuredImageUrl.trim()) {
+      try {
+        const url = new URL(featuredImageUrl.trim());
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+          alert('Image URL must start with http:// or https://');
+          return;
+        }
+      } catch (error) {
+        alert('Please enter a valid image URL (e.g., https://example.com/image.jpg)');
+        return;
+      }
+    }
 
     const encoder = new TextEncoder();
     const contentBytes = encoder.encode(formData.content || '').length;
@@ -90,13 +151,25 @@ export default function BlogPage() {
       return;
     }
 
+    // Final confirmation before publishing
+    if (formData.published && !editingPost) {
+      const confirmPublish = window.confirm(
+        `Ready to publish "${formData.title}"?\n\nOnce published, this post will be visible to all visitors.`
+      );
+      if (!confirmPublish) {
+        return;
+      }
+    }
+
     setUploading(true);
 
     try {
       let imageUrl = editingPost?.image || '';
 
-      // Upload featured image if selected
-      if (featuredImage) {
+      // Use URL if specified, otherwise upload file
+      if (useImageUrl && featuredImageUrl.trim()) {
+        imageUrl = featuredImageUrl.trim();
+      } else if (featuredImage) {
         const fileName = `${Date.now()}_${featuredImage.name}`;
         imageUrl = await storage.uploadImage('blog-images', fileName, featuredImage);
       }
@@ -143,6 +216,8 @@ export default function BlogPage() {
         published: false,
       });
       setFeaturedImage(null);
+      setFeaturedImageUrl('');
+      setUseImageUrl(false);
       setShowForm(false);
       setEditingPost(null);
       
@@ -171,6 +246,15 @@ export default function BlogPage() {
       metaDescription: post.metaDescription || '',
       published: post.published,
     });
+    // Set featured image URL if it's a URL (starts with http), otherwise clear
+    if (post.image && (post.image.startsWith('http://') || post.image.startsWith('https://'))) {
+      setFeaturedImageUrl(post.image);
+      setUseImageUrl(true);
+    } else {
+      setFeaturedImageUrl('');
+      setUseImageUrl(false);
+    }
+    setFeaturedImage(null);
     setShowForm(true);
   };
 
@@ -204,6 +288,8 @@ export default function BlogPage() {
       published: false,
     });
     setFeaturedImage(null);
+    setFeaturedImageUrl('');
+    setUseImageUrl(false);
   };
 
   if (loading) {
@@ -288,12 +374,91 @@ export default function BlogPage() {
               <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Featured Image
               </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setFeaturedImage(e.target.files?.[0] || null)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
-              />
+              
+              {/* Toggle between URL and Upload */}
+              <div className="flex gap-2 mb-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUseImageUrl(false);
+                    setFeaturedImageUrl('');
+                  }}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    !useImageUrl
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Upload Image
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUseImageUrl(true);
+                    setFeaturedImage(null);
+                  }}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    useImageUrl
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Use Image URL
+                </button>
+              </div>
+
+              {useImageUrl ? (
+                <div>
+                  <input
+                    type="url"
+                    value={featuredImageUrl}
+                    onChange={(e) => setFeaturedImageUrl(e.target.value)}
+                    placeholder="https://example.com/image.jpg"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                  />
+                  {editingPost?.image && editingPost.image.startsWith('http') && (
+                    <p className="text-xs text-gray-500 mt-1">Current: {editingPost.image}</p>
+                  )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Enter a direct link to an image (must start with http:// or https://)
+                  </p>
+                  {featuredImageUrl && (
+                    <div className="mt-3">
+                      <p className="text-xs text-gray-600 mb-2">Preview:</p>
+                      <img
+                        src={featuredImageUrl}
+                        alt="Preview"
+                        className="max-w-full h-48 object-contain border border-gray-300 rounded-lg"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setFeaturedImage(e.target.files?.[0] || null)}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Upload an image file (JPG, PNG, GIF, etc.)
+                  </p>
+                  {featuredImage && (
+                    <div className="mt-3">
+                      <p className="text-xs text-gray-600 mb-2">Preview:</p>
+                      <img
+                        src={URL.createObjectURL(featuredImage)}
+                        alt="Preview"
+                        className="max-w-full h-48 object-contain border border-gray-300 rounded-lg"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>

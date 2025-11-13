@@ -149,11 +149,19 @@
 }
 
 .prose img {
-  max-width: 100%;
-  height: auto;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
   border-radius: 0.5rem;
-  margin: 2em 0;
+  margin: 2em auto !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.prose img[src^="http"],
+.prose img[src^="https"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .prose blockquote {

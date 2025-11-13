@@ -128,6 +128,28 @@ export const db = {
   deleteContactMessage: (id: string) =>
     supabase.from('contact_messages').delete().eq('id', id),
 
+  // Site Settings
+  getSettings: () =>
+    supabase.from('site_settings').select('*').order('key', { ascending: true }),
+
+  getSetting: (key: string) =>
+    supabase.from('site_settings').select('*').eq('key', key).maybeSingle(),
+
+  updateSetting: (key: string, value: Record<string, unknown>, description?: string) => {
+    const data: Record<string, unknown> = {
+      value,
+      updated_at: new Date().toISOString(),
+    };
+    if (description) {
+      data.description = description;
+    }
+    return supabase
+      .from('site_settings')
+      .upsert({ key, ...data }, { onConflict: 'key' })
+      .select()
+      .single();
+  },
+
   // Classes
   getClasses: () =>
     supabase

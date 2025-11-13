@@ -41,6 +41,7 @@ export default function About() {
                 src="/images/teacher-about.jpg"
                 alt={t('about.imageAlt')}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 className="object-cover"
                 unoptimized
                 priority

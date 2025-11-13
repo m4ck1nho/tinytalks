@@ -10,7 +10,8 @@ import {
   EnvelopeIcon, 
   ArrowRightOnRectangleIcon,
   Bars3Icon,
-  XMarkIcon 
+  XMarkIcon,
+  Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -131,6 +132,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
     { name: 'Blog Posts', href: '/admin/blog', icon: DocumentTextIcon },
     { name: 'Messages', href: '/admin/messages', icon: EnvelopeIcon },
+    { name: 'Settings', href: '/admin/settings', icon: Cog6ToothIcon },
   ];
 
   if (loading) {

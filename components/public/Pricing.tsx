@@ -1,16 +1,52 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { db } from '@/lib/supabase';
 
 export default function Pricing() {
   const { t } = useLanguage();
-  
+  const [pricingSettings, setPricingSettings] = useState<Record<string, { price: string; currency: string }>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        const { data, error } = await db.getSettings();
+        if (!error && data) {
+          const pricing: Record<string, { price: string; currency: string }> = {};
+          data.forEach((setting: any) => {
+            if (setting.key.startsWith('pricing_')) {
+              const planKey = setting.key.replace('pricing_', '');
+              pricing[planKey] = setting.value;
+            }
+          });
+          setPricingSettings(pricing);
+        }
+      } catch (error) {
+        console.error('Error fetching pricing:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPricing();
+  }, []);
+
+  const getPrice = (planKey: string, fallback: string): string => {
+    return pricingSettings[planKey]?.price || fallback;
+  };
+
+  const getCurrency = (planKey: string, fallback: string): string => {
+    return pricingSettings[planKey]?.currency || fallback;
+  };
+
   const plans = [
     {
       key: 'trial',
       name: t('pricing.trial.name'),
-      price: t('pricing.trial.price'),
-      currency: t('pricing.trial.currency'),
+      price: getPrice('trial', t('pricing.trial.price')),
+      currency: getCurrency('trial', t('pricing.trial.currency')),
       period: t('pricing.trial.period'),
       subtitle: t('pricing.trial.subtitle'),
       duration: t('pricing.trial.duration'),
@@ -21,8 +57,8 @@ export default function Pricing() {
     {
       key: 'individual',
       name: t('pricing.individual.name'),
-      price: t('pricing.individual.price'),
-      currency: t('pricing.individual.currency'),
+      price: getPrice('individual', t('pricing.individual.price')),
+      currency: getCurrency('individual', t('pricing.individual.currency')),
       period: t('pricing.individual.period'),
       subtitle: t('pricing.individual.subtitle'),
       duration: t('pricing.individual.duration'),
@@ -33,8 +69,8 @@ export default function Pricing() {
     {
       key: 'async',
       name: t('pricing.async.name'),
-      price: t('pricing.async.price'),
-      currency: t('pricing.async.currency'),
+      price: getPrice('async', t('pricing.async.price')),
+      currency: getCurrency('async', t('pricing.async.currency')),
       period: t('pricing.async.period'),
       subtitle: t('pricing.async.subtitle'),
       duration: t('pricing.async.duration'),
@@ -45,8 +81,8 @@ export default function Pricing() {
     {
       key: 'group',
       name: t('pricing.group.name'),
-      price: t('pricing.group.price'),
-      currency: t('pricing.group.currency'),
+      price: getPrice('group', t('pricing.group.price')),
+      currency: getCurrency('group', t('pricing.group.currency')),
       period: t('pricing.group.period'),
       subtitle: t('pricing.group.subtitle'),
       duration: t('pricing.group.duration'),
