@@ -235,14 +235,18 @@ export default function SettingsPage() {
             </p>
           </div>
 
-          {getSettingValue('site_title')?.title && (
-            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-              <p className="text-xs text-gray-600 mb-2">Current title:</p>
-              <p className="text-sm font-medium text-gray-900">
-                {getSettingValue('site_title').title}
-              </p>
-            </div>
-          )}
+          {(() => {
+            const titleValue = getSettingValue('site_title');
+            const title = titleValue?.title;
+            return title && typeof title === 'string' ? (
+              <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-600 mb-2">Current title:</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {title}
+                </p>
+              </div>
+            ) : null;
+          })()}
 
           <button
             onClick={updateSiteTitle}
