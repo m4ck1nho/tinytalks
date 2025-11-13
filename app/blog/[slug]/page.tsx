@@ -48,11 +48,11 @@ export default function BlogPostPage() {
           // Fallback: Try fetching all posts and match manually
           const { data: allPosts, error: allError } = await db.getBlogPosts();
           if (!allError && allPosts) {
-            const matchingPost = allPosts.find((p: any) => {
-              if (!p.published) return false;
+            const matchingPost = allPosts.find((p: Record<string, unknown>) => {
+              if (!p.published || typeof p.published !== 'boolean') return false;
               
               // Try multiple matching strategies
-              const dbSlug = p.slug || '';
+              const dbSlug = (p.slug as string) || '';
               const urlSlug = decodedSlug || slug;
               
               return (
@@ -91,7 +91,7 @@ export default function BlogPostPage() {
         };
         
         setPost(mappedPost);
-      } catch (err) {
+      } catch {
         setError('failed');
       } finally {
         setLoading(false);

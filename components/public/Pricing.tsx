@@ -7,7 +7,6 @@ import { db } from '@/lib/supabase';
 export default function Pricing() {
   const { t } = useLanguage();
   const [pricingSettings, setPricingSettings] = useState<Record<string, { price: string; currency: string }>>({});
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPricing = async () => {
@@ -15,7 +14,7 @@ export default function Pricing() {
         const { data, error } = await db.getSettings();
         if (!error && data) {
           const pricing: Record<string, { price: string; currency: string }> = {};
-          data.forEach((setting: any) => {
+          data.forEach((setting: { key: string; value: Record<string, unknown> }) => {
             if (setting.key.startsWith('pricing_')) {
               const planKey = setting.key.replace('pricing_', '');
               pricing[planKey] = setting.value;
@@ -25,8 +24,6 @@ export default function Pricing() {
         }
       } catch (error) {
         console.error('Error fetching pricing:', error);
-      } finally {
-        setLoading(false);
       }
     };
 

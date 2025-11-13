@@ -77,7 +77,7 @@ export default function FaviconUpdater() {
             }
           }
         }
-      } catch (error) {
+      } catch {
         // Silent fail - use default favicon if settings fail
         // This is expected if database is not available or user is not authenticated
       }

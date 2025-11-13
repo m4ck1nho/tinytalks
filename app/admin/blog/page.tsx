@@ -121,7 +121,7 @@ export default function BlogPage() {
           alert('Image URL must start with http:// or https://');
           return;
         }
-      } catch (error) {
+      } catch {
         alert('Please enter a valid image URL (e.g., https://example.com/image.jpg)');
         return;
       }

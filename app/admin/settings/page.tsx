@@ -7,7 +7,7 @@ import { Cog6ToothIcon, PhotoIcon, DocumentTextIcon } from '@heroicons/react/24/
 interface Setting {
   id: string;
   key: string;
-  value: any;
+  value: Record<string, unknown> | null;
   description?: string;
 }
 
@@ -56,7 +56,7 @@ export default function SettingsPage() {
     }
   };
 
-  const getSettingValue = (key: string): any => {
+  const getSettingValue = (key: string): Record<string, unknown> | null => {
     const setting = settings.find(s => s.key === key);
     return setting?.value || null;
   };
