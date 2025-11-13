@@ -340,19 +340,23 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {getSettingValue('favicon')?.url && (
-            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-              <p className="text-xs text-gray-600 mb-2">Current favicon:</p>
-              <img
-                src={getSettingValue('favicon').url}
-                alt="Current favicon"
-                className="w-16 h-16 border border-gray-300 rounded"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
-          )}
+          {(() => {
+            const faviconValue = getSettingValue('favicon');
+            const faviconUrl = faviconValue?.url;
+            return faviconUrl && typeof faviconUrl === 'string' ? (
+              <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-600 mb-2">Current favicon:</p>
+                <img
+                  src={faviconUrl}
+                  alt="Current favicon"
+                  className="w-16 h-16 border border-gray-300 rounded"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+            ) : null;
+          })()}
 
           <button
             onClick={updateFavicon}
