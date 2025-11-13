@@ -64,8 +64,8 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">{t('footer.contact')}</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="mailto:evgeniatinytalks@mail.ru" className="hover:text-white transition-colors">
-                  evgeniatinytalks@mail.ru
+                <a href="mailto:info@tinytalks.pro" className="hover:text-white transition-colors">
+                  info@tinytalks.pro
                 </a>
               </li>
               <li>

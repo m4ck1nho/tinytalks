@@ -38,8 +38,8 @@ export default function Contact() {
                 </div>
                 <div className="flex-1">
                   <div className="font-semibold text-gray-900 mb-1">{t('contact.info.email')}</div>
-                  <a href="mailto:evgeniatinytalks@mail.ru" className="text-gray-600 hover:text-primary-500 transition-colors">
-                    evgeniatinytalks@mail.ru
+                  <a href="mailto:info@tinytalks.pro" className="text-gray-600 hover:text-primary-500 transition-colors">
+                    info@tinytalks.pro
                   </a>
                 </div>
               </div>
