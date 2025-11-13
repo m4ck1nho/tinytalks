@@ -238,7 +238,7 @@ export default function SettingsPage() {
               type="text"
               value={siteTitle}
               onChange={(e) => setSiteTitle(e.target.value)}
-              placeholder="TinyTalks - Learn English with Confidence | Beginner to B1"
+              placeholder="TinyTalks - Learn English with Confidence | Beginner to Advanced"
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
             />
             <p className="text-xs text-gray-500 mt-1">

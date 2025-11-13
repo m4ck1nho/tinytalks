@@ -43,7 +43,7 @@ CREATE POLICY "Authenticated users can delete settings" ON public.site_settings
 -- Insert default settings
 INSERT INTO public.site_settings (key, value, description) VALUES
   ('favicon', '{"url": "/favicon.ico"}', 'Website favicon URL'),
-  ('site_title', '{"title": "TinyTalks - Learn English with Confidence | Beginner to B1"}', 'Website title'),
+  ('site_title', '{"title": "TinyTalks - Learn English with Confidence | Beginner to Advanced"}', 'Website title'),
   ('pricing_trial', '{"price": "0", "currency": "₽"}', 'Trial lesson pricing'),
   ('pricing_individual', '{"price": "2000", "currency": "₽"}', 'Individual lesson pricing'),
   ('pricing_async', '{"price": "1000", "currency": "₽"}', 'Asynchronous learning pricing'),
