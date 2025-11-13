@@ -25,43 +25,33 @@ export default function BlogPostPage() {
       try {
         console.log('📖 Fetching blog post with slug:', slug);
         
-        const { data, error } = await db.getBlogPosts();
-        
+        const { data, error } = await db.getPublishedBlogPostBySlug(slug);
+
         if (error) {
-          console.error('❌ Error fetching posts:', error);
+          console.error('❌ Error fetching post:', error);
           throw error;
         }
 
-        // Find the post by slug
-        const foundPost = data?.find(p => p.slug === slug);
-        
-        if (!foundPost) {
-          console.error('❌ Post not found with slug:', slug);
-        setError('not_found');
+        if (!data) {
+          console.error('❌ Post not found or unpublished with slug:', slug);
+          setError('not_found');
           return;
         }
 
-        // Only show if published (unless admin)
-        if (!foundPost.published) {
-          console.error('❌ Post is not published');
-        setError('not_found');
-          return;
-        }
+        console.log('✅ Blog post loaded:', data.title);
 
-        console.log('✅ Blog post loaded:', foundPost.title);
-        
         // Map database fields to component format
         const mappedPost = {
-          ...foundPost,
-          createdAt: foundPost.created_at,
-          updatedAt: foundPost.updated_at,
-          metaDescription: foundPost.meta_description,
+          ...data,
+          createdAt: data.created_at,
+          updatedAt: data.updated_at,
+          metaDescription: data.meta_description,
         };
         
         setPost(mappedPost);
       } catch (err) {
         console.error('❌ Error loading blog post:', err);
-      setError('failed');
+        setError('failed');
       } finally {
         setLoading(false);
       }

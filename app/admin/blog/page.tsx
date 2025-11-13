@@ -65,6 +65,31 @@ export default function BlogPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const encoder = new TextEncoder();
+    const contentBytes = encoder.encode(formData.content || '').length;
+    const excerptBytes = encoder.encode(formData.excerpt || '').length;
+    const contentKB = Math.ceil(contentBytes / 1024);
+    const excerptKB = Math.ceil(excerptBytes / 1024);
+    const recommendedContentLimit = 200 * 1024; // 200 KB
+    const recommendedExcerptLimit = 10 * 1024; // 10 KB
+
+    if (contentBytes > recommendedContentLimit) {
+      const proceed = window.confirm(
+        `This article content is ${contentKB} KB. Posts larger than 200 KB may be slow to load or fail to open.\n\nConsider reducing embedded images or media. Do you still want to continue?`
+      );
+      if (!proceed) {
+        return;
+      }
+    }
+
+    if (excerptBytes > recommendedExcerptLimit) {
+      alert(
+        `The excerpt is ${excerptKB} KB which is larger than recommended (10 KB). Please shorten the excerpt to avoid issues displaying the blog list.`
+      );
+      return;
+    }
+
     setUploading(true);
 
     try {
@@ -254,6 +279,9 @@ export default function BlogPage() {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none"
                 placeholder="Brief summary of the post"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Recommended max excerpt size: 10 KB (~1200 characters). Larger excerpts may prevent posts from loading.
+              </p>
             </div>
 
             <div>
@@ -276,6 +304,9 @@ export default function BlogPage() {
                 initialContent={formData.content}
                 onContentChange={(content) => setFormData({ ...formData, content })}
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Recommended max content size: 200 KB. Large embedded images or media may cause the blog post page to fail to open.
+              </p>
             </div>
 
             <div>

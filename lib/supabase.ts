@@ -95,6 +95,14 @@ export const db = {
     return query;
   },
 
+  getPublishedBlogPostBySlug: (slug: string) =>
+    supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('slug', slug)
+      .eq('published', true)
+      .maybeSingle(),
+
   createBlogPost: (data: Record<string, unknown>) =>
     supabase.from('blog_posts').insert(data).select().single(),
 

@@ -5,12 +5,13 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
-import { 
-  BoldIcon, 
-  ItalicIcon, 
-  ListBulletIcon, 
+import {
+  BoldIcon,
+  ItalicIcon,
+  ListBulletIcon,
   LinkIcon,
-  PhotoIcon 
+  PhotoIcon,
+  GlobeAltIcon,
 } from '@heroicons/react/24/outline';
 import { storage } from '@/lib/supabase';
 
@@ -58,6 +59,27 @@ export default function BlogEditor({ initialContent = '', onContentChange }: Blo
       alert('Failed to upload image');
     } finally {
       setUploading(false);
+    }
+  };
+
+  const addImageByUrl = () => {
+    if (!editor) return;
+
+    const url = window.prompt('Enter the direct image URL (must start with http:// or https://):');
+    if (!url) {
+      return;
+    }
+
+    try {
+      const parsed = new URL(url.trim());
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        alert('Only http and https image URLs are supported.');
+        return;
+      }
+      editor.chain().focus().setImage({ src: parsed.toString() }).run();
+    } catch (error) {
+      console.error('Invalid image URL:', error);
+      alert('Please enter a valid image URL.');
     }
   };
 
@@ -136,6 +158,15 @@ export default function BlogEditor({ initialContent = '', onContentChange }: Blo
 
         <div className="w-px bg-gray-300 mx-1"></div>
 
+        <button
+          type="button"
+          onClick={addImageByUrl}
+          className="p-2 rounded hover:bg-gray-200"
+          title="Insert Image by URL"
+        >
+          <GlobeAltIcon className="w-5 h-5" />
+        </button>
+
         <label className="p-2 rounded hover:bg-gray-200 cursor-pointer" title="Upload Image">
           <PhotoIcon className="w-5 h-5" />
           <input
@@ -151,8 +182,8 @@ export default function BlogEditor({ initialContent = '', onContentChange }: Blo
       </div>
 
       {/* Editor Content */}
-      <EditorContent 
-        editor={editor} 
+      <EditorContent
+        editor={editor}
         className="prose max-w-none p-4 min-h-[400px] focus:outline-none"
       />
     </div>
