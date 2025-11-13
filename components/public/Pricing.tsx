@@ -17,7 +17,19 @@ export default function Pricing() {
           data.forEach((setting: { key: string; value: Record<string, unknown> }) => {
             if (setting.key.startsWith('pricing_')) {
               const planKey = setting.key.replace('pricing_', '');
-              pricing[planKey] = setting.value;
+              const value = setting.value;
+              // Type-check the value before assigning
+              if (
+                value &&
+                typeof value === 'object' &&
+                typeof value.price === 'string' &&
+                typeof value.currency === 'string'
+              ) {
+                pricing[planKey] = {
+                  price: value.price,
+                  currency: value.currency,
+                };
+              }
             }
           });
           setPricingSettings(pricing);
