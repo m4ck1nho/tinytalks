@@ -84,9 +84,19 @@ export default function Navbar() {
   };
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    // Check if we're on the home page
+    const isHomePage = window.location.pathname === '/';
+    
+    if (isHomePage) {
+      // On home page, just scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        setIsMenuOpen(false);
+      }
+    } else {
+      // On other pages, navigate to home page with hash
+      router.push(`/#${sectionId}`);
       setIsMenuOpen(false);
     }
   };
