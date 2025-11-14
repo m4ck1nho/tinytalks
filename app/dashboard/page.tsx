@@ -64,7 +64,7 @@ export default function UserDashboard() {
       calendar: isRu ? 'Календарь' : 'Calendar',
       classes: isRu ? 'Мои занятия' : 'My Classes',
       homework: isRu ? 'Домашние задания' : 'Homework',
-      requests: isRu ? 'Запросы' : 'Requests',
+      requests: isRu ? 'Записаться' : 'Book a Class',
       notifications: isRu ? 'Уведомления' : 'Notifications',
     },
     overview: {
@@ -105,13 +105,10 @@ export default function UserDashboard() {
         isRu
           ? `Выберите ${count} день(дней) и время для еженедельного расписания.`
           : `Please select ${count} day(s) and time(s) for your weekly schedule.`,
-      timeNotAvailableTitle: isRu ? 'Время недоступно' : 'Time Not Available',
-      timeNotAvailableMessage: (day: string, time: string, reason: string) =>
-        isRu ? `${day} в ${time} недоступно: ${reason}` : `${day} at ${time} is not available: ${reason}`,
       requestSuccessMessage: isRu
-        ? 'Запрос успешно отправлен! Преподаватель скоро его рассмотрит.'
-        : 'Your class request has been submitted successfully!',
-      requestErrorMessage: isRu ? 'Не удалось отправить запрос. Попробуйте ещё раз.' : 'Please try again.',
+        ? 'Бронирование успешно отправлено! Преподаватель скоро его рассмотрит.'
+        : 'Your class booking has been submitted successfully!',
+      requestErrorMessage: isRu ? 'Не удалось отправить бронирование. Попробуйте ещё раз.' : 'Please try again.',
       paymentSuccessMessage: isRu
         ? 'Уведомление об оплате успешно отправлено!'
         : 'Your payment notification has been submitted successfully!',
@@ -390,38 +387,6 @@ export default function UserDashboard() {
           message: text.notifications.scheduleIncompleteMessage(lessonsPerWeekValue),
         });
         return;
-      }
-
-      // Check availability for each weekly schedule slot
-      // We'll check with a sample date (next occurrence of that day)
-      const today = new Date();
-      for (const schedule of validWeeklySchedules) {
-        // Type guard: ensure time and day_of_week are defined (they should be from the filter above, but TypeScript doesn't know)
-        if (!schedule.time || schedule.day_of_week === undefined || schedule.day_of_week < 0 || schedule.day_of_week > 6) {
-          continue;
-        }
-        
-        // Find next occurrence of this day of week
-        const daysUntilNext = (schedule.day_of_week - today.getDay() + 7) % 7 || 7;
-        const nextDate = new Date(today);
-        nextDate.setDate(today.getDate() + daysUntilNext);
-        nextDate.setHours(parseInt(schedule.time.split(':')[0]), parseInt(schedule.time.split(':')[1]), 0, 0);
-        
-        const dateTime = nextDate.toISOString();
-        const availability = await db.checkTeacherAvailability(dateTime, 50);
-        
-        if (!availability.available) {
-          const dayName = dayNames[schedule.day_of_week] || 'Unknown day';
-          const timeStr = schedule.time;
-          const reasonStr = availability.reason || 'Not available';
-          
-          setNotification({
-            type: 'error',
-            title: text.notifications.timeNotAvailableTitle,
-            message: text.notifications.timeNotAvailableMessage(dayName, timeStr, reasonStr),
-          });
-          return;
-        }
       }
 
       // Store weekly schedule as JSON

@@ -362,21 +362,6 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check availability if date is provided
-    if (formData.class_date) {
-      const dateTime = formData.class_date;
-      const availability = await db.checkTeacherAvailability(dateTime, formData.duration_minutes || 50);
-      
-      if (!availability.available && !editingClass) {
-        setNotification({
-          type: 'error',
-          title: 'Cannot Schedule Class',
-          message: `${availability.reason}. Please check teacher availability.`
-        });
-        return;
-      }
-    }
-    
     const classDateIso = formData.class_date ? new Date(formData.class_date).toISOString() : '';
 
     const classData = {
@@ -569,30 +554,6 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
 
       const totalLessons = request.total_lessons || 4;
 
-      // Check availability for each weekly schedule slot
-      const today = new Date();
-      for (const schedule of normalizedSchedule) {
-        const daysUntilNext = (schedule.day_of_week - today.getDay() + 7) % 7 || 7;
-        const nextDate = new Date(today);
-        nextDate.setDate(today.getDate() + daysUntilNext);
-        const [slotHour, slotMinute] = schedule.time.split(':').map((value: string) => parseInt(value, 10));
-        nextDate.setHours(slotHour, slotMinute, 0, 0);
-
-        const dateTime = nextDate.toISOString();
-        const availability = await db.checkTeacherAvailability(dateTime, 50);
-
-        if (!availability.available) {
-          const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-          setNotification({
-            type: 'error',
-            title: 'Cannot Approve Request',
-            message: `${dayNames[schedule.day_of_week]} at ${schedule.time} is not available: ${availability.reason}`
-          });
-          setSelectedRequest(null);
-          return;
-        }
-      }
-
       const { data: generatedClasses, error } = await db.generateClassesFromWeeklySchedule(
         request.student_id,
         request.student_name,
@@ -647,7 +608,7 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
       console.error('Error approving request:', error);
       setNotification({
         type: 'error',
-        title: 'Error Approving Request',
+        title: 'Error Approving Booking',
         message: error instanceof Error ? error.message : JSON.stringify(error)
       });
       setSelectedRequest(null);
@@ -672,14 +633,14 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
       setSelectedRequest(null);
       setNotification({
         type: 'info',
-        title: 'Request Rejected',
+        title: 'Booking Rejected',
         message: 'The student has been notified about the rejection.',
       });
     } catch (error) {
       console.error('Error rejecting request:', error);
       setNotification({
         type: 'error',
-        title: 'Error Rejecting Request',
+        title: 'Error Rejecting Booking',
         message: 'Please try again in a moment.',
       });
     }
@@ -780,11 +741,11 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">
-              {editingClass ? 'Edit Class' : approvingRequest ? 'Approve Class Request' : 'Schedule New Class'}
+              {editingClass ? 'Edit Class' : approvingRequest ? 'Approve Class Booking' : 'Schedule New Class'}
             </h3>
             {approvingRequest && (
               <span className="text-sm px-3 py-1 bg-green-100 text-green-800 rounded-full font-semibold">
-                Approving Request
+                Approving Booking
               </span>
             )}
           </div>
@@ -933,13 +894,13 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
         </div>
       )}
 
-      {/* Class Requests */}
+      {/* Class Bookings */}
       {classRequests.filter(r => r.status === 'pending').length > 0 && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
             <BellAlertIcon className="w-6 h-6 text-yellow-600" />
             <h3 className="text-lg font-semibold text-gray-900">
-              Pending Class Requests ({classRequests.filter(r => r.status === 'pending').length})
+              Pending Class Bookings ({classRequests.filter(r => r.status === 'pending').length})
             </h3>
           </div>
           <div className="space-y-3">
@@ -979,7 +940,7 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
                           </div>
                         )}
                         <div className="text-xs text-gray-500 mt-3">
-                          Requested: {new Date(request.created_at).toLocaleString()}
+                          Submitted: {new Date(request.created_at).toLocaleString()}
                         </div>
                       </div>
                       <div className="flex gap-2 ml-4">
@@ -1160,14 +1121,14 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
         </div>
       </div>
 
-      {/* Request Details Modal */}
+      {/* Booking Details Modal */}
       {showDetailsModal && selectedRequest && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/60 p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-secondary-900 flex items-center gap-2">
                 <InformationCircleIcon className="w-7 h-7 text-blue-500" />
-                Class Request Details
+                Class Booking Details
               </h3>
               <button
                 onClick={() => {
@@ -1255,7 +1216,7 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
                 className="flex-1 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg shadow-green-500/30 flex items-center justify-center gap-2"
               >
                 <CheckCircleIcon className="w-5 h-5" />
-                Approve Request
+                Approve Booking
               </button>
             </div>
           </div>
@@ -1278,7 +1239,7 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
 
             <div className="mb-6 p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
               <p className="text-gray-900 mb-2">
-                You are about to approve the class request for:
+                You are about to approve the class booking for:
               </p>
               <p className="text-lg font-bold text-blue-900">
                 {selectedRequest.student_name} ({selectedRequest.student_email})
@@ -1329,12 +1290,12 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
                 <XCircleIcon className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-secondary-900">Reject Class Request?</h3>
+                <h3 className="text-xl font-bold text-secondary-900">Reject Class Booking?</h3>
                 <p className="text-sm text-gray-600 mt-1">This action cannot be undone</p>
               </div>
             </div>
             <p className="text-gray-700 mb-6">
-              Are you sure you want to reject this class request from <strong>{selectedRequest?.student_name}</strong>? The student will be notified of this decision.
+              Are you sure you want to reject this class booking from <strong>{selectedRequest?.student_name}</strong>? The student will be notified of this decision.
             </p>
             <div className="flex gap-3">
               <button
@@ -1358,14 +1319,14 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
         </div>
       )}
 
-      {/* Edit Approved Request Modal */}
+      {/* Edit Approved Booking Modal */}
       {showEditModal && selectedRequest && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/60 p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-secondary-900 flex items-center gap-2">
                 <PencilIcon className="w-7 h-7 text-blue-500" />
-                Edit Approved Request
+                Edit Approved Booking
               </h3>
               <button
                 onClick={() => {
@@ -1381,7 +1342,7 @@ export default function ScheduleManager({ onDataChange }: { onDataChange?: () =>
 
             <div className="space-y-4 mb-6">
               <p className="text-gray-700">
-                Edit the approved request details. Your changes will be sent to <strong>{selectedRequest.student_name}</strong> for approval.
+                Edit the approved booking details. Your changes will be sent to <strong>{selectedRequest.student_name}</strong> for approval.
               </p>
 
               {/* Weekly Schedule */}

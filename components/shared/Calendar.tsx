@@ -19,7 +19,6 @@ interface CalendarProps {
 interface DayDetails {
   date: Date;
   classes: Class[];
-  payments: PaymentNotification[];
 }
 
 export default function Calendar({ classes, payments = [] }: CalendarProps) {
@@ -82,13 +81,10 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
     if (!currentDate) return;
     const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     const dayClasses = getClassesForDay(day);
-    const dayPayments = getPaymentsForDay(day);
-
     // Always open day view, even if no events
     setSelectedDay({
       date: targetDate,
       classes: dayClasses,
-      payments: dayPayments,
     });
   };
 
@@ -244,7 +240,6 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
         <DailyScheduleView
           date={selectedDay.date}
           classes={selectedDay.classes}
-          payments={selectedDay.payments}
           onClose={() => setSelectedDay(null)}
         />
       )}

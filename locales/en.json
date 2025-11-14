@@ -89,14 +89,14 @@
       "cta": "Start Learning"
     },
     "group": {
-      "name": "Group Lesson",
-      "price": "1250",
+      "name": "Async + Weekly Live Lesson",
+      "price": "3250",
       "currency": "₽",
-      "period": "/ lesson",
-      "subtitle": "Communication, practice and motivation together with others",
-      "duration": "60 minutes",
-      "description": "Group lessons are live communication, joint practice, and sharing experiences.\n\nYou learn to speak confidently, receive feedback, and see that you're not alone in your difficulties.",
-      "cta": "Join Now"
+      "period": "/ week",
+      "subtitle": "Learn at your own pace and lock it in live",
+      "duration": "Async practice + 1 live session each week",
+      "description": "- Convenient async lessons\n- One live online class per week\n- Short tasks with personalized feedback\n\nStudy whenever it suits you, then use the weekly live session to ask questions, practice speaking, and boost your confidence. Perfect when you need flexibility plus regular real-time support.",
+      "cta": "Start Hybrid Plan"
     }
   },
   "reviews": {
@@ -157,6 +157,7 @@
     "backToBlog": "Back to blog",
     "backToAll": "Back to all articles",
     "readMoreArticles": "Read more articles",
+    "allArticles": "All Articles",
     "notFoundTitle": "Post Not Found",
     "notFoundMessage": "The blog post you're looking for doesn't exist or has been removed.",
     "readMore": "Read More",
@@ -169,7 +170,13 @@
     "mostRecent": "Most Recent Posts",
     "ctaTitle": "Ready to Start Learning?",
     "ctaDescription": "Join TinyTalks today and start your language learning journey with expert teachers.",
-    "ctaButton": "Get Started"
+    "ctaButton": "Get Started",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page",
+      "of": "of"
+    }
   },
   "contact": {
     "badge": "Get In Touch",
@@ -257,8 +264,8 @@
     "shortcuts": {
       "title": "Quick Shortcuts",
       "requestClass": {
-        "title": "Request a Class",
-        "description": "Schedule a new lesson with your teacher."
+        "title": "Book a Class",
+        "description": "Reserve a new lesson with your teacher."
       },
       "homework": {
         "title": "Homework",
@@ -338,15 +345,15 @@
     }
   },
   "classRequest": {
-    "button": "Request a Class",
-    "title": "My Class Requests",
+    "button": "Book a Class",
+    "title": "Book a Class",
     "preferredDate": "Preferred Date",
     "topic": "Topic",
     "submitted": "Submitted",
     "adminNotes": "Teacher's Notes",
-    "noRequests": "No class requests yet. Click 'Request a Class' to send your first request!",
-    "success": "Class request submitted successfully! The teacher will review it soon.",
-    "error": "Failed to submit class request. Please try again.",
+    "noRequests": "No bookings yet. Click 'Book a Class' to send your first booking!",
+    "success": "Class booking submitted successfully! The teacher will review it soon.",
+    "error": "Failed to submit class booking. Please try again.",
     "lessonsPerWeek": "Lessons per week",
     "totalLessons": "Total lessons",
     "firstClassFree": "First lesson is free!",
@@ -360,7 +367,7 @@
       "rejected": "Rejected"
     },
     "modal": {
-      "title": "Request a New Class",
+      "title": "Book a New Class",
       "lessonsPerWeek": "How many lessons per week? *",
       "totalLessons": "How many lessons do you want to buy? * (Minimum 4, first one is free)",
       "firstClassFree": "First lesson is free! You'll pay for the remaining lessons.",
@@ -370,7 +377,7 @@
       "topicPlaceholder": "e.g., Business English, Grammar Practice",
       "message": "Additional Message (Optional)",
       "messagePlaceholder": "Let the teacher know about your learning goals, schedule preferences, or any special requests...",
-      "submit": "Submit Request",
+      "submit": "Submit Booking",
       "cancel": "Cancel"
     }
   },

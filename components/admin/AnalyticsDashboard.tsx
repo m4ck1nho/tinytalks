@@ -142,20 +142,13 @@ export default function AnalyticsDashboard() {
       {/* Quick Actions */}
       <div className="bg-white rounded-lg shadow p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           <a
             href="/admin/blog"
             className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-600 hover:bg-blue-50 transition-all text-center"
           >
             <DocumentTextIcon className="w-8 h-8 text-blue-600 mx-auto mb-2" />
             <div className="font-semibold text-gray-900">Create Blog Post</div>
-          </a>
-          <a
-            href="/admin/messages"
-            className="p-4 border-2 border-gray-200 rounded-lg hover:border-purple-600 hover:bg-purple-50 transition-all text-center"
-          >
-            <EnvelopeIcon className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-            <div className="font-semibold text-gray-900">View Messages</div>
           </a>
           <a
             href="/"

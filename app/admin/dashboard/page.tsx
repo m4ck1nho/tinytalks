@@ -6,17 +6,15 @@ import { Class, PaymentNotification, ClassRequest } from '@/types';
 import ScheduleManager from '@/components/admin/ScheduleManager';
 import HomeworkManager from '@/components/admin/HomeworkManager';
 import PaymentManager from '@/components/admin/PaymentManager';
-import AvailabilityManager from '@/components/admin/AvailabilityManager';
 import Calendar from '@/components/shared/Calendar';
 import { 
   CalendarIcon, 
   BookOpenIcon, 
   CurrencyDollarIcon,
-  CalendarDaysIcon,
-  ClockIcon
+  CalendarDaysIcon
 } from '@heroicons/react/24/outline';
 
-type Tab = 'calendar' | 'schedule' | 'availability' | 'homework' | 'payments';
+type Tab = 'calendar' | 'schedule' | 'homework' | 'payments';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<Tab>('calendar');
@@ -62,7 +60,6 @@ export default function DashboardPage() {
   const tabs = [
     { id: 'calendar' as Tab, name: 'Calendar', icon: CalendarDaysIcon },
     { id: 'schedule' as Tab, name: 'Classes', icon: CalendarIcon },
-    { id: 'availability' as Tab, name: 'Availability', icon: ClockIcon },
     { id: 'homework' as Tab, name: 'Homework', icon: BookOpenIcon },
     { id: 'payments' as Tab, name: 'Payments', icon: CurrencyDollarIcon },
   ];
@@ -112,7 +109,6 @@ export default function DashboardPage() {
       <div>
         {activeTab === 'calendar' && <Calendar classes={classes} payments={payments} />}
         {activeTab === 'schedule' && <ScheduleManager onDataChange={fetchData} />}
-        {activeTab === 'availability' && <AvailabilityManager />}
         {activeTab === 'homework' && <HomeworkManager />}
         {activeTab === 'payments' && <PaymentManager onDataChange={fetchData} />}
       </div>

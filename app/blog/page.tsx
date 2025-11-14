@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { db } from '@/lib/supabase';
 import { BlogPost } from '@/types';
 import Image from 'next/image';
@@ -16,6 +16,7 @@ export default function BlogPage() {
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -65,6 +66,10 @@ export default function BlogPage() {
     setFilteredPosts(filtered);
   }, [searchQuery, posts]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   const calculateReadingTime = (content: string): number => {
     const wordsPerMinute = 200;
     const text = content.replace(/<[^>]*>/g, ''); // Remove HTML tags
@@ -84,6 +89,74 @@ export default function BlogPage() {
     }
     return count === 1 ? t('blog.articles.one') : t('blog.articles.few');
   };
+
+  const POSTS_PER_PAGE = 6;
+  const RECENT_LIMIT = 6;
+  const isSearching = searchQuery.trim().length > 0;
+  const showRecent = !isSearching && filteredPosts.length > RECENT_LIMIT;
+
+  const recentPosts = useMemo(() => {
+    if (!showRecent) return [];
+    return filteredPosts.slice(0, RECENT_LIMIT);
+  }, [filteredPosts, showRecent]);
+
+  const totalPages = filteredPosts.length > 0 ? Math.ceil(filteredPosts.length / POSTS_PER_PAGE) : 1;
+
+  const paginatedPosts = useMemo(() => {
+    const start = (currentPage - 1) * POSTS_PER_PAGE;
+    return filteredPosts.slice(start, start + POSTS_PER_PAGE);
+  }, [filteredPosts, currentPage]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages || 1);
+    }
+  }, [totalPages, currentPage]);
+
+  const renderPostCard = (post: BlogPost) => (
+    <Link href={`/blog/${post.slug}`} key={post.id} className="group cursor-pointer">
+      {post.image && (
+        <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
+          <Image
+            src={post.image}
+            alt={post.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            unoptimized
+          />
+        </div>
+      )}
+
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <CalendarIcon className="w-4 h-4" />
+          <span>
+            {new Date(post.createdAt).toLocaleDateString(locale, {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </span>
+          <span className="mx-2">•</span>
+          <span>
+            {calculateReadingTime(post.content)} {t('blog.minRead')}
+          </span>
+        </div>
+
+        <h3 className="text-xl font-bold text-secondary-900 group-hover:text-primary-500 transition-colors leading-tight">
+          {post.title}
+        </h3>
+
+        <p className="text-gray-600 line-clamp-3 leading-relaxed">{post.excerpt}</p>
+
+        <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all inline-block">
+          {t('blog.readMore')}
+          <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </span>
+      </div>
+    </Link>
+  );
 
   return (
     <>
@@ -144,124 +217,82 @@ export default function BlogPage() {
             )}
 
             {/* Most Recent Posts Section */}
-            {!loading && filteredPosts.length > 0 && !searchQuery && (
+            {!loading && recentPosts.length > 0 && (
               <div className="mb-16">
                 <h2 className="text-2xl font-bold text-secondary-900 mb-8">
                   {t('blog.mostRecent') || 'Most Recent Posts'}
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {filteredPosts.slice(0, 6).map((post) => (
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      key={post.id}
-                      className="group cursor-pointer"
-                    >
-                      {post.image && (
-                        <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
-                          <Image
-                            src={post.image}
-                            alt={post.title}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            unoptimized
-                          />
-                        </div>
-                      )}
-                      
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <CalendarIcon className="w-4 h-4" />
-                          <span>
-                            {new Date(post.createdAt).toLocaleDateString(locale, {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                          </span>
-                          <span className="mx-2">•</span>
-                          <span>{calculateReadingTime(post.content)} {t('blog.minRead')}</span>
-                        </div>
-                        
-                        <h3 className="text-xl font-bold text-secondary-900 group-hover:text-primary-500 transition-colors leading-tight">
-                          {post.title}
-                        </h3>
-                        
-                        <p className="text-gray-600 line-clamp-3 leading-relaxed">
-                          {post.excerpt}
-                        </p>
-                        
-                        <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all inline-block">
-                          {t('blog.readMore')}
-                          <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
+                  {recentPosts.map((post) => renderPostCard(post))}
                 </div>
               </div>
             )}
 
-            {/* Search Results or All Posts */}
-            {!loading && filteredPosts.length > 0 && searchQuery && (
-              <>
-                <div className="mb-8 text-gray-600">
-                  <p>
-                    {t('blog.resultsCount')} {filteredPosts.length} {getArticleWord(filteredPosts.length)}
-                  </p>
+            {/* Paginated Posts */}
+            {!loading && filteredPosts.length > 0 && (
+              <div>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-8 text-gray-600">
+                  <div>
+                    <h2 className="text-2xl font-bold text-secondary-900">
+                      {isSearching ? t('blog.searchResults') : t('blog.allArticles') || t('blog.readMoreArticles')}
+                    </h2>
+                    <p>
+                      {t('blog.resultsCount')} {filteredPosts.length} {getArticleWord(filteredPosts.length)}
+                    </p>
+                  </div>
+                  {totalPages > 1 && (
+                    <div className="text-sm text-gray-500">
+                      {t('blog.pagination.page')} {currentPage} {t('blog.pagination.of')} {totalPages}
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {filteredPosts.map((post) => (
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      key={post.id}
-                      className="group cursor-pointer"
-                    >
-                      {post.image && (
-                        <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
-                          <Image
-                            src={post.image}
-                            alt={post.title}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            unoptimized
-                          />
-                        </div>
-                      )}
-                      
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <CalendarIcon className="w-4 h-4" />
-                          <span>
-                            {new Date(post.createdAt).toLocaleDateString(locale, {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                          </span>
-                          <span className="mx-2">•</span>
-                          <span>{calculateReadingTime(post.content)} {t('blog.minRead')}</span>
-                        </div>
-                        
-                        <h3 className="text-xl font-bold text-secondary-900 group-hover:text-primary-500 transition-colors leading-tight">
-                          {post.title}
-                        </h3>
-                        
-                        <p className="text-gray-600 line-clamp-3 leading-relaxed">
-                          {post.excerpt}
-                        </p>
-                        
-                        <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all inline-block">
-                          {t('blog.readMore')}
-                          <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
+                  {paginatedPosts.map((post) => renderPostCard(post))}
                 </div>
-              </>
+
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-4 mt-10">
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className={`px-4 py-2 rounded-lg border border-gray-300 font-semibold transition-colors ${
+                        currentPage === 1
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      {t('blog.pagination.previous')}
+                    </button>
+                    <div className="flex items-center gap-2">
+                      {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`w-10 h-10 rounded-full font-semibold transition-colors ${
+                            currentPage === page
+                              ? 'bg-primary-500 text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className={`px-4 py-2 rounded-lg border border-gray-300 font-semibold transition-colors ${
+                        currentPage === totalPages
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      {t('blog.pagination.next')}
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </section>

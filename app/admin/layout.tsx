@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { 
   HomeIcon, 
   DocumentTextIcon, 
-  EnvelopeIcon, 
   ArrowRightOnRectangleIcon,
   Bars3Icon,
   XMarkIcon,
@@ -131,7 +130,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
     { name: 'Blog Posts', href: '/admin/blog', icon: DocumentTextIcon },
-    { name: 'Messages', href: '/admin/messages', icon: EnvelopeIcon },
     { name: 'Settings', href: '/admin/settings', icon: Cog6ToothIcon },
   ];
 

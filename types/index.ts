@@ -132,16 +132,6 @@ export interface ClassPackage {
   updated_at: string;
 }
 
-export interface TeacherAvailability {
-  id: string;
-  day_of_week: number; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  start_time: string; // HH:MM format
-  end_time: string; // HH:MM format
-  is_available: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface User {
   id: string;
   email: string;

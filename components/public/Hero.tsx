@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -34,13 +35,13 @@ export default function Hero() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+              <Link
+                href="/auth?mode=signup"
                 className="group bg-primary-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
                 {t('hero.cta')}
                 <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
               
               <button
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}

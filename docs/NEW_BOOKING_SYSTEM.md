@@ -79,7 +79,6 @@ The system uses a multi-step algorithm to check availability:
    - Preferred schedule
 
 4. When approving:
-   - System checks availability automatically
    - Calculates payment (first lesson free)
    - Prevents double-booking
 
@@ -88,24 +87,10 @@ The system uses a multi-step algorithm to check availability:
 ### Student Dashboard
 - Updated booking form with new questions
 - Validation messages
-- Availability checking feedback
 
 ### Teacher Dashboard
-- New "Availability" tab for managing schedule
 - Weekly schedule view
-- Add/Edit/Delete availability slots
 - Shows new booking fields in class requests
-
-## API Functions
-
-### New Functions in `lib/supabase.ts`
-
-- `getTeacherAvailability()` - Get all availability slots
-- `createTeacherAvailability()` - Add new availability
-- `updateTeacherAvailability()` - Update existing availability
-- `deleteTeacherAvailability()` - Remove availability
-- `checkTeacherAvailability(dateTime, duration)` - Check if teacher is available at specific time
-- `getAvailableTimeSlots(date, duration)` - Get all available time slots for a date
 
 ## Setup Instructions
 
@@ -114,15 +99,9 @@ The system uses a multi-step algorithm to check availability:
    -- Run the SQL in docs/teacher-availability-schema.sql
    ```
 
-2. **Set Teacher Availability**
-   - Go to Admin Dashboard → Availability tab
-   - Add your weekly schedule
-   - Set available time slots for each day
-
-3. **Test Booking Flow**
+2. **Test Booking Flow**
    - Student requests class with new questions
    - System validates minimum lessons
-   - System checks availability
    - Teacher approves with automatic conflict checking
 
 ## Payment Calculation
@@ -135,13 +114,10 @@ When a class request is approved:
 ## Error Messages
 
 - "Minimum 4 lessons required. First lesson is free!"
-- "This time is not available: [reason]"
-- "Cannot approve: [reason]. Please check teacher availability or suggest a different time."
 
 ## Future Enhancements
 
 - Show available time slots when student selects a date
 - Automatic scheduling suggestions based on lessons per week
 - Recurring class creation for package bookings
-- Email notifications for availability conflicts
 

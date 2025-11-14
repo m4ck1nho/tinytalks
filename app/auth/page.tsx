@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import { auth } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AuthPage() {
-  const [isSignUp, setIsSignUp] = useState(false);
+  const searchParams = useSearchParams();
+  const [isSignUp, setIsSignUp] = useState(() => searchParams.get('mode') === 'signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
