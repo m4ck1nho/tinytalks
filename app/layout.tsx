@@ -80,6 +80,8 @@ export default function RootLayout({
   return (
     <html lang={DEFAULT_LOCALE} className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
+        {/* Google Search Console Verification */}
+        <meta name="google-site-verification" content="a12c8b207a493225" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
