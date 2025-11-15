@@ -4,6 +4,7 @@ import './globals.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { HtmlLangWrapper } from '@/components/shared/HtmlLangWrapper';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import FaviconUpdater from '@/components/shared/FaviconUpdater';
 import TitleUpdater from '@/components/shared/TitleUpdater';
 import { getTranslations, type Language } from '@/lib/i18n-server';
@@ -110,6 +111,7 @@ export default function RootLayout({
           </HtmlLangWrapper>
         </LanguageProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
