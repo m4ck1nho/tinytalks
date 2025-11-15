@@ -4,6 +4,21 @@ import type { NextConfig } from "next";
 const withNextIntl = createNextIntlPlugin('./i18n.ts');
 
 const nextConfig: NextConfig = {
+  // Ensure no blocking headers are set
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+          },
+          // Explicitly DO NOT set X-Google-Extended-Opt-Out (this blocks Google)
+        ],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
