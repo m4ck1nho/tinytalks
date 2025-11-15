@@ -156,11 +156,9 @@ export default async function EnglishBlogPostPage({ params }: PageProps) {
     notFound();
   }
 
-  const calculateReadingTime = (content: string) => {
-    const words = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
-    const minutes = Math.ceil(words / 200);
-    return minutes;
-  };
+  // Calculate reading time on server (rough estimate: 200 words per minute)
+  const words = post.content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+  const readingTime = Math.ceil(words / 200);
 
   const datePublished = new Date(post.created_at).toISOString().split('T')[0];
   const dateModified = post.updated_at ? new Date(post.updated_at).toISOString().split('T')[0] : datePublished;
@@ -196,7 +194,7 @@ export default async function EnglishBlogPostPage({ params }: PageProps) {
     <>
       <StructuredData data={articleSchema} />
       <Navbar />
-      <BlogPostContent post={post} calculateReadingTime={calculateReadingTime} />
+      <BlogPostContent post={post} readingTime={readingTime} />
       <Footer />
     </>
   );

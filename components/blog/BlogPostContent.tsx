@@ -9,10 +9,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 interface BlogPostContentProps {
   post: BlogPost;
-  calculateReadingTime: (content: string) => number;
+  readingTime: number;
 }
 
-export function BlogPostContent({ post, calculateReadingTime }: BlogPostContentProps) {
+export function BlogPostContent({ post, readingTime }: BlogPostContentProps) {
   const router = useRouter();
   const { t, language } = useLanguage();
   const locale = language === 'ru' ? 'ru-RU' : 'en-US';
@@ -47,7 +47,7 @@ export function BlogPostContent({ post, calculateReadingTime }: BlogPostContentP
             <span>•</span>
             <div className="flex items-center gap-2">
               <ClockIcon className="w-4 h-4" />
-              <span>{calculateReadingTime(post.content)} {t('blog.minRead')}</span>
+              <span>{readingTime} {t('blog.minRead')}</span>
             </div>
           </div>
         </div>

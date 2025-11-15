@@ -23,7 +23,7 @@ export function generateMetadata(): Metadata {
   const baseUrl = 'https://tinytalks.pro';
 
   return {
-    title: (translations.hero as any)?.title || 'TinyTalks - Learn English Online',
+    title: (translations.hero as Record<string, unknown>)?.title as string || 'TinyTalks - Learn English Online',
     description: 'Learn English online with personalized tutoring from beginner to advanced. Online lessons with native-level instructor for Russian speakers.',
     keywords: ['learn english online', 'english tutor', 'online english lessons', 'английский онлайн', 'репетитор английского'],
     openGraph: {

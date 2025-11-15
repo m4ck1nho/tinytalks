@@ -98,15 +98,15 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
       return null;
     }
 
-    // Map database fields to component format
-    return {
-      ...data,
-      slug: data.slug,
-      slug_en: data.slug_en,
-      createdAt: data.created_at,
-      updatedAt: data.updated_at,
-      metaDescription: data.meta_description,
-    } as BlogPost;
+            // Map database fields to component format
+            return {
+              ...data,
+              slug: data.slug,
+              slug_en: (data as { slug_en?: string }).slug_en,
+              createdAt: data.created_at,
+              updatedAt: data.updated_at,
+              metaDescription: data.meta_description,
+            } as BlogPost;
   } catch {
     return null;
   }
@@ -130,7 +130,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description = post.metaDescription || post.excerpt || plainTextContent;
   const finalDescription = description.length > 160 ? description.substring(0, 157) + '...' : description;
   const postUrl = `${baseUrl}/blog/${slug}`;
-  const enPostUrl = post.slug_en ? `${baseUrl}/en/blog/${post.slug_en}` : null;
+  const enPostUrl = 'slug_en' in post && post.slug_en ? `${baseUrl}/en/blog/${post.slug_en}` : null;
 
   // Build hreflang alternates
   const alternates: Metadata['alternates'] = {
@@ -202,12 +202,9 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
-  // Calculate reading time (rough estimate: 200 words per minute)
-  const calculateReadingTime = (content: string) => {
-    const words = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
-    const minutes = Math.ceil(words / 200);
-    return minutes;
-  };
+  // Calculate reading time on server (rough estimate: 200 words per minute)
+  const words = post.content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+  const readingTime = Math.ceil(words / 200);
 
   // Format dates for schema
   const datePublished = new Date(post.created_at).toISOString().split('T')[0];
@@ -245,7 +242,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     <>
       <StructuredData data={articleSchema} />
       <Navbar />
-      <BlogPostContent post={post} calculateReadingTime={calculateReadingTime} />
+      <BlogPostContent post={post} readingTime={readingTime} />
       <Footer />
     </>
   );

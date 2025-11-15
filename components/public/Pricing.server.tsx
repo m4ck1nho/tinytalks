@@ -36,7 +36,7 @@ async function getPricingSettings() {
   return {};
 }
 
-export default async function Pricing({ translations, locale }: PricingProps) {
+export default async function Pricing({ translations }: PricingProps) {
   const pricingSettings = await getPricingSettings();
   
   const t = (key: string) => {
