@@ -101,11 +101,11 @@ export default function Footer() {
             <p className="text-gray-400 text-sm">
               © {currentYear} TinyTalks. Все права защищены.
             </p>
-            <div className="flex gap-6 text-sm text-gray-400">
-              <a href="#" className="hover:text-white transition-colors">Политика конфиденциальности</a>
-              <a href="#" className="hover:text-white transition-colors">Условия использования</a>
-              <a href="#" className="hover:text-white transition-colors">Политика cookie</a>
-            </div>
+                    <div className="flex gap-6 text-sm text-gray-400">
+                      <a href="/privacy-policy" className="hover:text-white transition-colors">Политика конфиденциальности</a>
+                      <a href="/terms-of-service" className="hover:text-white transition-colors">Условия использования</a>
+                      <a href="/cookie-policy" className="hover:text-white transition-colors">Политика cookie</a>
+                    </div>
           </div>
         </div>
       </div>
