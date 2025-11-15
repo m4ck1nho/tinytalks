@@ -34,7 +34,7 @@ async function getBlogPosts(): Promise<BlogPost[]> {
   }
 }
 
-export default async function BlogPreview({ translations }: BlogPreviewProps) {
+export default async function BlogPreview({ translations, locale }: BlogPreviewProps) {
   const posts = await getBlogPosts();
   
   const t = (key: string) => {

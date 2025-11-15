@@ -41,10 +41,13 @@ export default async function Pricing({ translations, locale }: PricingProps) {
   
   const t = (key: string) => {
     const keys = key.split('.');
-    let value: any = translations;
+    let value: unknown = translations;
     for (const k of keys) {
-      value = value?.[k];
-      if (!value) return key;
+      if (value && typeof value === 'object' && value !== null && k in value) {
+        value = (value as Record<string, unknown>)[k];
+      } else {
+        return key;
+      }
     }
     return typeof value === 'string' ? value : key;
   };
