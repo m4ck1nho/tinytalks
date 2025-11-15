@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Fetch all published blog posts
-  let blogPosts: MetadataRoute.Sitemap = [];
+  const blogPosts: MetadataRoute.Sitemap = [];
   try {
     const { data, error } = await db.getBlogPosts(true); // Only published posts
     
