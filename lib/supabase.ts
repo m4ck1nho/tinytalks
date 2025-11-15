@@ -95,11 +95,35 @@ export const db = {
     return query;
   },
 
-  getPublishedBlogPostBySlug: (slug: string) =>
+  getPublishedBlogPostBySlug: (slug: string, locale?: 'ru' | 'en') => {
+    const query = supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('published', true);
+    
+    // If locale is 'en', search in slug_en field, otherwise search in slug field
+    if (locale === 'en') {
+      query.eq('slug_en', slug);
+    } else {
+      query.eq('slug', slug);
+    }
+    
+    return query.maybeSingle();
+  },
+
+  getPublishedBlogPostByRuSlug: (slug: string) =>
     supabase
       .from('blog_posts')
       .select('*')
       .eq('slug', slug)
+      .eq('published', true)
+      .maybeSingle(),
+
+  getPublishedBlogPostByEnSlug: (slug: string) =>
+    supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('slug_en', slug)
       .eq('published', true)
       .maybeSingle(),
 
