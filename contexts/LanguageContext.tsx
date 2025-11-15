@@ -1,8 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-type Language = 'en' | 'ru';
+import type { Language } from '@/lib/i18n-server';
+import { getTranslations } from '@/lib/i18n-server';
 
 interface LanguageContextType {
   language: Language;
@@ -12,12 +12,21 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('ru');
-  const [translations, setTranslations] = useState<Record<string, string>>({});
+interface LanguageProviderProps {
+  children: React.ReactNode;
+  initialLanguage?: Language;
+  initialTranslations?: Record<string, any>;
+}
+
+export function LanguageProvider({ children, initialLanguage = 'ru', initialTranslations }: LanguageProviderProps) {
+  // Initialize with server-provided translations for SSR
+  const [language, setLanguageState] = useState<Language>(initialLanguage);
+  const [translations, setTranslations] = useState<Record<string, any>>(
+    initialTranslations || getTranslations(initialLanguage)
+  );
 
   useEffect(() => {
-    // Load saved language from localStorage
+    // Load saved language from localStorage (after mount)
     const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage === 'en' || savedLanguage === 'ru') {
       setLanguageState(savedLanguage);
@@ -25,11 +34,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Load translations for current language
-    import(`@/locales/${language}.json`)
-      .then((module) => setTranslations(module.default))
-      .catch((error) => console.error('Error loading translations:', error));
-  }, [language]);
+    // Only load translations if they differ from what was server-rendered
+    if (language !== initialLanguage || !initialTranslations) {
+      import(`@/locales/${language}.json`)
+        .then((module) => setTranslations(module.default))
+        .catch((error) => console.error('Error loading translations:', error));
+    }
+  }, [language, initialLanguage, initialTranslations]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
@@ -65,4 +76,3 @@ export function useLanguage() {
   }
   return context;
 }
-
