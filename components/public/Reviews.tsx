@@ -4,10 +4,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Reviews() {
-  const { t } = useLanguage();
   const reviews = [
     {
       name: 'Анна К.',
@@ -67,13 +65,13 @@ export default function Reviews() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="bg-secondary-100 text-secondary-900 text-sm font-semibold px-4 py-2 rounded-full">
-            {t('reviews.badge')}
+            Отзывы
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 mt-6 mb-4">
-            {t('reviews.title')}
+            Что говорят наши студенты
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('reviews.description')}
+            Не верьте нам на слово - послушайте студентов, которые преобразили свой английский
           </p>
         </div>
 
@@ -81,7 +79,7 @@ export default function Reviews() {
           <button
             type="button"
             onClick={showPrevious}
-            aria-label={t('reviews.carousel.previous')}
+            aria-label="Предыдущий отзыв"
             className="hidden md:flex absolute left-[-3rem] top-1/2 -translate-y-1/2 z-20 items-center justify-center w-12 h-12 bg-white/90 border border-secondary-100 rounded-full shadow-lg shadow-secondary-200/60 hover:bg-secondary-50 transition-all duration-200"
           >
             <ChevronLeftIcon className="w-6 h-6 text-gray-600" />
@@ -140,7 +138,7 @@ export default function Reviews() {
             <button
               type="button"
               onClick={showPrevious}
-              aria-label={t('reviews.carousel.previous')}
+              aria-label="Предыдущий отзыв"
               className="flex items-center justify-center w-10 h-10 bg-white/95 border border-secondary-100 rounded-full shadow-md hover:bg-secondary-50 transition-all duration-200"
             >
               <ChevronLeftIcon className="w-6 h-6 text-gray-600" />
@@ -148,7 +146,7 @@ export default function Reviews() {
             <button
               type="button"
               onClick={showNext}
-              aria-label={t('reviews.carousel.next')}
+              aria-label="Следующий отзыв"
               className="flex items-center justify-center w-10 h-10 bg-white/95 border border-secondary-100 rounded-full shadow-md hover:bg-secondary-50 transition-all duration-200"
             >
               <ChevronRightIcon className="w-6 h-6 text-gray-600" />
@@ -158,7 +156,7 @@ export default function Reviews() {
           <button
             type="button"
             onClick={showNext}
-            aria-label={t('reviews.carousel.next')}
+            aria-label="Следующий отзыв"
             className="hidden md:flex absolute right-[-3rem] top-1/2 -translate-y-1/2 z-20 items-center justify-center w-12 h-12 bg-white/90 border border-secondary-100 rounded-full shadow-lg shadow-secondary-200/60 hover:bg-secondary-50 transition-all duration-200"
           >
             <ChevronRightIcon className="w-6 h-6 text-gray-600" />
@@ -171,7 +169,7 @@ export default function Reviews() {
               key={index}
               type="button"
               onClick={() => setCurrentIndex(index)}
-              aria-label={`${t('reviews.carousel.goTo')} ${index + 1}`}
+              aria-label={`Перейти к отзыву ${index + 1}`}
               className={`w-3 h-3 rounded-full transition-all ${
                 currentIndex === index ? 'bg-secondary-900' : 'bg-gray-300 hover:bg-gray-400'
               }`}
@@ -182,4 +180,3 @@ export default function Reviews() {
     </section>
   );
 }
-

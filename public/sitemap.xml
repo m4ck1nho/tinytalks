@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>https://tinytalks.pro/dashboard</loc><lastmod>2025-11-15T13:41:29.652Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-<url><loc>https://tinytalks.pro/icon.png</loc><lastmod>2025-11-15T13:41:29.653Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-<url><loc>https://tinytalks.pro/sitemap.xml</loc><lastmod>2025-11-15T13:41:29.653Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-<url><loc>https://tinytalks.pro/blog</loc><lastmod>2025-11-15T13:41:29.653Z</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-<url><loc>https://tinytalks.pro/auth</loc><lastmod>2025-11-15T13:41:29.653Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-<url><loc>https://tinytalks.pro</loc><lastmod>2025-11-15T13:41:29.653Z</lastmod><changefreq>weekly</changefreq><priority>1</priority></url>
+<url><loc>https://tinytalks.pro</loc><lastmod>2025-11-15T16:13:36.865Z</lastmod><changefreq>weekly</changefreq><priority>1</priority></url>
+<url><loc>https://tinytalks.pro/sitemap.xml</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/dashboard</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/icon.png</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/auth</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+<url><loc>https://tinytalks.pro/blog/15</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/5</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/5-grammaticheskih-konstruktsiy-kotorye-chasto-putayut-russkoyazychnye</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/5-oshibok-kotorye-meshayut-bystro-uluchshit-angliyskiy</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/adaptirovannye-knigi</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/angliyskiy-dlya-detey</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/asinhronnoe-obuchenie</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/domashnee-zadanie</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/duolingo-english-test</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/ispol-zovat-russkiy-na-urokah-angliyskogo-ili-net</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/kak-chitat-na-angliyskom</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/kak-effektivno-uchit-novye-slova-i-frazy-na-angliyskom</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/kak-ispolzovat-ii-dlya-izucheniya-angliyskogo</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/kak-podgotovit-sya-k-duolingo-english-test</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/kak-preodolet-strah-govorit-na-angliyskom</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/kak-vyrabotat-privychku-uchit-angliyskiy-kazhdyy-den</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/kak-vyuchit-angliyskiy-po-pesnyam</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/nuzhno-li-horoshee-nastroenie-na-uroke-angliyskogo-yazyka</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/pochemu-vazhno-delat-malen-kie-shagi-kazhdyy-den</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/slushaem-podkasty-na-angliyskom</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://tinytalks.pro/blog/top-10-idiom</loc><lastmod>2025-11-15T16:13:36.868Z</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>

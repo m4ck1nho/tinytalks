@@ -5,14 +5,12 @@ import { BlogPost } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CalendarIcon, ArrowRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 interface BlogListProps {
   posts: BlogPost[];
 }
 
 export function BlogList({ posts: initialPosts }: BlogListProps) {
-  const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [posts] = useState<BlogPost[]>(initialPosts);
@@ -41,17 +39,12 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
     return Math.ceil(wordCount / wordsPerMinute);
   };
 
-  const locale = language === 'ru' ? 'ru-RU' : 'en-US';
-
   const getArticleWord = (count: number): string => {
-    if (language === 'ru') {
-      const mod10 = count % 10;
-      const mod100 = count % 100;
-      if (mod10 === 1 && mod100 !== 11) return t('blog.articles.one');
-      if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return t('blog.articles.few');
-      return t('blog.articles.many');
-    }
-    return count === 1 ? t('blog.articles.one') : t('blog.articles.few');
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+    if (mod10 === 1 && mod100 !== 11) return 'статья';
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'статьи';
+    return 'статей';
   };
 
   const POSTS_PER_PAGE = 6;
@@ -96,7 +89,7 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <CalendarIcon className="w-4 h-4" />
           <span>
-            {new Date(post.createdAt).toLocaleDateString(locale, {
+            {new Date(post.createdAt).toLocaleDateString('ru-RU', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
@@ -104,7 +97,7 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
           </span>
           <span className="mx-2">•</span>
           <span>
-            {calculateReadingTime(post.content)} {t('blog.minRead')}
+            {calculateReadingTime(post.content)} мин чтения
           </span>
         </div>
 
@@ -115,7 +108,7 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
         <p className="text-gray-600 line-clamp-3 leading-relaxed">{post.excerpt}</p>
 
         <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all inline-block">
-          {t('blog.readMore')}
+          Читать далее
           <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </span>
       </div>
@@ -130,7 +123,7 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
             <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
-              placeholder={t('blog.searchPlaceholder')}
+              placeholder="Поиск статей..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-all text-base bg-white"
@@ -145,14 +138,14 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
               <span className="text-6xl">📝</span>
             </div>
             <p className="text-xl text-gray-600 mb-4">
-              {searchQuery ? t('blog.noResults') : t('blog.noPosts')}
+              {searchQuery ? 'Статьи по вашему запросу не найдены.' : 'Пока нет статей.'}
             </p>
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
                 className="px-6 py-3 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-600 transition-colors shadow-lg hover:shadow-xl"
               >
-                {t('blog.clearSearch')}
+                Очистить поиск
               </button>
             )}
           </div>
@@ -162,7 +155,7 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
         {recentPosts.length > 0 && (
           <div className="mb-16">
             <h2 className="text-2xl font-bold text-secondary-900 mb-8">
-              {t('blog.mostRecent') || 'Most Recent Posts'}
+              Последние статьи
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {recentPosts.map((post) => renderPostCard(post))}
@@ -176,15 +169,15 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-8 text-gray-600">
               <div>
                 <h2 className="text-2xl font-bold text-secondary-900">
-                  {isSearching ? t('blog.searchResults') : t('blog.allArticles') || t('blog.readMoreArticles')}
+                  {isSearching ? 'Найдено' : 'Все статьи'}
                 </h2>
                 <p>
-                  {t('blog.resultsCount')} {filteredPosts.length} {getArticleWord(filteredPosts.length)}
+                  Найдено {filteredPosts.length} {getArticleWord(filteredPosts.length)}
                 </p>
               </div>
               {totalPages > 1 && (
                 <div className="text-sm text-gray-500">
-                  {t('blog.pagination.page')} {currentPage} {t('blog.pagination.of')} {totalPages}
+                  Страница {currentPage} из {totalPages}
                 </div>
               )}
             </div>
@@ -204,7 +197,7 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  {t('blog.pagination.previous')}
+                  Назад
                 </button>
                 <div className="flex items-center gap-2">
                   {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
@@ -230,7 +223,7 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  {t('blog.pagination.next')}
+                  Далее
                 </button>
               </div>
             )}
@@ -239,4 +232,3 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
     </div>
   );
 }
-

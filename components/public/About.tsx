@@ -2,31 +2,28 @@
 
 import Image from 'next/image';
 import { AcademicCapIcon, UserGroupIcon, SparklesIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function About() {
-  const { t } = useLanguage();
-  
   const features = [
     {
       icon: AcademicCapIcon,
-      title: t('about.features.expert.title'),
-      description: t('about.features.expert.description'),
+      title: 'Асинхронное обучение',
+      description: 'Ежедневные задания по 15 минут с обратной связью от преподавателя',
     },
     {
       icon: UserGroupIcon,
-      title: t('about.features.personalized.title'),
-      description: t('about.features.personalized.description'),
+      title: 'Индивидуальный подход',
+      description: 'Каждый студент получает персональный план обучения',
     },
     {
       icon: SparklesIcon,
-      title: t('about.features.engaging.title'),
-      description: t('about.features.engaging.description'),
+      title: 'Онлайн обучение',
+      description: 'Интерактивные уроки, которые делают изучение английского приятным и эффективным',
     },
     {
       icon: ChatBubbleBottomCenterTextIcon,
-      title: t('about.features.speaking.title'),
-      description: t('about.features.speaking.description'),
+      title: 'Фокус на разговорной речи',
+      description: 'Упор на разговорный английский и реальное общение',
     },
   ];
 
@@ -39,7 +36,7 @@ export default function About() {
             <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-xl">
               <Image
                 src="/images/teacher-about.jpg"
-                alt={t('about.imageAlt')}
+                alt="Евгения Пенькова — преподаватель английского языка"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 className="object-cover"
@@ -53,29 +50,34 @@ export default function About() {
           <div className="space-y-6 order-1 md:order-2">
             <div className="inline-block">
               <span className="bg-secondary-100 text-secondary-900 text-sm font-semibold px-4 py-2 rounded-full">
-                {t('about.badge')}
+                О TinyTalks
               </span>
             </div>
             
             <h2 className="text-3xl md:text-4xl font-bold text-secondary-900">
-              {t('about.title')}
+              Я - Пенькова Евгения, преподаватель английского языка и создатель проекта TinyTalks
             </h2>
             
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p className="whitespace-pre-line">
-                {t('about.intro1')}
+                TinyTalks вырос из моего желания сделать изучение английского простым , современным и понятным.
               </p>
               
               <p className="whitespace-pre-line">
-                {t('about.intro2')}
+                Я вижу, как часто ученики боятся «ошибиться», теряют мотивацию или думают, что &quot;им просто не дано&quot;.
+
+Моя цель — показать, что это не так.
+
+На моих занятиях нет спешки и давления — только поддержка, доброжелательная атмосфера и понятные шаги к результату.
               </p>
               
               <p className="whitespace-pre-line">
-                {t('about.intro3')}
+                Я верю, что каждый может говорить по-английски, если учиться в комфортном темпе и получать обратную связь,
+которая вдохновляет, а не пугает.
               </p>
               
               <p className="font-semibold text-gray-900">
-                {t('about.cta')}
+                TinyTalks — это место, где учиться легко, приятно и по-настоящему.
               </p>
             </div>
           </div>
@@ -101,4 +103,3 @@ export default function About() {
     </section>
   );
 }
-

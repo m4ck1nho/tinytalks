@@ -9,8 +9,6 @@ import {
   XMarkIcon,
   UserIcon
 } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
-
 interface DailyScheduleViewProps {
   date: Date;
   classes: Class[];
@@ -18,7 +16,6 @@ interface DailyScheduleViewProps {
 }
 
 export default function DailyScheduleView({ date, classes, onClose }: DailyScheduleViewProps) {
-  const { t, language } = useLanguage();
   const sortedClasses = useMemo(() => {
     return [...classes].sort(
       (a, b) => new Date(a.class_date).getTime() - new Date(b.class_date).getTime()
@@ -29,14 +26,7 @@ export default function DailyScheduleView({ date, classes, onClose }: DailySched
     const classDate = new Date(dateString);
     const hours = classDate.getHours();
     const minutes = classDate.getMinutes().toString().padStart(2, '0');
-
-    if (language === 'ru') {
-      return `${hours.toString().padStart(2, '0')}:${minutes}`;
-    }
-
-    const period = hours >= 12 ? 'PM' : 'AM';
-    const displayHour = hours % 12 === 0 ? 12 : hours % 12;
-    return `${displayHour}:${minutes} ${period}`;
+    return `${hours.toString().padStart(2, '0')}:${minutes}`;
   };
 
   return (
@@ -45,9 +35,9 @@ export default function DailyScheduleView({ date, classes, onClose }: DailySched
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-2xl font-bold text-secondary-900">
-              {formatDateLong(date, language)}
+              {formatDateLong(date, 'ru')}
             </h3>
-            <p className="text-sm text-gray-600 mt-1">{t('calendar.daily.title')}</p>
+            <p className="text-sm text-gray-600 mt-1">Расписание на день</p>
           </div>
           <button
             onClick={onClose}
@@ -59,7 +49,7 @@ export default function DailyScheduleView({ date, classes, onClose }: DailySched
         <div className="space-y-4">
           {sortedClasses.length === 0 ? (
             <div className="text-center text-gray-500 py-12">
-              {t('dashboard.noClasses')}
+              Нет занятий
             </div>
           ) : (
             sortedClasses.map((classItem) => {
@@ -87,7 +77,7 @@ export default function DailyScheduleView({ date, classes, onClose }: DailySched
                           {formatTimeForDisplay(classItem.class_date)}
                         </div>
                         <div className="text-xs text-gray-600">
-                          {classItem.duration_minutes || 50} {t('dashboard.minutes')}
+                          {classItem.duration_minutes || 50} минут
                         </div>
                       </div>
                     </div>
@@ -122,13 +112,18 @@ export default function DailyScheduleView({ date, classes, onClose }: DailySched
                               : 'bg-blue-100 text-blue-800'
                           }`}
                         >
-                          {t(`dashboard.status.${classItem.status}`)}
+                          {classItem.status === 'completed' ? 'Завершено' :
+                           classItem.status === 'cancelled' ? 'Отменено' :
+                           classItem.status === 'pending_payment' ? 'Ожидает оплаты' :
+                           classItem.status === 'scheduled' ? 'Запланировано' :
+                           classItem.status === 'pending' ? 'Ожидает' :
+                           classItem.status}
                         </span>
                       </div>
 
                       {classItem.notes && (
                         <div className="text-xs text-gray-600 bg-white/50 px-3 py-2 rounded-lg">
-                          <span className="font-medium">{t('calendar.daily.notes')}: </span>
+                          <span className="font-medium">Заметки: </span>
                           {classItem.notes}
                         </div>
                       )}
@@ -165,10 +160,10 @@ export default function DailyScheduleView({ date, classes, onClose }: DailySched
                             }`}
                           >
                             {classItem.payment_status === 'paid'
-                              ? t('dashboard.paid')
+                              ? 'Оплачено'
                               : classItem.payment_status === 'pending' || classItem.status === 'pending_payment'
-                              ? t('dashboard.paymentPending')
-                              : t('dashboard.unpaid')}
+                              ? 'Ожидает подтверждения'
+                              : 'Не оплачено'}
                           </span>
                         </div>
                       )}

@@ -8,7 +8,6 @@ import {
   ChevronRightIcon,
   CalendarIcon
 } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
 import DailyScheduleView from './DailyScheduleView';
 
 interface CalendarProps {
@@ -22,7 +21,6 @@ interface DayDetails {
 }
 
 export default function Calendar({ classes, payments = [] }: CalendarProps) {
-  const { t, language } = useLanguage();
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
   const [selectedDay, setSelectedDay] = useState<DayDetails | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -32,13 +30,9 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
     setCurrentDate(new Date());
   }, []);
 
-  const monthNames = language === 'ru' 
-    ? ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
-    : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
-  const dayNames = language === 'ru'
-    ? ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
-    : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -163,7 +157,7 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
             ))}
             {(dayClasses.length + dayPayments.length) > 3 && (
               <div className="text-xs text-gray-500 font-semibold">
-                +{dayClasses.length + dayPayments.length - 3} {t('calendar.more')}
+                +{dayClasses.length + dayPayments.length - 3} ещё
               </div>
             )}
           </div>
@@ -180,7 +174,7 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
           <CalendarIcon className="w-7 h-7 text-primary-500" />
-          {t('calendar.title')}
+          Календарь
         </h2>
         <div className="flex items-center gap-4">
           <button
@@ -219,19 +213,19 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
       <div className="mt-4 flex items-center gap-6 text-sm flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-blue-100 border border-blue-300 rounded"></div>
-          <span className="text-gray-600">{t('calendar.legend.scheduledClasses')}</span>
+          <span className="text-gray-600">Запланированные занятия</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-red-100 border border-red-300 rounded"></div>
-          <span className="text-gray-600">{t('calendar.legend.unpaidClasses')}</span>
+          <span className="text-gray-600">Неоплаченные занятия</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-green-100 border border-green-300 rounded"></div>
-          <span className="text-gray-600">{t('calendar.legend.payments')}</span>
+          <span className="text-gray-600">Платежи</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 ring-2 ring-primary-500 rounded"></div>
-          <span className="text-gray-600">{t('calendar.legend.today')}</span>
+          <span className="text-gray-600">Сегодня</span>
         </div>
       </div>
 

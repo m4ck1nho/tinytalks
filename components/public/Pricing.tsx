@@ -1,11 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { db } from '@/lib/supabase';
 
 export default function Pricing() {
-  const { t } = useLanguage();
   const [pricingSettings, setPricingSettings] = useState<Record<string, { price: string; currency: string }>>({});
 
   useEffect(() => {
@@ -18,7 +16,6 @@ export default function Pricing() {
             if (setting.key.startsWith('pricing_')) {
               const planKey = setting.key.replace('pricing_', '');
               const value = setting.value;
-              // Type-check the value before assigning
               if (
                 value &&
                 typeof value === 'object' &&
@@ -53,50 +50,50 @@ export default function Pricing() {
   const plans = [
     {
       key: 'trial',
-      name: t('pricing.trial.name'),
-      price: getPrice('trial', t('pricing.trial.price')),
-      currency: getCurrency('trial', t('pricing.trial.currency')),
-      period: t('pricing.trial.period'),
-      subtitle: t('pricing.trial.subtitle'),
-      duration: t('pricing.trial.duration'),
-      description: t('pricing.trial.description'),
-      cta: t('pricing.trial.cta'),
+      name: 'Пробное занятие',
+      price: getPrice('trial', '0'),
+      currency: getCurrency('trial', '₽'),
+      period: 'рублей',
+      subtitle: 'Попробуй перед стартом — бесплатно',
+      duration: '25 минут',
+      description: 'На пробном занятии мы узнаем твой уровень, обсудим цели и составим план обучения.\n\nТы поймёшь, какой формат подходит именно тебе.',
+      cta: 'Начать бесплатно',
       popular: false,
     },
     {
       key: 'individual',
-      name: t('pricing.individual.name'),
-      price: getPrice('individual', t('pricing.individual.price')),
-      currency: getCurrency('individual', t('pricing.individual.currency')),
-      period: t('pricing.individual.period'),
-      subtitle: t('pricing.individual.subtitle'),
-      duration: t('pricing.individual.duration'),
-      description: t('pricing.individual.description'),
-      cta: t('pricing.individual.cta'),
+      name: 'Индивидуальное занятие',
+      price: getPrice('individual', '2000'),
+      currency: getCurrency('individual', '₽'),
+      period: '/ занятие',
+      subtitle: 'Полное внимание преподавателя только для тебя',
+      duration: '60 мин',
+      description: 'Индивидуальные занятия — это твой личный темп и программа, подстроенная под тебя.\n\nМы разбираем грамматику, говорим на актуальные темы, тренируем произношение и решаем именно те задачи, которые важны тебе.',
+      cta: 'Записаться',
       popular: false,
     },
     {
       key: 'async',
-      name: t('pricing.async.name'),
-      price: getPrice('async', t('pricing.async.price')),
-      currency: getCurrency('async', t('pricing.async.currency')),
-      period: t('pricing.async.period'),
-      subtitle: t('pricing.async.subtitle'),
-      duration: t('pricing.async.duration'),
-      description: t('pricing.async.description'),
-      cta: t('pricing.async.cta'),
+      name: 'Асинхронное микрообучение',
+      price: getPrice('async', '1000'),
+      currency: getCurrency('async', '₽'),
+      period: '/ неделя',
+      subtitle: 'Учись в удобное время — маленькими шагами',
+      duration: '15 минут в день',
+      description: 'Короткие уроки, практические задания и моя обратная связь — всё это в твоём ритме.\n\nТы проходишь уроки тогда, когда удобно, и постепенно набираешь уверенность, не теряя мотивацию.\n\nИдеально для тех, кто хочет гибко учить английский.',
+      cta: 'Начать обучение',
       popular: true,
     },
     {
       key: 'group',
-      name: t('pricing.group.name'),
-      price: getPrice('group', t('pricing.group.price')),
-      currency: getCurrency('group', t('pricing.group.currency')),
-      period: t('pricing.group.period'),
-      subtitle: t('pricing.group.subtitle'),
-      duration: t('pricing.group.duration'),
-      description: t('pricing.group.description'),
-      cta: t('pricing.group.cta'),
+      name: 'Асинхронные занятия + 1 онлайн-урок в неделю',
+      price: getPrice('group', '3250'),
+      currency: getCurrency('group', '₽'),
+      period: '/ неделя',
+      subtitle: 'Учись в своём ритме и закрепляй знания в прямом эфире',
+      duration: 'Асинхронный формат + 1 онлайн-занятие в неделю',
+      description: '- Удобные асинхронные уроки\n- Одно онлайн-занятие в неделю\n- Короткие задания и персональная обратная связь\n\nТы изучаешь материал тогда, когда удобно, а на еженедельной онлайн-встрече мы разбираем вопросы, тренируем речь и укрепляем уверенность. Идеально для тех, кому нужна гибкость и регулярная живая практика.',
+      cta: 'Записаться на план',
       popular: false,
     },
   ];
@@ -106,13 +103,13 @@ export default function Pricing() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
-            {t('pricing.badge')}
+            Тарифные планы
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 mt-6 mb-4">
-            {t('pricing.title')}
+            Выберите свой путь обучения
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('pricing.description')}
+            Гибкие варианты цен, разработанные для ваших потребностей и бюджета
           </p>
         </div>
 
@@ -126,7 +123,7 @@ export default function Pricing() {
             >
               {plan.popular && (
                 <div className="absolute top-0 right-0 bg-primary-500 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg">
-                  {t('pricing.individual.popular')}
+                  Популярный
                 </div>
               )}
               
@@ -160,4 +157,3 @@ export default function Pricing() {
     </section>
   );
 }
-

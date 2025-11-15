@@ -1,51 +1,44 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { LanguageProvider } from '@/contexts/LanguageContext';
-import { HtmlLangWrapper } from '@/components/shared/HtmlLangWrapper';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import FaviconUpdater from '@/components/shared/FaviconUpdater';
 import TitleUpdater from '@/components/shared/TitleUpdater';
-import { getTranslations, type Language } from '@/lib/i18n-server';
 
 const inter = Inter({ subsets: ['latin'] });
-
-// Default locale for server-side rendering
-const DEFAULT_LOCALE: Language = 'ru';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://tinytalks.pro'),
   title: {
-    default: 'TinyTalks - Learn English Online',
+    default: 'TinyTalks - Изучайте английский онлайн',
     template: '%s | TinyTalks',
   },
-  description: 'Learn English online with personalized tutoring from beginner to advanced. Online lessons with native-level instructor for Russian speakers.',
-  keywords: ['learn english online', 'english tutor', 'online english lessons', 'английский онлайн', 'репетитор английского', 'English learning', 'Advanced level', 'online English classes', 'beginner English', 'English teacher', 'language learning'],
+  description: 'Изучайте английский онлайн с персональным репетитором от начального до продвинутого уровня. Онлайн занятия с опытным преподавателем для русскоязычных.',
+  keywords: ['английский онлайн', 'репетитор английского', 'онлайн уроки английского', 'изучение английского', 'английский для начинающих', 'английский язык онлайн', 'курсы английского'],
   authors: [{ name: 'TinyTalks' }],
   creator: 'TinyTalks',
   publisher: 'TinyTalks',
   openGraph: {
     type: 'website',
-    locale: 'en_US',
-    alternateLocale: ['ru_RU'],
+    locale: 'ru_RU',
     url: 'https://tinytalks.pro',
     siteName: 'TinyTalks',
-    title: 'TinyTalks - Learn English Online',
-    description: 'Personalized English tutoring from beginner to advanced',
+    title: 'TinyTalks - Изучайте английский онлайн',
+    description: 'Персональное обучение английскому от начального до продвинутого уровня',
     images: [
       {
         url: 'https://tinytalks.pro/images/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'TinyTalks - Learn English Online',
+        alt: 'TinyTalks - Изучайте английский онлайн',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'TinyTalks - Learn English Online',
-    description: 'Personalized English tutoring',
+    title: 'TinyTalks - Изучайте английский онлайн',
+    description: 'Персональное обучение английскому',
     images: ['https://tinytalks.pro/images/twitter-card.jpg'],
     creator: '@tinytalks',
   },
@@ -62,10 +55,6 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: 'https://tinytalks.pro',
-    languages: {
-      'en': 'https://tinytalks.pro',
-      'ru': 'https://tinytalks.pro',
-    },
   },
 };
 
@@ -74,30 +63,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Pre-render translations on the server for SSR
-  const initialTranslations = getTranslations(DEFAULT_LOCALE);
-
   return (
-    <html lang={DEFAULT_LOCALE} className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* Google Search Console Verification */}
         <meta name="google-site-verification" content="a12c8b207a493225" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const savedLanguage = localStorage.getItem('language');
-                  if (savedLanguage === 'en' || savedLanguage === 'ru') {
-                    document.documentElement.lang = savedLanguage;
-                  }
-                } catch (e) {
-                  // localStorage not available, use default
-                }
-              })();
-            `,
-          }}
-        />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7536252176755420"
@@ -107,11 +77,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <FaviconUpdater />
         <TitleUpdater />
-        <LanguageProvider initialLanguage={DEFAULT_LOCALE} initialTranslations={initialTranslations}>
-          <HtmlLangWrapper>
-            {children}
-          </HtmlLangWrapper>
-        </LanguageProvider>
+        {children}
         <Analytics />
         <SpeedInsights />
       </body>

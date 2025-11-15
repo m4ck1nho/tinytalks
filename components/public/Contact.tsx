@@ -1,23 +1,20 @@
 'use client';
 
 import { EnvelopeIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Contact() {
-  const { t } = useLanguage();
-
   return (
     <section id="contact" className="relative py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="inline-block bg-primary-50 text-primary-700 text-sm font-semibold px-4 py-2 rounded-md mb-6">
-            {t('contact.badge')}
+            Свяжитесь с нами
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-6">
-            {t('contact.title')}
+            Начните свое путешествие в английском сегодня
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('contact.description')}
+            Есть вопросы? Готовы начать? Отправьте нам сообщение, и мы свяжемся с вами как можно скорее!
           </p>
         </div>
 
@@ -33,7 +30,7 @@ export default function Contact() {
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-primary-600 transition-colors">
-                  {t('contact.info.email')}
+                  Электронная почта
                 </h3>
                 <p className="text-sm text-gray-600 group-hover:text-primary-600 transition-colors">
                   info@tinytalks.pro
@@ -90,16 +87,6 @@ export default function Contact() {
             </div>
           </a>
         </div>
-
-        {t('contact.info.description') && (
-          <div className="text-center">
-            <div className="inline-block bg-gray-50 border border-gray-200 rounded-lg p-8 max-w-3xl">
-              <p className="text-base text-gray-700 leading-relaxed">
-                {t('contact.info.description')}
-              </p>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

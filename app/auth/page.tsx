@@ -4,8 +4,6 @@ import { useState, Suspense } from 'react';
 import { auth } from '@/lib/supabase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
-
 function AuthForm() {
   const searchParams = useSearchParams();
   const [isSignUp, setIsSignUp] = useState(() => searchParams.get('mode') === 'signup');
@@ -16,7 +14,6 @@ function AuthForm() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const router = useRouter();
-  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +26,7 @@ function AuthForm() {
         // Sign up
         const { error } = await auth.signUp(email, password, fullName);
         if (error) throw error;
-        setSuccess(t('auth.signupSuccess'));
+        setSuccess('Регистрация успешна! Проверьте свою электронную почту для подтверждения.');
         setEmail('');
         setPassword('');
         setFullName('');
@@ -40,7 +37,7 @@ function AuthForm() {
         router.push('/dashboard');
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : t('auth.error');
+      const errorMessage = error instanceof Error ? error.message : 'Произошла ошибка';
       setError(errorMessage);
       console.error('Auth error:', error);
     } finally {
@@ -55,7 +52,7 @@ function AuthForm() {
       const { error } = await auth.signInWithGoogle();
       if (error) throw error;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : t('auth.googleError');
+      const errorMessage = error instanceof Error ? error.message : 'Ошибка входа через Google';
       setError(errorMessage);
       console.error('Google sign-in error:', error);
       setLoading(false);
@@ -74,10 +71,10 @@ function AuthForm() {
               </div>
             </Link>
             <h1 className="text-2xl font-bold text-gray-900">
-              {isSignUp ? t('auth.createAccountHeading') : t('auth.welcomeBack')}
+              {isSignUp ? 'Создать аккаунт' : 'Добро пожаловать'}
             </h1>
             <p className="text-gray-600 mt-2">
-              {isSignUp ? t('auth.signupIntro') : t('auth.loginIntro')}
+              {isSignUp ? 'Зарегистрируйтесь, чтобы начать обучение' : 'Войдите, чтобы продолжить обучение'}
             </p>
           </div>
 
@@ -94,13 +91,13 @@ function AuthForm() {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            {t('auth.continueWithGoogle')}
+            Продолжить с Google
           </button>
 
           {/* Divider */}
           <div className="my-6 flex items-center">
             <div className="flex-1 border-t border-gray-300"></div>
-            <span className="px-4 text-sm text-gray-500">{t('auth.or')}</span>
+            <span className="px-4 text-sm text-gray-500">или</span>
             <div className="flex-1 border-t border-gray-300"></div>
           </div>
 
@@ -108,7 +105,7 @@ function AuthForm() {
             {isSignUp && (
               <div>
                 <label htmlFor="fullName" className="block text-sm font-semibold text-gray-900 mb-2">
-                  {t('auth.fullName')}
+                  Ваше имя
                 </label>
                 <input
                   type="text"
@@ -117,42 +114,42 @@ function AuthForm() {
                   onChange={(e) => setFullName(e.target.value)}
                   required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                  placeholder={t('auth.fullNamePlaceholder')}
+                  placeholder="Иван Иванов"
                 />
               </div>
             )}
 
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
-                {t('auth.email')}
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                placeholder={t('auth.emailPlaceholder')}
-              />
+                  Электронная почта
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                  placeholder="ivan@example.com"
+                />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-gray-900 mb-2">
-                {t('auth.password')}
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                placeholder="••••••••"
-              />
+                  Пароль
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                  placeholder="••••••••"
+                />
               {isSignUp && (
-                <p className="text-xs text-gray-500 mt-1">{t('auth.passwordHint')}</p>
+                <p className="text-xs text-gray-500 mt-1">Минимум 6 символов</p>
               )}
             </div>
 
@@ -174,8 +171,8 @@ function AuthForm() {
               className="w-full bg-primary-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {loading
-                ? (isSignUp ? t('auth.creatingAccount') : t('auth.signingIn'))
-                : (isSignUp ? t('auth.signUpButton') : t('auth.signInButton'))}
+                ? (isSignUp ? 'Создание аккаунта...' : 'Вход...')
+                : (isSignUp ? 'Зарегистрироваться' : 'Войти')}
             </button>
           </form>
 
@@ -191,13 +188,13 @@ function AuthForm() {
             >
               {isSignUp ? (
                 <>
-                  {t('auth.haveAccount')}{' '}
-                  <span className="text-primary-500 font-semibold hover:underline">{t('auth.toggleToSignIn')}</span>
+                  Уже есть аккаунт?{' '}
+                  <span className="text-primary-500 font-semibold hover:underline">Войти</span>
                 </>
               ) : (
                 <>
-                  {t('auth.noAccount')}{' '}
-                  <span className="text-primary-500 font-semibold hover:underline">{t('auth.toggleToSignUp')}</span>
+                  Нет аккаунта?{' '}
+                  <span className="text-primary-500 font-semibold hover:underline">Зарегистрироваться</span>
                 </>
               )}
             </button>
@@ -205,7 +202,7 @@ function AuthForm() {
 
           <div className="mt-6 text-center text-sm text-gray-600">
             <Link href="/" className="text-primary-500 hover:underline">
-              {t('auth.backToHome')}
+              Вернуться на главную
             </Link>
           </div>
         </div>

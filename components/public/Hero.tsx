@@ -3,11 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Hero() {
-  const { t } = useLanguage();
-
   return (
     <section className="relative bg-gradient-to-br from-orange-50 via-white to-blue-50 overflow-hidden pt-20">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -18,20 +15,22 @@ export default function Hero() {
           <div className="space-y-8 z-10 pt-0">
             <div className="inline-block">
               <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
-                {t('hero.badge')}
+                Изучайте английский с уверенностью
               </span>
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                {t('hero.title')}
+                TinyTalks
               </span>
               <br />
-              <span className="text-secondary-900">{t('hero.subtitle')}</span>
+              <span className="text-secondary-900">маленькие шаги к большому английскому</span>
             </h1>
             
             <p className="text-lg md:text-xl text-gray-600 leading-relaxed whitespace-pre-line">
-              {t('hero.description')}
+              Я помогаю детям и взрослым учить английский в своём ритме — спокойно, с поддержкой и удовольствием.
+
+Асинхронные уроки и живые занятия делают процесс гибким, а результат — настоящим.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -39,7 +38,7 @@ export default function Hero() {
                 href="/auth?mode=signup"
                 className="group bg-primary-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
-                {t('hero.cta')}
+                Начать обучение
                 <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               
@@ -47,7 +46,7 @@ export default function Hero() {
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
                 className="border-2 border-secondary-900 text-secondary-900 px-8 py-4 rounded-lg font-semibold hover:bg-secondary-900 hover:text-white transition-all duration-300"
               >
-                {t('hero.pricing')}
+                Смотреть цены
               </button>
             </div>
           </div>
@@ -57,7 +56,7 @@ export default function Hero() {
             <div className="relative h-[620px] md:h-[720px] rounded-2xl overflow-hidden shadow-2xl">
               <Image
                 src="/images/teacher-hero.jpg"
-                alt={t('hero.imageAlt')}
+                alt="Преподаватель английского помогает ученице"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 className="object-cover object-bottom"
@@ -70,4 +69,3 @@ export default function Hero() {
     </section>
   );
 }
-

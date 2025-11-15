@@ -20,14 +20,13 @@ import {
   HomeIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
 import Notification from '@/components/shared/Notification';
 
 type Tab = 'overview' | 'calendar' | 'classes' | 'homework' | 'requests' | 'notifications';
 
 export default function UserDashboard() {
-  const { t, language } = useLanguage();
-  const isRu = language === 'ru';
+  // All text is hardcoded in Russian
+  const isRu = true; // Always Russian
   const [user, setUser] = useState<{ id?: string; email?: string; user_metadata?: { full_name?: string } } | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('overview');
@@ -409,7 +408,7 @@ export default function UserDashboard() {
       await db.createClassRequest(formData);
       setNotification({
         type: 'success',
-        title: t('classRequest.success'),
+        title: 'Бронирование успешно отправлено! Преподаватель скоро его рассмотрит.',
         message: text.notifications.requestSuccessMessage,
       });
       setShowRequestForm(false);
@@ -422,7 +421,7 @@ export default function UserDashboard() {
       console.error('Error submitting class request:', error);
       setNotification({
         type: 'error',
-        title: t('classRequest.error'),
+        title: 'Не удалось отправить бронирование. Пожалуйста, попробуйте снова.',
         message: text.notifications.requestErrorMessage,
       });
     } finally {
@@ -509,7 +508,7 @@ export default function UserDashboard() {
         await db.createPaymentNotification(formData);
         setNotification({
           type: 'success',
-          title: t('payment.modal.success'),
+          title: 'Уведомление об оплате отправлено преподавателю!',
           message: text.notifications.paymentSuccessMessage,
         });
         setShowPaymentForm(false);
@@ -521,7 +520,7 @@ export default function UserDashboard() {
         console.error('Error submitting payment:', error);
         setNotification({
           type: 'error',
-          title: t('payment.modal.error'),
+          title: 'Не удалось отправить уведомление об оплате',
           message: text.notifications.paymentErrorMessage,
         });
       }
@@ -544,7 +543,7 @@ export default function UserDashboard() {
         await db.createPaymentNotification(formData);
         setNotification({
           type: 'success',
-          title: t('payment.modal.success'),
+          title: 'Уведомление об оплате отправлено преподавателю!',
           message: text.notifications.paymentSuccessMessage,
         });
         setShowPaymentForm(false);
@@ -556,7 +555,7 @@ export default function UserDashboard() {
         console.error('Error submitting payment:', error);
         setNotification({
           type: 'error',
-          title: t('payment.modal.error'),
+          title: 'Не удалось отправить уведомление об оплате',
           message: text.notifications.paymentErrorMessage,
         });
       }
@@ -733,7 +732,7 @@ export default function UserDashboard() {
               className="w-full flex items-center gap-3 px-4 py-3 text-secondary-900 hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 rounded-xl transition-all duration-300 font-semibold"
             >
               <ArrowRightOnRectangleIcon className="w-5 h-5 text-primary-500" />
-              {t('dashboard.logout')}
+              Выход
             </button>
           </div>
         </div>
@@ -751,15 +750,15 @@ export default function UserDashboard() {
                 <div className="grid md:grid-cols-3 gap-6">
                   <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-6 border border-white/70">
                     <div className="text-3xl font-bold text-primary-600 mb-1">{classes.filter(c => c.status === 'completed').length}</div>
-                    <div className="text-sm text-gray-700 font-medium">{t('dashboard.stats.completed')}</div>
+                    <div className="text-sm text-gray-700 font-medium">Уроков завершено</div>
                   </div>
                   <div className="bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-xl p-6 border border-white/70">
                     <div className="text-3xl font-bold text-secondary-900 mb-1">{homework.filter(h => h.status === 'completed').length}</div>
-                    <div className="text-sm text-gray-700 font-medium">{t('dashboard.stats.homeworkCompleted')}</div>
+                    <div className="text-sm text-gray-700 font-medium">Заданий выполнено</div>
                   </div>
                   <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-white/70">
                     <div className="text-3xl font-bold text-green-600 mb-1">{classes.filter(c => c.payment_status === 'paid').length}</div>
-                    <div className="text-sm text-gray-700 font-medium">{t('dashboard.stats.paidClasses')}</div>
+                    <div className="text-sm text-gray-700 font-medium">Оплаченных занятий</div>
                   </div>
                 </div>
 
@@ -782,7 +781,7 @@ export default function UserDashboard() {
                           <p>{text.overview.paymentPendingDescription}</p>
                         </>
                       ) : (
-                        <p className="text-gray-500">{t('dashboard.noClasses')}</p>
+                        <p className="text-gray-500">Нет запланированных занятий</p>
                       )}
                     </div>
                   ) : (
@@ -792,7 +791,7 @@ export default function UserDashboard() {
                           <div className="flex items-center gap-3">
                             <CalendarIcon className="w-6 h-6 text-primary-500" />
                             <div>
-                              <div className="font-semibold text-secondary-900">{classItem.topic || t('dashboard.englishClass')}</div>
+                              <div className="font-semibold text-secondary-900">{classItem.topic || 'Урок английского'}</div>
                               <div className="text-sm text-gray-600">
                                 {formatDate(classItem.class_date)} · {formatTime(classItem.class_date)}
                               </div>
@@ -801,7 +800,7 @@ export default function UserDashboard() {
                           {classItem.payment_status === 'unpaid' && classItem.payment_amount && (
                             hasPendingNotificationForClass(classItem.id) ? (
                               <div className="px-4 py-2 bg-gray-300 text-gray-600 text-sm rounded-lg cursor-not-allowed">
-                                {t('payment.notification.pending')}
+                                Ожидает
                               </div>
                             ) : (
                               <button
@@ -811,7 +810,7 @@ export default function UserDashboard() {
                                 }}
                                 className="px-4 py-2 bg-primary-500 text-white text-sm rounded-lg hover:bg-primary-600 shadow-sm transition-colors"
                               >
-                                {t('dashboard.notifyPayment')}
+                                Уведомить об оплате
                               </button>
                             )
                           )}
@@ -833,7 +832,7 @@ export default function UserDashboard() {
             {/* My Classes Tab */}
             {activeTab === 'classes' && (
               <div className="p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('dashboard.upcomingClasses')}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Предстоящие занятия</h2>
             <div className="space-y-6">
               {classes.filter(c => c.status === 'pending_payment').length > 0 && (
                 <div className="p-6 bg-red-50 border-2 border-red-300 rounded-xl space-y-4 shadow-sm">
@@ -856,11 +855,11 @@ export default function UserDashboard() {
                             <CalendarIcon className="w-6 h-6 text-red-600" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 text-lg mb-1">{classItem.topic || t('dashboard.englishClass')}</h3>
+                            <h3 className="font-semibold text-gray-900 text-lg mb-1">{classItem.topic || 'Урок английского'}</h3>
                             <p className="text-sm text-gray-600 mb-1">
                               {formatDate(classItem.class_date)} {isRu ? 'в' : 'at'} {formatTime(classItem.class_date)}
                             </p>
-                            <p className="text-xs text-gray-500">{classItem.duration_minutes} {t('dashboard.minutes')} • {classItem.class_type}</p>
+                            <p className="text-xs text-gray-500">{classItem.duration_minutes} минут • {classItem.class_type}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
@@ -868,14 +867,14 @@ export default function UserDashboard() {
                             <div className="text-right">
                               <div className="text-xl font-bold text-red-600">₽{classItem.payment_amount}</div>
                               <div className="text-xs px-3 py-1 rounded-full font-semibold bg-red-100 text-red-800 mt-1">
-                                {t('dashboard.paymentPending')}
+                                Ожидает подтверждения
                               </div>
                             </div>
                           )}
                           {hasPendingNotificationForClass(classItem.id) ? (
                             <div className="flex items-center gap-2 px-5 py-2.5 bg-gray-300 text-gray-600 rounded-lg font-semibold shadow-sm cursor-not-allowed">
                               <CurrencyDollarIcon className="w-5 h-5" />
-                              {t('payment.notification.pending')}
+                              Ожидает
                             </div>
                           ) : (
                             <button
@@ -886,7 +885,7 @@ export default function UserDashboard() {
                               className="flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold shadow-sm hover:shadow-md"
                             >
                               <CurrencyDollarIcon className="w-5 h-5" />
-                              {t('dashboard.notifyPayment')}
+                              Уведомить об оплате
                             </button>
                           )}
                         </div>
@@ -897,10 +896,10 @@ export default function UserDashboard() {
               )}
 
               {classes.filter(c => c.status === 'scheduled').length === 0 && classes.filter(c => c.status === 'pending_payment').length === 0 ? (
-                <p className="text-gray-500 text-center py-12">{t('dashboard.noClasses')}</p>
+                <p className="text-gray-500 text-center py-12">Нет запланированных занятий</p>
               ) : classes.filter(c => c.status === 'scheduled').length > 0 ? (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4">{t('dashboard.scheduledClasses')}</h3>
+                  <h3 className="text-lg font-semibold text-gray-700 mb-4">Запланированные занятия</h3>
                   {classes.filter(c => c.status === 'scheduled').map((classItem) => (
                     <div key={classItem.id} className={`flex items-center justify-between p-6 rounded-lg hover:shadow-md transition-all border-2 ${
                       classItem.payment_status === 'unpaid' || classItem.payment_status === 'pending'
@@ -920,11 +919,11 @@ export default function UserDashboard() {
                           }`} />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-900 text-lg">{classItem.topic || t('dashboard.englishClass')}</h3>
+                          <h3 className="font-semibold text-gray-900 text-lg">{classItem.topic || 'Урок английского'}</h3>
                           <p className="text-sm text-gray-600">
-                            {formatDate(classItem.class_date)} {isRu ? 'в' : 'at'} {formatTime(classItem.class_date)}
+                            {formatDate(classItem.class_date)} в {formatTime(classItem.class_date)}
                           </p>
-                          <p className="text-xs text-gray-500 mt-1">{classItem.duration_minutes} {t('dashboard.minutes')} • {classItem.class_type}</p>
+                          <p className="text-xs text-gray-500 mt-1">{classItem.duration_minutes} минут • {classItem.class_type}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -936,9 +935,9 @@ export default function UserDashboard() {
                               classItem.payment_status === 'pending' ? 'bg-red-100 text-red-800' :
                               'bg-red-100 text-red-800'
                             }`}>
-                              {classItem.payment_status === 'paid' ? t('dashboard.paid') :
-                               classItem.payment_status === 'pending' ? t('dashboard.paymentPending') :
-                               t('dashboard.unpaid')}
+                              {classItem.payment_status === 'paid' ? 'Оплачено' :
+                               classItem.payment_status === 'pending' ? 'Ожидает подтверждения' :
+                               'Не оплачено'}
                             </div>
                           </div>
                         )}
@@ -954,9 +953,9 @@ export default function UserDashboard() {
             {/* Homework Tab */}
             {activeTab === 'homework' && (
             <div className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('dashboard.homework')}</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Домашние задания</h2>
               {homework.filter(h => h.status !== 'completed').length === 0 ? (
-                <p className="text-gray-500 text-center py-12">{t('dashboard.noHomework')}</p>
+                <p className="text-gray-500 text-center py-12">Нет ожидающих заданий</p>
               ) : (
                 <div className="space-y-4">
                   {homework.filter(h => h.status !== 'completed').map((hw) => (
@@ -969,7 +968,7 @@ export default function UserDashboard() {
                             <p className="text-gray-700 mb-3">{hw.description}</p>
                             <div className="flex items-center gap-2 text-sm text-gray-600">
                               <ClockIcon className="w-4 h-4" />
-                              {t('dashboard.due')}: {formatDateTime(hw.due_date)}
+                              Срок: {formatDateTime(hw.due_date)}
                             </div>
                           </div>
                         </div>
@@ -978,7 +977,10 @@ export default function UserDashboard() {
                           hw.status === 'reviewed' ? 'bg-green-100 text-green-800' :
                           'bg-yellow-100 text-yellow-800'
                         }`}>
-                          {t(`dashboard.status.${hw.status}`)}
+                          {hw.status === 'assigned' ? 'Назначено' :
+                           hw.status === 'completed' ? 'Завершено' :
+                           hw.status === 'submitted' ? 'Отправлено' :
+                           hw.status === 'reviewed' ? 'Проверено' : hw.status}
                         </span>
                       </div>
 
@@ -1014,7 +1016,7 @@ export default function UserDashboard() {
                       {/* Teacher feedback */}
                       {hw.teacher_feedback && (
                         <div className="mt-4 p-4 bg-blue-50 rounded border border-blue-200">
-                          <p className="text-sm font-semibold text-blue-900 mb-1">{t('dashboard.teacherFeedback')}: {hw.grade}</p>
+                          <p className="text-sm font-semibold text-blue-900 mb-1">Отзыв преподавателя: {hw.grade}</p>
                           <p className="text-sm text-blue-800">{hw.teacher_feedback}</p>
                         </div>
                       )}
@@ -1029,25 +1031,25 @@ export default function UserDashboard() {
             {activeTab === 'requests' && (
             <div className="p-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">{t('classRequest.title')}</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Мои бронирования</h2>
                 <button
                   onClick={() => setShowRequestForm(true)}
                   className="flex items-center gap-2 px-4 py-2 bg-secondary-900 text-white rounded-lg hover:bg-secondary-800 transition-colors"
                 >
                   <PlusCircleIcon className="w-5 h-5" />
-                  {t('classRequest.button')}
+                  Записаться на занятие
                 </button>
               </div>
               
               {classRequests.length === 0 ? (
                 <div className="text-center py-12">
                   <ChatBubbleBottomCenterTextIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">{t('classRequest.noRequests')}</p>
+                  <p className="text-gray-500">Пока нет бронирований. Нажмите &apos;Записаться на занятие&apos;, чтобы оставить первую заявку!</p>
                   <button
                     onClick={() => setShowRequestForm(true)}
                     className="mt-4 px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
                   >
-                    {t('classRequest.button')}
+                    Записаться на занятие
                   </button>
                 </div>
               ) : (
@@ -1078,10 +1080,13 @@ export default function UserDashboard() {
                       request.status === 'rejected' ? 'bg-red-100 text-red-800' :
                       'bg-gray-100 text-gray-800';
 
-                    const translatedStatus = t(`classRequest.status.${request.status}`);
-                    const statusLabel = translatedStatus === `classRequest.status.${request.status}`
-                      ? request.status.replace(/_/g, ' ')
-                      : translatedStatus;
+                    const translatedStatus = request.status === 'pending' ? 'Ожидает одобрения' :
+                                              request.status === 'approved' ? 'Одобрено' :
+                                              request.status === 'awaiting_payment' ? 'Ожидает оплаты' :
+                                              request.status === 'payment_confirmed' ? 'Оплата подтверждена' :
+                                              request.status === 'teacher_edited' ? 'Изменено преподавателем' :
+                                              request.status === 'rejected' ? 'Отклонено' : request.status;
+                    const statusLabel = translatedStatus;
 
                     return (
                       <div key={request.id} className={`p-6 rounded-lg border ${
@@ -1097,19 +1102,19 @@ export default function UserDashboard() {
                               <div className="flex items-center gap-2">
                                 <CalendarIcon className="w-4 h-4" />
                                 <span className="font-medium">
-                                  {t('classRequest.lessonsPerWeek')}: {request.lessons_per_week || 1}
+                                  Занятий в неделю: {request.lessons_per_week || 1}
                                 </span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <ClockIcon className="w-4 h-4" />
                                 <span className="font-medium">
-                                  {t('classRequest.totalLessons')}: {request.total_lessons || 4}
+                                  Всего занятий: {request.total_lessons || 4}
                                 </span>
                               </div>
                               {request.first_class_free && (
                                 <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full">
                                   <CheckCircleIcon className="w-4 h-4" />
-                                  {t('classRequest.firstClassFree')}
+                                  Первое занятие бесплатно!
                                 </span>
                               )}
                             </div>
@@ -1127,7 +1132,7 @@ export default function UserDashboard() {
                             )}
                             {request.topic && (
                               <div className="text-sm text-gray-700">
-                                <strong>{t('classRequest.topic')}:</strong> {request.topic}
+                                <strong>Тема:</strong> {request.topic}
                               </div>
                             )}
                             {request.message && (
@@ -1136,7 +1141,7 @@ export default function UserDashboard() {
                               </div>
                             )}
                             <div className="text-xs text-gray-500">
-                              {t('classRequest.submitted')}: {formatDateTime(request.created_at)}
+                              Отправлено: {formatDateTime(request.created_at)}
                             </div>
                             {request.status === 'awaiting_payment' && (
                               <div className="mt-3 p-3 bg-white rounded-lg border border-orange-200 text-sm text-orange-800">
@@ -1157,7 +1162,7 @@ export default function UserDashboard() {
                               hasPendingNotificationForRequest(request) ? (
                                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-300 text-gray-600 rounded-lg font-semibold shadow-sm cursor-not-allowed text-sm">
                                   <CurrencyDollarIcon className="w-4 h-4" />
-                                  {t('payment.notification.pending')}
+                                  Ожидает
                                 </div>
                               ) : (
                                 <button
@@ -1169,7 +1174,7 @@ export default function UserDashboard() {
                                   className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-semibold shadow-sm hover:shadow-md text-sm"
                                 >
                                   <CurrencyDollarIcon className="w-4 h-4" />
-                                  {t('dashboard.notifyPayment')}
+                                  Уведомить об оплате
                                 </button>
                               )
                             )}
@@ -1184,16 +1189,16 @@ export default function UserDashboard() {
                               return (
                                 <div className="space-y-2 text-sm text-blue-800">
                                   {edits.total_lessons && (
-                                    <div><strong>{t('classRequest.totalLessons')}:</strong> {edits.total_lessons}</div>
+                                    <div><strong>Всего занятий:</strong> {edits.total_lessons}</div>
                                   )}
                                   {edits.lessons_per_week && (
-                                    <div><strong>{t('classRequest.lessonsPerWeek')}:</strong> {edits.lessons_per_week}</div>
+                                    <div><strong>Занятий в неделю:</strong> {edits.lessons_per_week}</div>
                                   )}
                                   {edits.payment_preference && (
                                     <div><strong>{text.paymentPreference.summaryLabel}</strong> {edits.payment_preference === 'weekly' ? text.paymentPreference.weekly : text.paymentPreference.allAtOnce}</div>
                                   )}
                                   {edits.topic && (
-                                    <div><strong>{t('classRequest.topic')}:</strong> {edits.topic}</div>
+                                    <div><strong>Тема:</strong> {edits.topic}</div>
                                   )}
                                   {edits.admin_notes && (
                                     <div className="mt-2 p-2 bg-white rounded">
@@ -1224,7 +1229,7 @@ export default function UserDashboard() {
                       )}
                       {request.admin_notes && request.status !== 'teacher_edited' && (
                         <div className="mt-4 p-4 bg-blue-50 rounded border border-blue-200">
-                          <p className="text-sm font-semibold text-blue-900 mb-1">{t('classRequest.adminNotes')}</p>
+                          <p className="text-sm font-semibold text-blue-900 mb-1">Заметки преподавателя</p>
                           <p className="text-sm text-blue-800">{request.admin_notes}</p>
                         </div>
                       )}
@@ -1239,11 +1244,11 @@ export default function UserDashboard() {
             {/* Notifications Tab */}
             {activeTab === 'notifications' && (
               <div className="p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('dashboard.notifications')}</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Уведомления</h2>
                 {paymentNotifications.length === 0 ? (
                   <div className="text-center py-12">
                     <CurrencyDollarIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">{t('dashboard.noNotifications')}</p>
+                    <p className="text-gray-500">Пока нет уведомлений об оплате</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -1261,55 +1266,55 @@ export default function UserDashboard() {
                               <div className="flex items-center gap-3 mb-2">
                                 <CurrencyDollarIcon className="w-6 h-6 text-primary-500" />
                                 <h3 className="text-lg font-bold text-gray-900">
-                                  {t('payment.notification.title')}
+                                  Уведомление об оплате
                                 </h3>
                               </div>
                               {relatedClass && (
                                 <p className="text-sm text-gray-600 mb-2">
-                                  {t('payment.modal.class')}: {relatedClass.topic || t('dashboard.englishClass')} - {formatDate(relatedClass.class_date)} {isRu ? 'в' : 'at'} {formatTime(relatedClass.class_date)}
+                                  Занятие: {relatedClass.topic || 'Урок английского'} - {formatDate(relatedClass.class_date)} в {formatTime(relatedClass.class_date)}
                                 </p>
                               )}
                               <div className="grid md:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                  <p className="text-sm font-semibold text-gray-700">{t('payment.notification.amount')}</p>
+                                  <p className="text-sm font-semibold text-gray-700">Сумма</p>
                                   <p className="text-xl font-bold text-gray-900">₽{payment.amount}</p>
                                 </div>
                                 <div>
-                                  <p className="text-sm font-semibold text-gray-700">{t('payment.notification.method')}</p>
-                                  <p className="text-gray-900">{payment.payment_method || t('payment.notification.notSpecified')}</p>
+                                  <p className="text-sm font-semibold text-gray-700">Способ оплаты</p>
+                                  <p className="text-gray-900">{payment.payment_method || 'Не указано'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-sm font-semibold text-gray-700">{t('payment.notification.date')}</p>
+                                  <p className="text-sm font-semibold text-gray-700">Дата оплаты</p>
                                   <p className="text-gray-900">{formatDate(payment.payment_date)}</p>
                                 </div>
                                 {payment.reference_number && (
                                   <div>
-                                    <p className="text-sm font-semibold text-gray-700">{t('payment.notification.reference')}</p>
+                                    <p className="text-sm font-semibold text-gray-700">Номер транзакции</p>
                                     <p className="text-gray-900">{payment.reference_number}</p>
                                   </div>
                                 )}
                               </div>
                               {payment.message && (
                                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                                  <p className="text-sm font-semibold text-gray-700 mb-1">{t('payment.notification.message')}</p>
+                                  <p className="text-sm font-semibold text-gray-700 mb-1">Сообщение</p>
                                   <p className="text-sm text-gray-600">{payment.message}</p>
                                 </div>
                               )}
                               {payment.teacher_notes && (
                                 <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                  <p className="text-sm font-semibold text-blue-900 mb-1">{t('payment.notification.teacherNotes')}</p>
+                                  <p className="text-sm font-semibold text-blue-900 mb-1">Заметки преподавателя</p>
                                   <p className="text-sm text-blue-800">{payment.teacher_notes}</p>
                                 </div>
                               )}
                             </div>
                             <span className={`text-xs px-3 py-1 rounded-full font-semibold flex-shrink-0 ${statusStyle}`}>
-                              {payment.status === 'confirmed' ? t('payment.notification.confirmed') :
-                               payment.status === 'rejected' ? t('payment.notification.rejected') :
-                               t('payment.notification.pending')}
+                              {payment.status === 'confirmed' ? 'Подтверждено' :
+                               payment.status === 'rejected' ? 'Отклонено' :
+                               'Ожидает'}
                             </span>
                           </div>
                           <div className="text-xs text-gray-500 mt-4">
-                            {t('payment.notification.submitted')}: {formatDateTime(payment.created_at)}
+                            Отправлено: {formatDateTime(payment.created_at)}
                           </div>
                         </div>
                       );
@@ -1327,14 +1332,14 @@ export default function UserDashboard() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/60 p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="mb-6">
-              <h3 className="text-2xl font-bold text-secondary-900 mb-2">{t('classRequest.modal.title')}</h3>
+              <h3 className="text-2xl font-bold text-secondary-900 mb-2">Записаться на новое занятие</h3>
               <p className="text-sm text-gray-600">{text.notifications.minLessonsMessage}</p>
             </div>
             <form onSubmit={submitClassRequest} className="space-y-5">
               {/* Lessons per week */}
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  {t('classRequest.modal.lessonsPerWeek')}
+                  Сколько занятий в неделю? *
                 </label>
                 <select
                   name="lessons_per_week"
@@ -1355,7 +1360,7 @@ export default function UserDashboard() {
               {/* Total lessons */}
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  {t('classRequest.modal.totalLessons')}
+                  Сколько занятий вы хотите купить? * (Минимум 4, первое бесплатно)
                 </label>
                 <input
                   type="number"
@@ -1368,9 +1373,9 @@ export default function UserDashboard() {
                     setTotalLessons(count);
                   }}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder={t('classRequest.minLessons')}
+                  placeholder="Минимум 4 занятия требуется"
                 />
-                <p className="text-xs text-gray-500 mt-1">{t('classRequest.modal.firstClassFree')}</p>
+                <p className="text-xs text-gray-500 mt-1">Первое занятие бесплатно! Вы заплатите за оставшиеся занятия.</p>
               </div>
 
               {/* Weekly Schedule Section */}
@@ -1487,24 +1492,24 @@ export default function UserDashboard() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('classRequest.modal.topic')}
+                  Тема (необязательно)
                 </label>
                 <input
                   type="text"
                   name="topic"
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder={t('classRequest.modal.topicPlaceholder')}
+                  placeholder="например, Деловой английский, Практика грамматики"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('classRequest.modal.message')}
+                  Дополнительное сообщение (необязательно)
                 </label>
                 <textarea
                   name="message"
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                  placeholder={t('classRequest.modal.messagePlaceholder')}
+                  placeholder="Сообщите преподавателю о своих целях обучения, предпочтениях по расписанию или особых пожеланиях..."
                 />
               </div>
               <div className="flex gap-3 pt-4">
@@ -1519,7 +1524,7 @@ export default function UserDashboard() {
                   }}
                   className="flex-1 px-4 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl font-semibold hover:from-gray-200 hover:to-gray-300 transition-all duration-300 shadow-sm"
                 >
-                  {t('classRequest.modal.cancel')}
+                  Отмена
                 </button>
                 <button
                   type="submit"
@@ -1530,7 +1535,7 @@ export default function UserDashboard() {
                       : 'bg-gradient-to-r from-primary-500 to-secondary-900 text-white hover:from-primary-600 hover:to-secondary-800'
                   }`}
                 >
-                  {isSubmittingRequest ? text.submitting : t('classRequest.modal.submit')}
+                  {isSubmittingRequest ? 'Отправляем…' : 'Отправить бронирование'}
                 </button>
               </div>
             </form>
@@ -1543,9 +1548,9 @@ export default function UserDashboard() {
         selectedHasPendingNotification ? (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">{t('payment.modal.alreadyPending')}</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">Уведомление об оплате уже отправлено</h3>
               <p className="text-sm text-gray-600 mb-4">
-                {t('payment.modal.alreadyPendingMessage')}
+                Вы уже отправили уведомление об оплате для этого занятия/запроса. Пожалуйста, дождитесь ответа преподавателя перед отправкой нового уведомления.
               </p>
               <button
                 onClick={() => {
@@ -1555,33 +1560,33 @@ export default function UserDashboard() {
                 }}
                 className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
               >
-                {t('payment.modal.close')}
+                Закрыть
               </button>
             </div>
           </div>
         ) : (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
-              <h3 className="text-lg font-semibold mb-4">{t('payment.modal.title')}</h3>
+              <h3 className="text-lg font-semibold mb-4">Уведомить преподавателя об оплате</h3>
               {selectedClassRequest ? (
                 <div className="mb-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
-                  <p className="text-sm font-semibold text-orange-900 mb-2">{t('payment.modal.requestPayment')}</p>
+                  <p className="text-sm font-semibold text-orange-900 mb-2">Оплата за запрос на занятие</p>
                   <p className="text-sm text-gray-600 mb-2">
-                    {t('classRequest.totalLessons')}: {selectedClassRequest.total_lessons || 4}
+                    Всего занятий: {selectedClassRequest.total_lessons || 4}
                   </p>
                   <p className="text-sm text-gray-600">
-                    {t('payment.modal.totalAmount')}: ₽{calculateRequestTotal(selectedClassRequest)}
+                    Общая сумма: ₽{calculateRequestTotal(selectedClassRequest)}
                   </p>
                 </div>
               ) : selectedClass ? (
                 <p className="text-sm text-gray-600 mb-4">
-                  {t('payment.modal.class')}: {selectedClass.topic || t('dashboard.englishClass')} on {formatDate(selectedClass.class_date)}
+                  Занятие: {selectedClass.topic || 'Урок английского'} на {formatDate(selectedClass.class_date)}
                   {selectedClass.payment_amount && ` - ₽${selectedClass.payment_amount}`}
                 </p>
               ) : null}
               <form onSubmit={submitPaymentNotification} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('payment.modal.amount')}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Оплаченная сумма (₽)</label>
                 <input
                   type="number"
                   name="amount"
@@ -1592,21 +1597,21 @@ export default function UserDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('payment.modal.method')}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Способ оплаты</label>
                 <select
                   name="payment_method"
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
-                  <option value="Bank Transfer">{t('payment.methods.bankTransfer')}</option>
-                  <option value="Cash">{t('payment.methods.cash')}</option>
-                  <option value="PayPal">{t('payment.methods.paypal')}</option>
-                  <option value="Venmo">{t('payment.methods.venmo')}</option>
-                  <option value="Other">{t('payment.methods.other')}</option>
+                  <option value="Bank Transfer">Банковский перевод</option>
+                  <option value="Cash">Наличные</option>
+                  <option value="PayPal">PayPal</option>
+                  <option value="Venmo">Venmo</option>
+                  <option value="Other">Другое</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('payment.modal.date')}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Дата оплаты</label>
                 <input
                   type="date"
                   name="payment_date"
@@ -1616,21 +1621,21 @@ export default function UserDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('payment.modal.reference')}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Номер транзакции (необязательно)</label>
                 <input
                   type="text"
                   name="reference_number"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder={t('payment.modal.referencePlaceholder')}
+                  placeholder="например, ID транзакции"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('payment.modal.message')}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Сообщение преподавателю (необязательно)</label>
                 <textarea
                   name="message"
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder={t('payment.modal.messagePlaceholder')}
+                  placeholder="Любая дополнительная информация..."
                 />
               </div>
               <div className="flex gap-2">
@@ -1638,7 +1643,7 @@ export default function UserDashboard() {
                   type="submit"
                   className="flex-1 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
                 >
-                  {t('payment.modal.submit')}
+                  Отправить уведомление
                 </button>
                 <button
                   type="button"
@@ -1649,7 +1654,7 @@ export default function UserDashboard() {
                   }}
                   className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
                 >
-                  {t('payment.modal.cancel')}
+                  Отмена
                 </button>
               </div>
             </form>
@@ -1668,7 +1673,7 @@ export default function UserDashboard() {
               <p className="text-sm text-gray-600">{selectedHomework.description}</p>
               <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
                 <ClockIcon className="w-4 h-4" />
-                {t('dashboard.due')}: {formatDateTime(selectedHomework.due_date)}
+                Срок: {formatDateTime(selectedHomework.due_date)}
               </div>
             </div>
             <form onSubmit={submitHomework} className="space-y-4">

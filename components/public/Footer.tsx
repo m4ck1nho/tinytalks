@@ -1,9 +1,6 @@
 'use client';
 
-import { useLanguage } from '@/contexts/LanguageContext';
-
 export default function Footer() {
-  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -19,7 +16,7 @@ export default function Footer() {
               <span className="text-xl font-bold">TinyTalks</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
-              {t('footer.description')}
+              Ваше путешествие к свободному владению английским начинается здесь.
             </p>
             <div className="flex gap-4">
               <a 
@@ -47,26 +44,26 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">{t('footer.quickLinks')}</h3>
+            <h3 className="text-lg font-semibold mb-4">Быстрые ссылки</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#about" className="text-gray-400 hover:text-white transition-colors">{t('nav.about')}</a>
+                <a href="#about" className="text-gray-400 hover:text-white transition-colors">О нас</a>
               </li>
               <li>
-                <a href="#pricing" className="text-gray-400 hover:text-white transition-colors">{t('nav.pricing')}</a>
+                <a href="#pricing" className="text-gray-400 hover:text-white transition-colors">Цены</a>
               </li>
               <li>
-                <a href="#reviews" className="text-gray-400 hover:text-white transition-colors">{t('reviews.badge')}</a>
+                <a href="#reviews" className="text-gray-400 hover:text-white transition-colors">Отзывы</a>
               </li>
               <li>
-                <a href="#blog" className="text-gray-400 hover:text-white transition-colors">{t('nav.blog')}</a>
+                <a href="#blog" className="text-gray-400 hover:text-white transition-colors">Блог</a>
               </li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">{t('footer.contact')}</h3>
+            <h3 className="text-lg font-semibold mb-4">Контакты</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <a href="mailto:info@tinytalks.pro" className="hover:text-white transition-colors flex items-center gap-2">
@@ -92,8 +89,8 @@ export default function Footer() {
                   @tinytalks.pro
                 </a>
               </li>
-              <li>{t('footer.onlineClasses')}</li>
-              <li>{t('footer.availableWorldwide')}</li>
+              <li>Онлайн-занятия</li>
+              <li>Доступно по всему миру</li>
             </ul>
           </div>
         </div>
@@ -102,12 +99,12 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
-              © {currentYear} TinyTalks. {t('footer.rights')}
+              © {currentYear} TinyTalks. Все права защищены.
             </p>
             <div className="flex gap-6 text-sm text-gray-400">
-              <a href="#" className="hover:text-white transition-colors">{t('footer.privacy')}</a>
-              <a href="#" className="hover:text-white transition-colors">{t('footer.terms')}</a>
-              <a href="#" className="hover:text-white transition-colors">{t('footer.cookies')}</a>
+              <a href="#" className="hover:text-white transition-colors">Политика конфиденциальности</a>
+              <a href="#" className="hover:text-white transition-colors">Условия использования</a>
+              <a href="#" className="hover:text-white transition-colors">Политика cookie</a>
             </div>
           </div>
         </div>
@@ -115,4 +112,3 @@ export default function Footer() {
     </footer>
   );
 }
-

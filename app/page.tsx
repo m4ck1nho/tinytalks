@@ -1,34 +1,29 @@
-import { getTranslations, type Language } from '@/lib/i18n-server';
 import Navbar from '@/components/public/Navbar';
-import Hero from '@/components/public/Hero.server';
-import About from '@/components/public/About.server';
-import Pricing from '@/components/public/Pricing.server';
-import Reviews from '@/components/public/Reviews.server';
-import BlogPreview from '@/components/public/BlogPreview.server';
-import Contact from '@/components/public/Contact.server';
+import Hero from '@/components/public/Hero';
+import About from '@/components/public/About';
+import Pricing from '@/components/public/Pricing';
+import Reviews from '@/components/public/Reviews';
+import BlogPreview from '@/components/public/BlogPreview';
+import Contact from '@/components/public/Contact';
 import Footer from '@/components/public/Footer';
 import { AnalyticsClient } from '@/components/shared/AnalyticsClient';
 import { StructuredData } from '@/components/shared/StructuredData';
 import type { Metadata } from 'next';
 
-// Force static generation for homepage (default language: Russian)
+// Force static generation for homepage
 export const dynamic = 'force-static';
 
-// Default locale for static generation
-const DEFAULT_LOCALE: Language = 'ru';
-
-// Generate metadata for SEO (using default locale for static generation)
+// Generate metadata for SEO
 export function generateMetadata(): Metadata {
-  const translations = getTranslations(DEFAULT_LOCALE);
   const baseUrl = 'https://tinytalks.pro';
 
   return {
-    title: (translations.hero as Record<string, unknown>)?.title as string || 'TinyTalks - Learn English Online',
-    description: 'Learn English online with personalized tutoring from beginner to advanced. Online lessons with native-level instructor for Russian speakers.',
-    keywords: ['learn english online', 'english tutor', 'online english lessons', 'английский онлайн', 'репетитор английского'],
+    title: 'TinyTalks - Изучайте английский онлайн',
+    description: 'Изучайте английский онлайн с персональным репетитором от начального до продвинутого уровня. Онлайн занятия с опытным преподавателем для русскоязычных.',
+    keywords: ['английский онлайн', 'репетитор английского', 'онлайн уроки английского', 'изучение английского', 'английский для начинающих'],
     openGraph: {
-      title: 'TinyTalks - Learn English Online',
-      description: 'Personalized English tutoring from beginner to advanced',
+      title: 'TinyTalks - Изучайте английский онлайн',
+      description: 'Персональное обучение английскому от начального до продвинутого уровня',
       url: baseUrl,
       siteName: 'TinyTalks',
       images: [
@@ -36,16 +31,16 @@ export function generateMetadata(): Metadata {
           url: `${baseUrl}/images/og-image.jpg`,
           width: 1200,
           height: 630,
-          alt: 'TinyTalks - Learn English Online',
+          alt: 'TinyTalks - Изучайте английский онлайн',
         },
       ],
-      locale: 'en_US',
+      locale: 'ru_RU',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'TinyTalks - Learn English Online',
-      description: 'Personalized English tutoring',
+      title: 'TinyTalks - Изучайте английский онлайн',
+      description: 'Персональное обучение английскому',
       images: [`${baseUrl}/images/twitter-card.jpg`],
     },
     alternates: {
@@ -65,29 +60,23 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export default async function Home() {
-  // For static generation, use default locale
-  // Client-side language switching will still work via LanguageContext
-  const locale: Language = DEFAULT_LOCALE;
-  
-  // Pre-render translations on the server (default: Russian)
-  const translations = getTranslations(locale);
-
+export default function Home() {
   // JSON-LD structured data for EducationalOrganization
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'EducationalOrganization' as const,
     name: 'TinyTalks',
-    description: 'Professional English teaching online - from beginner to advanced. Personalized lessons with experienced instructor.',
+    description: 'Профессиональное онлайн обучение английскому языку - от начального до продвинутого уровня. Персональные уроки с опытным преподавателем.',
     url: 'https://tinytalks.pro',
     logo: 'https://tinytalks.pro/icon.png',
     image: 'https://tinytalks.pro/images/og-image.jpg',
     email: 'info@tinytalks.pro',
+    inLanguage: 'ru',
     contactPoint: {
       '@type': 'ContactPoint' as const,
       email: 'info@tinytalks.pro',
       contactType: 'Customer Service',
-      availableLanguage: ['Russian', 'English'],
+      availableLanguage: ['Russian'],
     },
     areaServed: {
       '@type': 'Place' as const,
@@ -96,35 +85,35 @@ export default async function Home() {
     offers: [
       {
         '@type': 'Offer' as const,
-        name: 'Trial Lesson',
-        description: 'Free 25-minute trial English lesson',
+        name: 'Пробное занятие',
+        description: 'Бесплатное 25-минутное пробное занятие по английскому',
         price: '0',
         priceCurrency: 'RUB',
       },
       {
         '@type': 'Offer' as const,
-        name: 'Individual Lesson',
-        description: '60-minute individual English lesson',
+        name: 'Индивидуальное занятие',
+        description: '60-минутное индивидуальное занятие по английскому',
         price: '2000',
         priceCurrency: 'RUB',
       },
       {
         '@type': 'Offer' as const,
-        name: 'Asynchronous Learning',
-        description: 'Weekly asynchronous English learning program',
+        name: 'Асинхронное микрообучение',
+        description: 'Еженедельная программа асинхронного изучения английского',
         price: '1000',
         priceCurrency: 'RUB',
         priceSpecification: {
           '@type': 'UnitPriceSpecification' as const,
           price: '1000',
           priceCurrency: 'RUB',
-          unitText: 'per week',
+          unitText: 'в неделю',
         },
       },
     ],
     address: {
       '@type': 'VirtualLocation' as const,
-      name: 'Online Classes',
+      name: 'Онлайн-занятия',
     },
     sameAs: [
       'https://t.me/TinytalksPro',
@@ -138,21 +127,21 @@ export default async function Home() {
       <AnalyticsClient />
       <Navbar />
       <main className="min-h-screen">
-        <Hero translations={translations} locale={locale} />
+        <Hero />
         <div id="about">
-          <About translations={translations} locale={locale} />
+          <About />
         </div>
         <div id="pricing">
-          <Pricing translations={translations} locale={locale} />
+          <Pricing />
         </div>
         <div id="reviews">
-          <Reviews translations={translations} locale={locale} />
+          <Reviews />
         </div>
         <div id="blog">
-          <BlogPreview translations={translations} locale={locale} />
+          <BlogPreview />
         </div>
         <div id="contact">
-          <Contact translations={translations} locale={locale} />
+          <Contact />
         </div>
         <Footer />
       </main>

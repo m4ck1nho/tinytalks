@@ -6,10 +6,8 @@ import { BlogPost } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CalendarIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function BlogPreview() {
-  const { t, language } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +52,7 @@ export default function BlogPreview() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary-500 mx-auto mb-4"></div>
-            <div className="text-gray-600">{t('blog.loading')}</div>
+            <div className="text-gray-600">Загрузка статей...</div>
           </div>
         </div>
       </section>
@@ -70,13 +68,13 @@ export default function BlogPreview() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="bg-primary-100 text-primary-700 text-sm font-semibold px-4 py-2 rounded-full">
-            {t('blog.badge')}
+            Учебные ресурсы
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 mt-6 mb-4">
-            {t('blog.title')}
+            Советы и руководства для изучающих английский
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('blog.previewDescription')}
+            Узнайте полезные советы, стратегии обучения и идеи, которые ускорят ваш прогресс в английском
           </p>
         </div>
 
@@ -85,7 +83,7 @@ export default function BlogPreview() {
             href="/blog"
             className="group inline-flex items-center gap-2 px-6 py-3 bg-primary-500 text-white font-semibold rounded-lg hover:bg-primary-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
           >
-            {t('blog.viewAll')}
+            Посмотреть все статьи
             <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -113,7 +111,7 @@ export default function BlogPreview() {
               <div className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
                   <CalendarIcon className="w-4 h-4 text-primary-500" />
-                    {new Date(post.createdAt).toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', {
+                    {new Date(post.createdAt).toLocaleDateString('ru-RU', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -129,7 +127,7 @@ export default function BlogPreview() {
                 </p>
                 
                     <span className="text-primary-500 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
-                      {t('blog.readMore')}
+                      Читать далее
                       <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </span>
               </div>
