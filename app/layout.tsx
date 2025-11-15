@@ -6,13 +6,66 @@ import { HtmlLangWrapper } from '@/components/shared/HtmlLangWrapper';
 import { Analytics } from '@vercel/analytics/next';
 import FaviconUpdater from '@/components/shared/FaviconUpdater';
 import TitleUpdater from '@/components/shared/TitleUpdater';
+import { getTranslations, type Language } from '@/lib/i18n-server';
 
 const inter = Inter({ subsets: ['latin'] });
 
+// Default locale for server-side rendering
+const DEFAULT_LOCALE: Language = 'ru';
+
 export const metadata: Metadata = {
-  title: 'TinyTalks - Learn English with Confidence | Beginner to Advanced',
-  description: 'Achieve Advanced level English through personalized learning. Expert teaching, engaging methods, and flexible online classes for beginners of all ages.',
-  keywords: 'English learning, Advanced level, online English classes, beginner English, English teacher, language learning',
+  metadataBase: new URL('https://tinytalks.pro'),
+  title: {
+    default: 'TinyTalks - Learn English Online',
+    template: '%s | TinyTalks',
+  },
+  description: 'Learn English online with personalized tutoring from beginner to advanced. Online lessons with native-level instructor for Russian speakers.',
+  keywords: ['learn english online', 'english tutor', 'online english lessons', 'английский онлайн', 'репетитор английского', 'English learning', 'Advanced level', 'online English classes', 'beginner English', 'English teacher', 'language learning'],
+  authors: [{ name: 'TinyTalks' }],
+  creator: 'TinyTalks',
+  publisher: 'TinyTalks',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    alternateLocale: ['ru_RU'],
+    url: 'https://tinytalks.pro',
+    siteName: 'TinyTalks',
+    title: 'TinyTalks - Learn English Online',
+    description: 'Personalized English tutoring from beginner to advanced',
+    images: [
+      {
+        url: 'https://tinytalks.pro/images/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'TinyTalks - Learn English Online',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TinyTalks - Learn English Online',
+    description: 'Personalized English tutoring',
+    images: ['https://tinytalks.pro/images/twitter-card.jpg'],
+    creator: '@tinytalks',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://tinytalks.pro',
+    languages: {
+      'en': 'https://tinytalks.pro',
+      'ru': 'https://tinytalks.pro',
+    },
+  },
 };
 
 export default function RootLayout({
@@ -20,8 +73,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Pre-render translations on the server for SSR
+  const initialTranslations = getTranslations(DEFAULT_LOCALE);
+
   return (
-    <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang={DEFAULT_LOCALE} className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -48,7 +104,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <FaviconUpdater />
         <TitleUpdater />
-        <LanguageProvider>
+        <LanguageProvider initialLanguage={DEFAULT_LOCALE} initialTranslations={initialTranslations}>
           <HtmlLangWrapper>
             {children}
           </HtmlLangWrapper>
