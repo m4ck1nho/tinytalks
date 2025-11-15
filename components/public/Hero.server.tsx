@@ -4,11 +4,11 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import type { Language } from '@/lib/i18n-server';
 
 interface HeroProps {
-  translations: any;
+  translations: Record<string, unknown>;
   locale: Language;
 }
 
-export default function Hero({ translations, locale }: HeroProps) {
+export default function Hero({ translations }: HeroProps) {
   const t = (key: string) => {
     const keys = key.split('.');
     let value: unknown = translations;
