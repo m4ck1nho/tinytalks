@@ -1,0 +1,12 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Block private routes
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://tinytalks.pro/sitemap.xml
+
