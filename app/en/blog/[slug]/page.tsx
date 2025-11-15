@@ -167,24 +167,28 @@ export default async function EnglishBlogPostPage({ params }: PageProps) {
   
   const articleSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Article' as const,
+    '@type': 'BlogPosting' as const,
     headline: post.title,
+    description: post.metaDescription || post.excerpt || post.content.replace(/<[^>]*>/g, '').substring(0, 160),
+    image: post.image || 'https://tinytalks.pro/images/og-image.jpg',
     author: {
       '@type': 'Person' as const,
-      name: 'Evgenia',
+      name: 'Evgenia Penkova',
+      url: 'https://tinytalks.pro',
     },
-    datePublished: datePublished,
-    dateModified: dateModified,
-    image: post.image || 'https://tinytalks.pro/images/og-image.jpg',
-    description: post.metaDescription || post.excerpt || post.content.replace(/<[^>]*>/g, '').substring(0, 160),
-    url: `https://tinytalks.pro/en/blog/${slug}`,
     publisher: {
       '@type': 'Organization' as const,
       name: 'TinyTalks',
       logo: {
         '@type': 'ImageObject' as const,
-        url: 'https://tinytalks.pro/images/logo.png',
+        url: 'https://tinytalks.pro/icon.png',
       },
+    },
+    datePublished: datePublished,
+    dateModified: dateModified,
+    mainEntityOfPage: {
+      '@type': 'WebPage' as const,
+      '@id': `https://tinytalks.pro/en/blog/${slug}`,
     },
   };
 
