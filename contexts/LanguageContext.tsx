@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Language } from '@/lib/i18n-server';
-import { getTranslations } from '@/lib/i18n-server';
 
 interface LanguageContextType {
   language: Language;
@@ -14,16 +13,14 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 interface LanguageProviderProps {
   children: React.ReactNode;
-  initialLanguage?: Language;
-  initialTranslations?: Record<string, any>;
+  initialLanguage: Language;
+  initialTranslations: Record<string, unknown>;
 }
 
-export function LanguageProvider({ children, initialLanguage = 'ru', initialTranslations }: LanguageProviderProps) {
+export function LanguageProvider({ children, initialLanguage, initialTranslations }: LanguageProviderProps) {
   // Initialize with server-provided translations for SSR
   const [language, setLanguageState] = useState<Language>(initialLanguage);
-  const [translations, setTranslations] = useState<Record<string, any>>(
-    initialTranslations || getTranslations(initialLanguage)
-  );
+  const [translations, setTranslations] = useState<Record<string, unknown>>(initialTranslations);
 
   useEffect(() => {
     // Load saved language from localStorage (after mount)
@@ -49,11 +46,11 @@ export function LanguageProvider({ children, initialLanguage = 'ru', initialTran
 
   const t = (key: string): string => {
     const keys = key.split('.');
-    let value: any = translations;
+    let value: unknown = translations;
     
     for (const k of keys) {
-      if (value && typeof value === 'object') {
-        value = value[k];
+      if (value && typeof value === 'object' && value !== null && k in value) {
+        value = (value as Record<string, unknown>)[k];
       } else {
         return key; // Return key if translation not found
       }
