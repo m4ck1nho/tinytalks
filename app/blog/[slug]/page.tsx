@@ -1,107 +1,206 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { db } from '@/lib/supabase';
 import { BlogPost } from '@/types';
-import Image from 'next/image';
 import Navbar from '@/components/public/Navbar';
 import Footer from '@/components/public/Footer';
-import { CalendarIcon, ArrowLeftIcon, ClockIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { BlogPostContent } from '@/components/blog/BlogPostContent';
+import { StructuredData } from '@/components/shared/StructuredData';
+import type { Metadata } from 'next';
 
-export default function BlogPostPage() {
-  const params = useParams();
-  const router = useRouter();
-  const slug = params?.slug as string;
-  const { t, language } = useLanguage();
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+// Fetch all blog post slugs for static generation (Russian slugs)
+async function getAllBlogPostSlugs(): Promise<string[]> {
+  try {
+    const { data, error } = await db.getBlogPosts(true); // Only published posts
+    
+    if (error || !data) {
+      console.error('❌ Error fetching blog post slugs:', error);
+      return [];
+    }
+    
+    // Return all Russian slugs from published posts
+    return data
+      .map((post: { slug: string }) => post.slug)
+      .filter((slug: string) => slug && slug.trim() !== '');
+  } catch (error) {
+    console.error('❌ Error fetching blog post slugs:', error);
+    return [];
+  }
+}
+
+// Generate static params at build time (equivalent to getStaticPaths)
+export async function generateStaticParams() {
+  const slugs = await getAllBlogPostSlugs();
   
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<'not_found' | 'failed' | null>(null);
+  // Return array of params for static generation (Russian slugs)
+  return slugs.map((slug) => ({
+    slug: slug,
+  }));
+}
 
-  useEffect(() => {
-    if (!slug) {
-      setError('not_found');
-      setLoading(false);
-      return;
-    }
+// Enable ISR: Revalidate every hour (3600 seconds)
+export const revalidate = 3600;
 
-    const fetchPost = async () => {
-      try {
-        // Decode URL-encoded slug
-        const decodedSlug = decodeURIComponent(slug);
-        
-        // Try exact match first
-        let { data, error } = await db.getPublishedBlogPostBySlug(decodedSlug);
+// Force static generation (prefer static, but allow dynamic if needed)
+export const dynamic = 'force-static';
 
-        // If not found, try with original slug
-        if ((error || !data) && decodedSlug !== slug) {
-          const result = await db.getPublishedBlogPostBySlug(slug);
-          if (!result.error && result.data) {
-            data = result.data;
-            error = null;
-          }
-        }
+// Fetch blog post data on the server (Russian slug)
+async function getBlogPost(slug: string): Promise<BlogPost | null> {
+  try {
+    // Decode URL-encoded slug
+    const decodedSlug = decodeURIComponent(slug);
+    
+    // Try exact match first (Russian slug)
+    let { data, error } = await db.getPublishedBlogPostByRuSlug(decodedSlug);
 
-        if (error || !data) {
-          // Fallback: Try fetching all posts and match manually
-          const { data: allPosts, error: allError } = await db.getBlogPosts();
-          if (!allError && allPosts) {
-            const matchingPost = allPosts.find((p: Record<string, unknown>) => {
-              if (!p.published || typeof p.published !== 'boolean') return false;
-              
-              // Try multiple matching strategies
-              const dbSlug = (p.slug as string) || '';
-              const urlSlug = decodedSlug || slug;
-              
-              return (
-                dbSlug === urlSlug ||
-                dbSlug === slug ||
-                dbSlug.toLowerCase() === urlSlug.toLowerCase() ||
-                decodeURIComponent(dbSlug) === decodeURIComponent(urlSlug) ||
-                encodeURIComponent(dbSlug) === encodeURIComponent(urlSlug)
-              );
-            });
-            
-            if (matchingPost) {
-              const mappedPost = {
-                ...matchingPost,
-                createdAt: matchingPost.created_at,
-                updatedAt: matchingPost.updated_at,
-                metaDescription: matchingPost.meta_description,
-              };
-              setPost(mappedPost);
-              setLoading(false);
-              return;
-            }
-          }
-          
-          if (error) throw error;
-          setError('not_found');
-          return;
-        }
-
-        // Map database fields to component format
-        const mappedPost = {
-          ...data,
-          createdAt: data.created_at,
-          updatedAt: data.updated_at,
-          metaDescription: data.meta_description,
-        };
-        
-        setPost(mappedPost);
-      } catch {
-        setError('failed');
-      } finally {
-        setLoading(false);
+    // If not found, try with original slug
+    if ((error || !data) && decodedSlug !== slug) {
+      const result = await db.getPublishedBlogPostByRuSlug(slug);
+      if (!result.error && result.data) {
+        data = result.data;
+        error = null;
       }
-    };
-
-    if (slug) {
-      fetchPost();
     }
-  }, [slug]);
+
+    if (error || !data) {
+      // Fallback: Try fetching all posts and match manually
+      const { data: allPosts, error: allError } = await db.getBlogPosts(true);
+      if (!allError && allPosts) {
+        const matchingPost = allPosts.find((p: Record<string, unknown>) => {
+          if (!p.published || typeof p.published !== 'boolean') return false;
+          
+          // Try multiple matching strategies
+          const dbSlug = (p.slug as string) || '';
+          const urlSlug = decodedSlug || slug;
+          
+          return (
+            dbSlug === urlSlug ||
+            dbSlug === slug ||
+            dbSlug.toLowerCase() === urlSlug.toLowerCase() ||
+            decodeURIComponent(dbSlug) === decodeURIComponent(urlSlug) ||
+            encodeURIComponent(dbSlug) === encodeURIComponent(urlSlug)
+          );
+        });
+        
+        if (matchingPost) {
+          return {
+            ...matchingPost,
+            createdAt: matchingPost.created_at as string,
+            updatedAt: matchingPost.updated_at as string,
+            metaDescription: matchingPost.meta_description as string | undefined,
+          } as BlogPost;
+        }
+      }
+      
+      return null;
+    }
+
+    // Map database fields to component format
+    return {
+      ...data,
+      slug: data.slug,
+      slug_en: data.slug_en,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+      metaDescription: data.meta_description,
+    } as BlogPost;
+  } catch {
+    return null;
+  }
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getBlogPost(slug);
+  const baseUrl = 'https://tinytalks.pro';
+
+  if (!post) {
+    return {
+      title: 'Post Not Found | TinyTalks',
+      description: 'The blog post you are looking for could not be found.',
+    };
+  }
+
+  // Strip HTML tags from content for meta description
+  const plainTextContent = post.content.replace(/<[^>]*>/g, '').substring(0, 160);
+  const description = post.metaDescription || post.excerpt || plainTextContent;
+  const finalDescription = description.length > 160 ? description.substring(0, 157) + '...' : description;
+  const postUrl = `${baseUrl}/blog/${slug}`;
+  const enPostUrl = post.slug_en ? `${baseUrl}/en/blog/${post.slug_en}` : null;
+
+  // Build hreflang alternates
+  const alternates: Metadata['alternates'] = {
+    canonical: postUrl,
+    languages: {},
+  };
+
+  // Add Russian version
+  alternates.languages!['ru'] = postUrl;
+  
+  // Add English version if available
+  if (enPostUrl) {
+    alternates.languages!['en'] = enPostUrl;
+  }
+
+  return {
+    title: `${post.title} | TinyTalks Blog`,
+    description: finalDescription,
+    keywords: ['learn english online', 'english tutor', 'online english lessons', 'английский онлайн', 'репетитор английского', 'english learning blog'],
+    openGraph: {
+      title: post.title,
+      description: finalDescription,
+      url: postUrl,
+      siteName: 'TinyTalks',
+      type: 'article',
+      publishedTime: post.created_at,
+      modifiedTime: post.updated_at,
+      authors: ['TinyTalks'],
+      locale: 'ru_RU',
+      alternateLocale: enPostUrl ? ['en_US'] : undefined,
+      images: post.image 
+        ? [
+            {
+              url: post.image,
+              width: 1200,
+              height: 630,
+              alt: post.title,
+            },
+          ]
+        : [
+            {
+              url: `${baseUrl}/images/og-image.jpg`,
+              width: 1200,
+              height: 630,
+              alt: post.title,
+            },
+          ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: finalDescription,
+      images: post.image ? [post.image] : [`${baseUrl}/images/twitter-card.jpg`],
+    },
+    alternates,
+  };
+}
+
+export default async function BlogPostPage({ params }: PageProps) {
+  const { slug } = await params;
+  
+  if (!slug) {
+    notFound();
+  }
+
+  const post = await getBlogPost(slug);
+
+  if (!post) {
+    notFound();
+  }
 
   // Calculate reading time (rough estimate: 200 words per minute)
   const calculateReadingTime = (content: string) => {
@@ -110,155 +209,43 @@ export default function BlogPostPage() {
     return minutes;
   };
 
-  const locale = language === 'ru' ? 'ru-RU' : 'en-US';
-
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div className="min-h-screen flex items-center justify-center bg-white">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-500 mx-auto mb-4"></div>
-            <p className="text-gray-600 text-lg">{t('blog.loadingSingle')}</p>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
-  if (error || !post) {
-    const title = t('blog.notFoundTitle');
-    const message = t('blog.notFoundMessage');
-    return (
-      <>
-        <Navbar />
-        <div className="min-h-screen flex items-center justify-center bg-white">
-          <div className="text-center max-w-md mx-auto px-4">
-            <div className="text-6xl mb-4">📝</div>
-            <h1 className="text-3xl font-bold text-secondary-900 mb-4">{title}</h1>
-            <p className="text-gray-600 mb-8">{message}</p>
-            <button
-              onClick={() => router.push('/blog')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              <ArrowLeftIcon className="w-5 h-5" />
-              {t('blog.backToBlog')}
-            </button>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
-  }
+  // Format dates for schema
+  const datePublished = new Date(post.created_at).toISOString().split('T')[0];
+  const dateModified = post.updated_at ? new Date(post.updated_at).toISOString().split('T')[0] : datePublished;
+  
+  // JSON-LD structured data for BlogPosting
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting' as const,
+    headline: post.title,
+    description: post.metaDescription || post.excerpt || post.content.replace(/<[^>]*>/g, '').substring(0, 160),
+    image: post.image || 'https://tinytalks.pro/images/og-image.jpg',
+    author: {
+      '@type': 'Person' as const,
+      name: 'Evgenia Penkova',
+      url: 'https://tinytalks.pro',
+    },
+    publisher: {
+      '@type': 'Organization' as const,
+      name: 'TinyTalks',
+      logo: {
+        '@type': 'ImageObject' as const,
+        url: 'https://tinytalks.pro/icon.png',
+      },
+    },
+    datePublished: datePublished,
+    dateModified: dateModified,
+    mainEntityOfPage: {
+      '@type': 'WebPage' as const,
+      '@id': `https://tinytalks.pro/blog/${slug}`,
+    },
+  };
 
   return (
     <>
+      <StructuredData data={articleSchema} />
       <Navbar />
-      <main className="min-h-screen bg-white">
-        {/* Header Section - Clean and Simple */}
-        <div className="bg-white border-b border-gray-200 pt-20 sm:pt-24">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            {/* Back Button */}
-            <button
-              onClick={() => router.push('/blog')}
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-500 mb-6 transition-colors group"
-            >
-              <ArrowLeftIcon className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              {t('blog.backToAll')}
-            </button>
-
-            {/* Title */}
-            <h1 className="text-4xl sm:text-5xl font-bold text-secondary-900 mb-4 leading-tight">
-              {post.title}
-            </h1>
-
-            {/* Meta Information */}
-            <div className="flex flex-wrap items-center gap-4 text-gray-600 text-sm mb-6">
-              <div className="flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4" />
-                <span>
-                  {new Date(post.createdAt).toLocaleDateString(locale, {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
-              </div>
-              <span>•</span>
-              <div className="flex items-center gap-2">
-                <ClockIcon className="w-4 h-4" />
-                <span>{calculateReadingTime(post.content)} {t('blog.minRead')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Featured Image (if exists) */}
-        {post.image && (
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="relative h-64 sm:h-96 rounded-lg overflow-hidden">
-              <Image
-                src={post.image}
-                alt={post.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 896px"
-                className="object-cover"
-                priority
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Article Content */}
-        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
-          <div 
-            className="prose prose-lg max-w-none
-              prose-headings:font-bold prose-headings:text-secondary-900
-              prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-secondary-900
-              prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-secondary-900
-              prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-p:text-base
-              prose-a:text-primary-500 prose-a:no-underline hover:prose-a:underline hover:prose-a:text-primary-600
-              prose-strong:text-secondary-900 prose-strong:font-semibold
-              prose-ul:my-6 prose-ul:space-y-2 prose-li:text-gray-700 prose-li:leading-relaxed
-              prose-ol:my-6 prose-ol:space-y-2 prose-li:text-gray-700 prose-li:leading-relaxed
-              prose-img:rounded-lg prose-img:my-8 prose-img:shadow-md prose-img:max-w-full prose-img:h-auto prose-img:w-auto prose-img:block
-              prose-blockquote:border-l-4 prose-blockquote:border-primary-500 
-              prose-blockquote:bg-primary-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:my-6
-              prose-blockquote:italic prose-blockquote:text-gray-700"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-
-          {/* CTA Section */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <div className="bg-gradient-to-br from-primary-50 to-blue-50 rounded-lg p-8 text-center">
-              <h3 className="text-2xl font-bold text-secondary-900 mb-4">
-                {t('blog.ctaTitle') || 'Ready to Start Learning?'}
-              </h3>
-              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                {t('blog.ctaDescription') || 'Join TinyTalks today and start your language learning journey with expert teachers.'}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
-                  onClick={() => router.push('/#pricing')}
-                  className="px-8 py-3 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 shadow-md hover:shadow-lg"
-                >
-                  {t('blog.ctaButton') || 'Get Started'}
-                </button>
-                <button
-                  onClick={() => router.push('/blog')}
-                  className="px-8 py-3 bg-white text-primary-500 border-2 border-primary-500 rounded-lg font-semibold hover:bg-primary-50 transition-all duration-300"
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <ArrowLeftIcon className="w-4 h-4" />
-                    {t('blog.readMoreArticles')}
-                  </span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </article>
-      </main>
+      <BlogPostContent post={post} calculateReadingTime={calculateReadingTime} />
       <Footer />
     </>
   );
