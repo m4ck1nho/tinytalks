@@ -68,7 +68,7 @@ export default function Home() {
     name: 'TinyTalks',
     description: 'Профессиональное онлайн обучение английскому языку - от начального до продвинутого уровня. Персональные уроки с опытным преподавателем.',
     url: 'https://tinytalks.pro',
-    logo: 'https://tinytalks.pro/icon.png',
+    logo: 'https://tinytalks.pro/images/logo.png',
     image: 'https://tinytalks.pro/images/og-image.jpg',
     email: 'info@tinytalks.pro',
     inLanguage: 'ru',
@@ -78,10 +78,24 @@ export default function Home() {
       contactType: 'Customer Service',
       availableLanguage: ['Russian'],
     },
-    areaServed: {
-      '@type': 'Place' as const,
-      name: 'Worldwide',
-    },
+    areaServed: [
+      {
+        '@type': 'Country' as const,
+        name: 'Russia',
+      },
+      {
+        '@type': 'Country' as const,
+        name: 'Kazakhstan',
+      },
+      {
+        '@type': 'Country' as const,
+        name: 'Belarus',
+      },
+      {
+        '@type': 'Place' as const,
+        name: 'Worldwide',
+      },
+    ],
     offers: [
       {
         '@type': 'Offer' as const,

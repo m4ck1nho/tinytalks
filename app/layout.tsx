@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import FaviconUpdater from '@/components/shared/FaviconUpdater';
 import TitleUpdater from '@/components/shared/TitleUpdater';
+import { YandexMetrica } from '@/components/shared/YandexMetrica';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -66,6 +67,13 @@ export default function RootLayout({
   return (
     <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
+        {/* Favicons */}
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        
         {/* Google Search Console Verification */}
         <meta name="google-site-verification" content="a12c8b207a493225" />
         {/* Preconnect for Google Fonts */}
@@ -83,6 +91,7 @@ export default function RootLayout({
         {children}
         <Analytics />
         <SpeedInsights />
+        <YandexMetrica />
       </body>
     </html>
   );
