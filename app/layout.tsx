@@ -68,6 +68,10 @@ export const metadata: Metadata = {
     ],
     shortcut: '/favicon.ico',
   },
+  other: {
+    'yandex-verification': 'a38938bb61b27014',
+    'google-site-verification': 'a12c8b207a493225',
+  },
 };
 
 export default function RootLayout({
@@ -88,10 +92,7 @@ export default function RootLayout({
         {/* Yandex Logo Manifest */}
         <link rel="yandex-tableau-widget" href="/manifest-yandex.json" />
         
-        {/* Google Search Console Verification */}
-        <meta name="google-site-verification" content="a12c8b207a493225" />
-        {/* Yandex Webmaster Verification */}
-        <meta name="yandex-verification" content="a38938bb61b27014" />
+        {/* Verification meta tags are handled via metadata.other in Next.js */}
         {/* Preconnect for Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
