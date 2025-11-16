@@ -69,7 +69,6 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
   },
   other: {
-    'yandex-verification': 'a38938bb61b27014',
     'google-site-verification': 'a12c8b207a493225',
   },
 };
