@@ -70,11 +70,16 @@ export default function Home() {
     url: 'https://tinytalks.pro',
     logo: {
       '@type': 'ImageObject' as const,
-      url: 'https://tinytalks.pro/icon.png',
+      url: 'https://tinytalks.pro/web-app-manifest-512x512.png',
       width: 512,
       height: 512,
     },
-    image: 'https://tinytalks.pro/images/og-image.jpg',
+    image: {
+      '@type': 'ImageObject' as const,
+      url: 'https://tinytalks.pro/web-app-manifest-512x512.png',
+      width: 512,
+      height: 512,
+    },
     email: 'info@tinytalks.pro',
     inLanguage: 'ru',
     founder: {

@@ -179,7 +179,9 @@ export default async function EnglishBlogPostPage({ params }: PageProps) {
       name: 'TinyTalks',
       logo: {
         '@type': 'ImageObject' as const,
-        url: 'https://tinytalks.pro/icon.png',
+        url: 'https://tinytalks.pro/web-app-manifest-512x512.png',
+        width: 512,
+        height: 512,
       },
     },
     datePublished: datePublished,

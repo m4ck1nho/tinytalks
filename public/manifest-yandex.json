@@ -1,0 +1,9 @@
+{
+  "logo": {
+    "src": "https://tinytalks.pro/web-app-manifest-512x512.png",
+    "type": "image/png",
+    "sizes": "512x512"
+  },
+  "backgroundColor": "#ffffff"
+}
+

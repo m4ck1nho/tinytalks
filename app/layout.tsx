@@ -74,6 +74,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         
+        {/* Yandex Logo Manifest */}
+        <link rel="yandex-tableau-widget" href="/manifest-yandex.json" />
+        
         {/* Google Search Console Verification */}
         <meta name="google-site-verification" content="a12c8b207a493225" />
         {/* Preconnect for Google Fonts */}
