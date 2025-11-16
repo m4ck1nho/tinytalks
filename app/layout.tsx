@@ -90,6 +90,8 @@ export default function RootLayout({
         
         {/* Google Search Console Verification */}
         <meta name="google-site-verification" content="a12c8b207a493225" />
+        {/* Yandex Webmaster Verification */}
+        <meta name="yandex-verification" content="a38938bb61b27014" />
         {/* Preconnect for Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
