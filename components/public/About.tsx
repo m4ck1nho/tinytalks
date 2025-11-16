@@ -36,7 +36,7 @@ export default function About() {
             <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-xl">
               <Image
                 src="/images/teacher-about.jpg"
-                alt="Евгения Пенькова — преподаватель английского языка"
+                alt="Евгения Пенькова — основатель TinyTalks, преподаватель английского языка с индивидуальным подходом"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 className="object-cover"

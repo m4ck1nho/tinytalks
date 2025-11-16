@@ -56,7 +56,7 @@ export default function Hero() {
             <div className="relative h-[620px] md:h-[720px] rounded-2xl overflow-hidden shadow-2xl">
               <Image
                 src="/images/teacher-hero.jpg"
-                alt="Преподаватель английского помогает ученице"
+                alt="Евгения Пенькова — преподаватель английского проводит онлайн-урок"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 className="object-cover object-bottom"

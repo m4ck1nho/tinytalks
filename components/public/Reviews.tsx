@@ -115,7 +115,13 @@ export default function Reviews() {
                       {review.image ? (
                         <Image
                           src={review.image}
-                          alt={review.name}
+                          alt={
+                            review.name === 'Анна К.' ? 'Отзыв Анны К. о TinyTalks' :
+                            review.name === 'Юлия К.' ? 'Отзыв Юлии К. о TinyTalks' :
+                            review.name === 'Иван Д.' ? 'Отзыв Ивана Д. о TinyTalks' :
+                            review.name === 'Екатерина С.' ? 'Отзыв Екатерины С. о TinyTalks' :
+                            `Отзыв ${review.name} о TinyTalks`
+                          }
                           width={64}
                           height={64}
                           className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover shadow-md"

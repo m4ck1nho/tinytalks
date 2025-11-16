@@ -18,12 +18,12 @@ export function generateMetadata(): Metadata {
   const baseUrl = 'https://tinytalks.pro';
 
   return {
-    title: 'TinyTalks - Изучайте английский онлайн',
-    description: 'Изучайте английский онлайн с персональным репетитором от начального до продвинутого уровня. Онлайн занятия с опытным преподавателем для русскоязычных.',
-    keywords: ['английский онлайн', 'репетитор английского', 'онлайн уроки английского', 'изучение английского', 'английский для начинающих'],
+    title: 'TinyTalks — Онлайн-уроки английского для детей и взрослых | Асинхронное обучение',
+    description: 'Учите английский в своём темпе с TinyTalks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
+    keywords: ['онлайн уроки английского', 'асинхронное обучение английскому', 'репетитор английского', 'английский для детей онлайн'],
     openGraph: {
-      title: 'TinyTalks - Изучайте английский онлайн',
-      description: 'Персональное обучение английскому от начального до продвинутого уровня',
+      title: 'TinyTalks — Онлайн-уроки английского для детей и взрослых | Асинхронное обучение',
+      description: 'Учите английский в своём темпе с TinyTalks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
       url: baseUrl,
       siteName: 'TinyTalks',
       images: [
@@ -66,7 +66,7 @@ export default function Home() {
     '@context': 'https://schema.org',
     '@type': 'EducationalOrganization' as const,
     name: 'TinyTalks',
-    description: 'Профессиональное онлайн обучение английскому языку - от начального до продвинутого уровня. Персональные уроки с опытным преподавателем.',
+    description: 'Онлайн-школа английского языка с асинхронным обучением',
     url: 'https://tinytalks.pro',
     logo: {
       '@type': 'ImageObject' as const,
@@ -77,6 +77,11 @@ export default function Home() {
     image: 'https://tinytalks.pro/images/og-image.jpg',
     email: 'info@tinytalks.pro',
     inLanguage: 'ru',
+    founder: {
+      '@type': 'Person' as const,
+      name: 'Евгения Пенькова',
+    },
+    addressCountry: 'RU',
     contactPoint: {
       '@type': 'ContactPoint' as const,
       email: 'info@tinytalks.pro',
@@ -138,11 +143,101 @@ export default function Home() {
       'https://t.me/TinytalksPro',
       'https://www.instagram.com/tinytalks.pro',
     ],
+    aggregateRating: {
+      '@type': 'AggregateRating' as const,
+      ratingValue: '5',
+      reviewCount: '6',
+    },
   };
+
+  // Individual Review schemas
+  const reviewSchemas = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Review' as const,
+      author: {
+        '@type': 'Person' as const,
+        name: 'Анна К.',
+      },
+      reviewBody: 'Евгения, добрый вечер! Спасибо! Прогресс чувствуется, сама приходит, чтобы ей помогли с домашним заданием. И оценки стали лучше по английскому.',
+      reviewRating: {
+        '@type': 'Rating' as const,
+        ratingValue: '5',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Review' as const,
+      author: {
+        '@type': 'Person' as const,
+        name: 'Юлия К.',
+      },
+      reviewBody: 'Женя, асинхронная неделя + один урок в неделю онлайн — идеально. Очень довольна и чувствую результат, потому что впервые работаю с языком ежедневно.',
+      reviewRating: {
+        '@type': 'Rating' as const,
+        ratingValue: '5',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Review' as const,
+      author: {
+        '@type': 'Person' as const,
+        name: 'Иван Д.',
+      },
+      reviewBody: 'Формат асинхрона — огонь! Удобно, гибко и виден прогресс. Спасибо за грамотную организацию процесса. Для занятых — must have.',
+      reviewRating: {
+        '@type': 'Rating' as const,
+        ratingValue: '5',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Review' as const,
+      author: {
+        '@type': 'Person' as const,
+        name: 'Екатерина С.',
+      },
+      reviewBody: 'Евгения, спасибо большое! Вы — внимательный и приятный преподаватель. Чувствуется профессионализм. С удовольствием иду на занятие, потому что интересно, что же на этот раз вы подготовили!',
+      reviewRating: {
+        '@type': 'Rating' as const,
+        ratingValue: '5',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Review' as const,
+      author: {
+        '@type': 'Person' as const,
+        name: 'Анастасия Б.',
+      },
+      reviewBody: 'Хочу поделиться впечатлением о первом занятии моего сына в группе по английскому языку. Урок прошёл в очень тёплой и дружелюбной атмосфере. Сын вышел с занятия с горящими глазами и сказал, что ему всё очень понравилось. Спасибо за отличный старт! Будем с радостью продолжать.',
+      reviewRating: {
+        '@type': 'Rating' as const,
+        ratingValue: '5',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Review' as const,
+      author: {
+        '@type': 'Person' as const,
+        name: 'Мария Л.',
+      },
+      reviewBody: 'Дочка (8 лет) была увлечена и включена во всё занятие. Занимаемся по системе Phonics — чётко, понятно и в игровой форме. Спасибо за профессиональный подход и доброжелательную атмосферу!',
+      reviewRating: {
+        '@type': 'Rating' as const,
+        ratingValue: '5',
+      },
+    },
+  ];
 
   return (
     <>
       <StructuredData data={organizationSchema} />
+      {reviewSchemas.map((review, index) => (
+        <StructuredData key={index} data={review} />
+      ))}
       <AnalyticsClient />
       <Navbar />
       <main className="min-h-screen">
