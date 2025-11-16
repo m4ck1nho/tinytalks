@@ -163,16 +163,35 @@ export default async function EnglishBlogPostPage({ params }: PageProps) {
   const datePublished = new Date(post.created_at).toISOString().split('T')[0];
   const dateModified = post.updated_at ? new Date(post.updated_at).toISOString().split('T')[0] : datePublished;
   
+  // Extract keywords from title and content for schema
+  const extractKeywords = (title: string, content: string): string[] => {
+    const commonKeywords = ['english', 'learning', 'study', 'lessons', 'tutor', 'online'];
+    const titleWords = title.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+    const contentWords = content.replace(/<[^>]*>/g, '').toLowerCase().split(/\s+/).filter(w => w.length > 4);
+    const uniqueWords = [...new Set([...titleWords, ...contentWords, ...commonKeywords])];
+    return uniqueWords.slice(0, 10);
+  };
+
+  const keywords = extractKeywords(post.title, post.content);
+  const postImage = post.image || 'https://tinytalks.pro/images/og-image.jpg';
+  const imageUrl = postImage.startsWith('http') ? postImage : `https://tinytalks.pro${postImage.startsWith('/') ? '' : '/'}${postImage}`;
+
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting' as const,
     headline: post.title,
     description: post.metaDescription || post.excerpt || post.content.replace(/<[^>]*>/g, '').substring(0, 160),
-    image: post.image || 'https://tinytalks.pro/images/og-image.jpg',
+    image: {
+      '@type': 'ImageObject' as const,
+      url: imageUrl,
+      width: 1200,
+      height: 630,
+    },
     author: {
       '@type': 'Person' as const,
       name: 'Evgenia Penkova',
       url: 'https://tinytalks.pro',
+      description: 'English teacher, founder of TinyTalks',
     },
     publisher: {
       '@type': 'Organization' as const,
@@ -186,6 +205,8 @@ export default async function EnglishBlogPostPage({ params }: PageProps) {
     },
     datePublished: datePublished,
     dateModified: dateModified,
+    keywords: keywords.join(', '),
+    inLanguage: 'en-US',
     mainEntityOfPage: {
       '@type': 'WebPage' as const,
       '@id': `https://tinytalks.pro/en/blog/${slug}`,

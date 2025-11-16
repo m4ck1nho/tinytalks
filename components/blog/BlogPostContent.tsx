@@ -5,6 +5,7 @@ import { BlogPost } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CalendarIcon, ArrowLeftIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { BlogCTA } from './BlogCTA';
 
 interface BlogPostContentProps {
   post: BlogPost;
@@ -55,7 +56,7 @@ export function BlogPostContent({ post, readingTime }: BlogPostContentProps) {
           <div className="relative h-64 sm:h-96 rounded-lg overflow-hidden">
             <Image
               src={post.image}
-              alt={post.title}
+              alt={post.title || 'Изображение статьи'}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 896px"
               className="object-cover"
@@ -83,31 +84,7 @@ export function BlogPostContent({ post, readingTime }: BlogPostContentProps) {
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <div className="bg-gradient-to-br from-primary-50 to-blue-50 rounded-lg p-8 text-center">
-            <h3 className="text-2xl font-bold text-secondary-900 mb-4">
-              Готовы начать обучение?
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Присоединяйтесь к TinyTalks сегодня и начните свое путешествие в изучении языка с опытными преподавателями.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => router.push('/#pricing')}
-                className="px-8 py-3 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-600 transition-all duration-300 shadow-md hover:shadow-lg"
-              >
-                Начать
-              </button>
-              <Link
-                href="/blog"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white text-primary-500 border-2 border-primary-500 rounded-lg font-semibold hover:bg-primary-50 transition-all duration-300"
-              >
-                <ArrowLeftIcon className="w-4 h-4" />
-                Читать другие статьи
-              </Link>
-            </div>
-          </div>
-        </div>
+        <BlogCTA />
       </article>
     </main>
   );

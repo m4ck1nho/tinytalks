@@ -4,6 +4,7 @@ import { BlogPost } from '@/types';
 import Navbar from '@/components/public/Navbar';
 import Footer from '@/components/public/Footer';
 import { BlogPostContent } from '@/components/blog/BlogPostContent';
+import { RelatedPosts } from '@/components/blog/RelatedPosts';
 import { StructuredData } from '@/components/shared/StructuredData';
 import type { Metadata } from 'next';
 
@@ -126,9 +127,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   // Strip HTML tags from content for meta description
-  const plainTextContent = post.content.replace(/<[^>]*>/g, '').substring(0, 160);
-  const description = post.metaDescription || post.excerpt || plainTextContent;
-  const finalDescription = description.length > 160 ? description.substring(0, 157) + '...' : description;
+  const plainTextContent = post.content.replace(/<[^>]*>/g, '').trim();
+  let description = post.metaDescription || post.excerpt || plainTextContent;
+  
+  // Ensure description is exactly 150-160 characters for optimal SEO
+  if (description.length > 160) {
+    description = description.substring(0, 157) + '...';
+  } else if (description.length < 120 && plainTextContent.length > 120) {
+    // If description is too short, use more of the content
+    description = plainTextContent.substring(0, 157) + '...';
+  }
+  
+  const finalDescription = description;
   const postUrl = `${baseUrl}/blog/${slug}`;
   const enPostUrl = 'slug_en' in post && post.slug_en ? `${baseUrl}/en/blog/${post.slug_en}` : null;
 
@@ -146,8 +156,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates.languages!['en'] = enPostUrl;
   }
 
+  // Optimize title: ensure it's 50-60 characters with keywords
+  const optimizedTitle = post.title.length > 50 
+    ? `${post.title.substring(0, 47)}... | TinyTalks`
+    : `${post.title} | TinyTalks`;
+
   return {
-    title: `${post.title} | TinyTalks Blog`,
+    title: optimizedTitle,
     description: finalDescription,
     keywords: ['learn english online', 'english tutor', 'online english lessons', 'английский онлайн', 'репетитор английского', 'english learning blog'],
     openGraph: {
@@ -210,17 +225,36 @@ export default async function BlogPostPage({ params }: PageProps) {
   const datePublished = new Date(post.created_at).toISOString().split('T')[0];
   const dateModified = post.updated_at ? new Date(post.updated_at).toISOString().split('T')[0] : datePublished;
   
+  // Extract keywords from title and content for schema
+  const extractKeywords = (title: string, content: string): string[] => {
+    const commonKeywords = ['английский', 'обучение', 'изучение', 'уроки', 'репетитор', 'онлайн'];
+    const titleWords = title.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+    const contentWords = content.replace(/<[^>]*>/g, '').toLowerCase().split(/\s+/).filter(w => w.length > 4);
+    const uniqueWords = [...new Set([...titleWords, ...contentWords, ...commonKeywords])];
+    return uniqueWords.slice(0, 10);
+  };
+
+  const keywords = extractKeywords(post.title, post.content);
+  const postImage = post.image || 'https://tinytalks.pro/images/og-image.jpg';
+  const imageUrl = postImage.startsWith('http') ? postImage : `https://tinytalks.pro${postImage.startsWith('/') ? '' : '/'}${postImage}`;
+
   // JSON-LD structured data for BlogPosting
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting' as const,
     headline: post.title,
     description: post.metaDescription || post.excerpt || post.content.replace(/<[^>]*>/g, '').substring(0, 160),
-    image: post.image || 'https://tinytalks.pro/images/og-image.jpg',
+    image: {
+      '@type': 'ImageObject' as const,
+      url: imageUrl,
+      width: 1200,
+      height: 630,
+    },
     author: {
       '@type': 'Person' as const,
-      name: 'Evgenia Penkova',
+      name: 'Евгения Пенькова',
       url: 'https://tinytalks.pro',
+      description: 'Преподаватель английского языка, основатель TinyTalks',
     },
     publisher: {
       '@type': 'Organization' as const,
@@ -234,17 +268,33 @@ export default async function BlogPostPage({ params }: PageProps) {
     },
     datePublished: datePublished,
     dateModified: dateModified,
+    keywords: keywords.join(', '),
+    inLanguage: 'ru-RU',
     mainEntityOfPage: {
       '@type': 'WebPage' as const,
       '@id': `https://tinytalks.pro/blog/${slug}`,
     },
   };
 
+  // Fetch all posts for related posts section
+  const { data: allPosts } = await db.getBlogPosts(true);
+  const allBlogPosts = (allPosts || []).map(p => ({
+    ...p,
+    slug: p.slug,
+    slug_en: (p as { slug_en?: string }).slug_en,
+    createdAt: p.created_at,
+    updatedAt: p.updated_at,
+    metaDescription: p.meta_description,
+  })) as BlogPost[];
+
   return (
     <>
       <StructuredData data={articleSchema} />
       <Navbar />
       <BlogPostContent post={post} readingTime={readingTime} />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <RelatedPosts currentPostSlug={slug} posts={allBlogPosts} limit={3} />
+      </div>
       <Footer />
     </>
   );
