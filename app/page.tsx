@@ -68,7 +68,12 @@ export default function Home() {
     name: 'TinyTalks',
     description: 'Профессиональное онлайн обучение английскому языку - от начального до продвинутого уровня. Персональные уроки с опытным преподавателем.',
     url: 'https://tinytalks.pro',
-    logo: 'https://tinytalks.pro/images/logo.png',
+    logo: {
+      '@type': 'ImageObject' as const,
+      url: 'https://tinytalks.pro/icon.png',
+      width: 512,
+      height: 512,
+    },
     image: 'https://tinytalks.pro/images/og-image.jpg',
     email: 'info@tinytalks.pro',
     inLanguage: 'ru',
