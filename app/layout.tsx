@@ -61,6 +61,7 @@ export const metadata: Metadata = {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
       { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.png', sizes: '48x48', type: 'image/png' },
       { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
     ],
     apple: [
@@ -82,6 +83,7 @@ export default function RootLayout({
     <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* Favicons */}
+        <link rel="icon" type="image/png" href="/favicon.png" sizes="48x48" />
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="shortcut icon" href="/favicon.ico" />
