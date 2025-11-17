@@ -81,7 +81,7 @@ export default function Contact() {
                 WhatsApp
               </h3>
               <p className="text-sm text-gray-600 group-hover:text-green-600 transition-colors">
-                Напишите нам в WhatsApp
+                +79315390543
               </p>
             </div>
           </div>
