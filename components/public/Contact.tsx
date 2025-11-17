@@ -63,29 +63,29 @@ export default function Contact() {
             </div>
           </a>
 
-          {/* Instagram Card */}
-          <a
-            href="https://www.instagram.com/tinytalks.pro"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group bg-white border border-gray-200 rounded-lg p-6 hover:border-pink-500 hover:shadow-lg transition-all duration-300"
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-pink-50 rounded-lg flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-pink-500 group-hover:via-purple-500 group-hover:to-orange-500 transition-all">
-                <svg className="w-6 h-6 text-pink-600 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-pink-600 transition-colors">
-                  Instagram
-                </h3>
-                <p className="text-sm text-gray-600 group-hover:text-pink-600 transition-colors">
-                  @tinytalks.pro
-                </p>
-              </div>
+        {/* WhatsApp Card */}
+        <a
+          href="https://wa.me/79315390543"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group bg-white border border-gray-200 rounded-lg p-6 hover:border-green-500 hover:shadow-lg transition-all duration-300"
+        >
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center group-hover:bg-green-500 transition-colors">
+              <svg className="w-6 h-6 text-green-600 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.52 3.48A11.78 11.78 0 0 0 3.47 20.53L2 22l1.6-.47A11.78 11.78 0 0 0 12 23.76h.01a11.76 11.76 0 0 0 8.33-20.28zM12 21.4h-.01a9.36 9.36 0 0 1-4.78-1.29l-.34-.2-2.84.84.82-2.76-.22-.32a9.37 9.37 0 1 1 17.09-5.1A9.31 9.31 0 0 1 12 21.4zm5-7.25c-.27-.13-1.6-.8-1.85-.9s-.43-.13-.62.13-.71.9-.87 1.09-.32.19-.59.06a7.57 7.57 0 0 1-2.23-1.38 8.35 8.35 0 0 1-1.55-1.93c-.16-.27 0-.42.11-.55.11-.11.27-.32.4-.48l.13-.21c.06-.13.02-.25-.01-.34s-.61-1.47-.83-2-.44-.46-.62-.47-.35-.01-.54-.01a1 1 0 0 0-.71.33 3 3 0 0 0-.93 2.2 5.27 5.27 0 0 0 1.09 2.79 12 12 0 0 0 4.58 4.05 15 15 0 0 0 1.47.54 3.54 3.54 0 0 0 1.63.1 2.67 2.67 0 0 0 1.76-1.24 2.16 2.16 0 0 0 .15-1.21c-.06-.11-.24-.17-.51-.3z"/>
+              </svg>
             </div>
-          </a>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+                WhatsApp
+              </h3>
+              <p className="text-sm text-gray-600 group-hover:text-green-600 transition-colors">
+                Напишите нам в WhatsApp
+              </p>
+            </div>
+          </div>
+        </a>
         </div>
       </div>
     </section>

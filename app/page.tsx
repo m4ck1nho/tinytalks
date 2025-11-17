@@ -146,7 +146,7 @@ export default function Home() {
     },
     sameAs: [
       'https://t.me/TinytalksPro',
-      'https://www.instagram.com/tinytalks.pro',
+      'https://wa.me/79315390543',
     ],
     aggregateRating: {
       '@type': 'AggregateRating' as const,
