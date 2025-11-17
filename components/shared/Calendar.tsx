@@ -169,14 +169,14 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
       {/* Calendar Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
           <CalendarIcon className="w-7 h-7 text-primary-500" />
           Календарь
         </h2>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 justify-between sm:justify-end">
           <button
             onClick={previousMonth}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -195,22 +195,26 @@ export default function Calendar({ classes, payments = [] }: CalendarProps) {
         </div>
       </div>
 
-      {/* Day Names */}
-      <div className="grid grid-cols-7 gap-0 mb-2">
-        {dayNames.map((day) => (
-          <div key={day} className="text-center text-sm font-semibold text-gray-600 py-2">
-            {day}
+      <div className="-mx-2 overflow-x-auto">
+        <div className="min-w-[640px] px-2">
+          {/* Day Names */}
+          <div className="grid grid-cols-7 gap-0 mb-2">
+            {dayNames.map((day) => (
+              <div key={day} className="text-center text-sm font-semibold text-gray-600 py-2">
+                {day}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-0 border border-gray-200 rounded-lg overflow-hidden">
-        {renderCalendar()}
+          {/* Calendar Grid */}
+          <div className="grid grid-cols-7 gap-0 border border-gray-200 rounded-lg overflow-hidden">
+            {renderCalendar()}
+          </div>
+        </div>
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex items-center gap-6 text-sm flex-wrap">
+      <div className="mt-4 flex items-center gap-4 sm:gap-6 text-sm flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-blue-100 border border-blue-300 rounded"></div>
           <span className="text-gray-600">Запланированные занятия</span>

@@ -677,7 +677,7 @@ export default function UserDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
       {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 z-40 w-64 bg-white/80 backdrop-blur-xl border-r border-white/60 shadow-2xl">
+      <div className="fixed inset-y-0 left-0 z-40 w-64 bg-white/80 backdrop-blur-xl border-r border-white/60 shadow-2xl hidden lg:block">
         <div className="flex flex-col h-full">
           {/* Logo & User */}
           <div className="p-6 border-b border-gray-200/50">
@@ -740,7 +740,49 @@ export default function UserDashboard() {
 
       {/* Main Content */}
       <div className="lg:ml-64">
-        <div className="p-8">
+        {/* Mobile Header & Tabs */}
+        <div className="lg:hidden px-4 pt-4 space-y-4">
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl border border-white/60 p-4 flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-secondary-800 rounded-full flex items-center justify-center shadow-lg shadow-primary-400/30">
+              <UserCircleIcon className="w-7 h-7 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-secondary-900 truncate text-base">{userName}</div>
+              <div className="text-xs text-gray-600 truncate">{user?.email}</div>
+              <div className="text-[11px] text-gray-500 mt-1">{text.sidebarSubtitle}</div>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="text-xs font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1"
+            >
+              <ArrowRightOnRectangleIcon className="w-4 h-4" />
+              Выйти
+            </button>
+          </div>
+          <div className="-mx-4 px-4">
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
+                      isActive
+                        ? 'bg-gradient-to-r from-primary-500 to-secondary-900 text-white border-transparent shadow-lg shadow-primary-500/30'
+                        : 'bg-white text-secondary-900 border-gray-200 shadow-sm'
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-primary-500'}`} />
+                    <span>{tab.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <div className="p-4 sm:p-6 lg:p-8">
           <section className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/60">
 
             {/* Overview Tab */}
@@ -824,7 +866,7 @@ export default function UserDashboard() {
 
             {/* Calendar Tab */}
             {activeTab === 'calendar' && (
-              <div className="p-8">
+              <div className="p-4 sm:p-6 lg:p-8">
                 <Calendar classes={classes} payments={[]} />
               </div>
             )}

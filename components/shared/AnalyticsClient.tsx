@@ -23,11 +23,14 @@ export function AnalyticsClient() {
     const handleHashScroll = () => {
       const hash = window.location.hash;
       if (hash) {
-        const element = document.querySelector(hash);
-        if (element) {
-          setTimeout(() => {
-            element.scrollIntoView({ behavior: 'smooth' });
-          }, 100);
+        const targetId = hash.startsWith('#') ? hash.slice(1) : hash;
+        if (targetId) {
+          const element = document.getElementById(targetId);
+          if (element) {
+            setTimeout(() => {
+              element.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+          }
         }
       }
     };
