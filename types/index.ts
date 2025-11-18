@@ -5,6 +5,7 @@ export interface BlogPost {
   excerpt: string;
   image?: string;
   slug: string;
+  slug_en?: string; // English slug for /en/blog/[slug] routes
   metaDescription?: string;
   published: boolean;
   created_at: string;

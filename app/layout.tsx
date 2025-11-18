@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import Script from 'next/script';
 import FaviconUpdater from '@/components/shared/FaviconUpdater';
 import TitleUpdater from '@/components/shared/TitleUpdater';
 import { YandexMetrica } from '@/components/shared/YandexMetrica';
@@ -97,14 +98,17 @@ export default function RootLayout({
         {/* Preconnect for Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <script
+        <Script
+          id="adsense-script"
           async
+          strategy="afterInteractive"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7536252176755420"
           crossOrigin="anonymous"
         />
         {/* Yandex.Metrika counter */}
-        <script
-          type="text/javascript"
+        <Script
+          id="yandex-metrika"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function(m,e,t,r,i,k,a){

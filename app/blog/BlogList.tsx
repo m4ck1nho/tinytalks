@@ -19,18 +19,26 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
     setCurrentPage(1);
   }, [searchQuery]);
 
-  const filteredPosts = useMemo(() => {
+  const chronologicalPosts = useMemo(
+    () =>
+      [...posts].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      ),
+    [posts]
+  );
+
+  const baseFilteredPosts = useMemo(() => {
     if (!searchQuery.trim()) {
-      return posts;
+      return chronologicalPosts;
     }
 
     const query = searchQuery.toLowerCase();
-    return posts.filter(post => 
+    return chronologicalPosts.filter(post => 
       post.title.toLowerCase().includes(query) ||
       post.excerpt.toLowerCase().includes(query) ||
       post.content.toLowerCase().includes(query)
     );
-  }, [searchQuery, posts]);
+  }, [searchQuery, chronologicalPosts]);
 
   const calculateReadingTime = (content: string): number => {
     const wordsPerMinute = 200;
@@ -50,12 +58,18 @@ export function BlogList({ posts: initialPosts }: BlogListProps) {
   const POSTS_PER_PAGE = 6;
   const RECENT_LIMIT = 6;
   const isSearching = searchQuery.trim().length > 0;
-  const showRecent = !isSearching && filteredPosts.length > RECENT_LIMIT;
+  const showRecent = !isSearching && chronologicalPosts.length > RECENT_LIMIT;
 
   const recentPosts = useMemo(() => {
     if (!showRecent) return [];
-    return filteredPosts.slice(0, RECENT_LIMIT);
-  }, [filteredPosts, showRecent]);
+    return chronologicalPosts.slice(0, RECENT_LIMIT);
+  }, [chronologicalPosts, showRecent]);
+
+  const filteredPosts = useMemo(() => {
+    if (!showRecent) return baseFilteredPosts;
+    const excludedSlugs = new Set(recentPosts.map(post => post.slug));
+    return baseFilteredPosts.filter(post => !excludedSlugs.has(post.slug));
+  }, [baseFilteredPosts, recentPosts, showRecent]);
 
   const totalPages = filteredPosts.length > 0 ? Math.ceil(filteredPosts.length / POSTS_PER_PAGE) : 1;
 

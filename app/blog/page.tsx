@@ -33,11 +33,9 @@ async function getBlogPosts(): Promise<BlogPost[]> {
   }
 }
 
-// Enable ISR: Revalidate every hour (3600 seconds)
-export const revalidate = 3600;
-
-// Force static generation (fail if dynamic)
-export const dynamic = 'force-static';
+// Always serve fresh data (blog posts change frequently)
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Blog | TinyTalks - English Learning Tips & Guides',
