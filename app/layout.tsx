@@ -12,7 +12,7 @@ import { YandexMetrica } from '@/components/shared/YandexMetrica';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tinytalks.pro'),
+  metadataBase: new URL('https://www.tinytalks.pro'),
   title: {
     default: 'Tiny Talks — Английский по коротким видео',
     template: '%s | Tiny Talks',
@@ -25,13 +25,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'ru_RU',
-    url: 'https://tinytalks.pro',
+    url: 'https://www.tinytalks.pro',
     siteName: 'Tiny Talks',
     title: 'Tiny Talks — Английский по коротким видео',
     description: 'Учите английский в своём темпе с Tiny Talks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
     images: [
       {
-        url: 'https://tinytalks.pro/images/og-image.jpg',
+        url: 'https://www.tinytalks.pro/images/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'TinyTalks - Изучайте английский онлайн',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Tiny Talks — Английский по коротким видео',
     description: 'Персональное обучение английскому',
-    images: ['https://tinytalks.pro/images/twitter-card.jpg'],
+    images: ['https://www.tinytalks.pro/images/twitter-card.jpg'],
     creator: '@tinytalks',
   },
   robots: {
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'https://tinytalks.pro',
+    canonical: 'https://www.tinytalks.pro',
   },
   icons: {
     icon: [

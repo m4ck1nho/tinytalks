@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tinytalks.pro/sitemap.xml
+Sitemap: https://www.tinytalks.pro/sitemap.xml
 

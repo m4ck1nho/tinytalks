@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-export const SITE_URL = 'https://tinytalks.pro';
+export const SITE_URL = 'https://www.tinytalks.pro';
 export const SITE_NAME = 'TinyTalks';
 export const DEFAULT_DESCRIPTION =
   'TinyTalks — онлайн-уроки английского для детей и взрослых. Асинхронное обучение + индивидуальные занятия без стресса.';

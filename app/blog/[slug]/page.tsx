@@ -117,7 +117,7 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await getBlogPost(slug);
-  const baseUrl = 'https://tinytalks.pro';
+  const baseUrl = 'https://www.tinytalks.pro';
 
   if (!post) {
     return {
@@ -224,8 +224,8 @@ export default async function BlogPostPage({ params }: PageProps) {
   };
 
   const keywords = extractKeywords(post.title, post.content);
-  const postImage = post.image || 'https://tinytalks.pro/images/og-image.jpg';
-  const imageUrl = postImage.startsWith('http') ? postImage : `https://tinytalks.pro${postImage.startsWith('/') ? '' : '/'}${postImage}`;
+  const postImage = post.image || 'https://www.tinytalks.pro/images/og-image.jpg';
+  const imageUrl = postImage.startsWith('http') ? postImage : `https://www.tinytalks.pro${postImage.startsWith('/') ? '' : '/'}${postImage}`;
 
   // JSON-LD structured data for BlogPosting
   const articleSchema = {
@@ -242,7 +242,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     author: {
       '@type': 'Person' as const,
       name: 'Евгения Пенькова',
-      url: 'https://tinytalks.pro',
+      url: 'https://www.tinytalks.pro',
       description: 'Преподаватель английского языка, основатель TinyTalks',
     },
     publisher: {
@@ -250,7 +250,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       name: 'TinyTalks',
       logo: {
         '@type': 'ImageObject' as const,
-        url: 'https://tinytalks.pro/web-app-manifest-512x512.png',
+        url: 'https://www.tinytalks.pro/web-app-manifest-512x512.png',
         width: 512,
         height: 512,
       },
@@ -261,7 +261,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     inLanguage: 'ru-RU',
     mainEntityOfPage: {
       '@type': 'WebPage' as const,
-      '@id': `https://tinytalks.pro/blog/${slug}`,
+      '@id': `https://www.tinytalks.pro/blog/${slug}`,
     },
   };
 

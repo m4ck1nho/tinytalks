@@ -44,11 +44,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Блог | Tiny Talks',
     description: 'Полезные статьи и ресурсы для изучения английского языка. Советы, стратегии обучения и практические рекомендации.',
-    url: 'https://tinytalks.pro/blog',
+    url: 'https://www.tinytalks.pro/blog',
     siteName: 'Tiny Talks',
     images: [
       {
-        url: 'https://tinytalks.pro/images/og-image.jpg',
+        url: 'https://www.tinytalks.pro/images/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'TinyTalks Blog',
@@ -60,10 +60,10 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Блог | Tiny Talks',
     description: 'Полезные статьи и ресурсы для изучения английского языка. Советы, стратегии обучения и практические рекомендации.',
-    images: ['https://tinytalks.pro/images/twitter-card.jpg'],
+    images: ['https://www.tinytalks.pro/images/twitter-card.jpg'],
   },
   alternates: {
-    canonical: 'https://tinytalks.pro/blog',
+    canonical: 'https://www.tinytalks.pro/blog',
   },
   robots: {
     index: true,

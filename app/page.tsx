@@ -15,7 +15,7 @@ export const dynamic = 'force-static';
 
 // Generate metadata for SEO
 export function generateMetadata(): Metadata {
-  const baseUrl = 'https://tinytalks.pro';
+  const baseUrl = 'https://www.tinytalks.pro';
 
   return {
     title: 'Tiny Talks — Английский по коротким видео',
@@ -67,16 +67,16 @@ export default function Home() {
     '@type': 'EducationalOrganization' as const,
     name: 'TinyTalks',
     description: 'Онлайн-школа английского языка с асинхронным обучением',
-    url: 'https://tinytalks.pro',
+      url: 'https://www.tinytalks.pro',
     logo: {
       '@type': 'ImageObject' as const,
-      url: 'https://tinytalks.pro/web-app-manifest-512x512.png',
+      url: 'https://www.tinytalks.pro/web-app-manifest-512x512.png',
       width: 512,
       height: 512,
     },
     image: {
       '@type': 'ImageObject' as const,
-      url: 'https://tinytalks.pro/web-app-manifest-512x512.png',
+      url: 'https://www.tinytalks.pro/web-app-manifest-512x512.png',
       width: 512,
       height: 512,
     },

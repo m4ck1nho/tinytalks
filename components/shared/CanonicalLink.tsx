@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
-const BASE_URL = 'https://tinytalks.pro';
+const BASE_URL = 'https://www.tinytalks.pro';
 
 // Pages that should NOT have canonical tags (admin, dashboard, auth - noindex pages)
 const EXCLUDED_PATHS = ['/admin', '/dashboard', '/auth'];
