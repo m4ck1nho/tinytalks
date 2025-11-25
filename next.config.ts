@@ -16,22 +16,9 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // Redirect www to non-www (handled at Next.js level, more reliable than middleware)
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'www.tinytalks.pro',
-          },
-        ],
-        destination: 'https://tinytalks.pro/:path*',
-        permanent: true,
-      },
-    ];
-  },
+  // Note: www to non-www redirect should be configured in Vercel project settings
+  // Go to: Vercel Dashboard -> Your Project -> Settings -> Domains -> Add Redirect Rule
+  // Source: www.tinytalks.pro/*  Destination: https://tinytalks.pro/$1  (301)
   images: {
     remotePatterns: [
       {
