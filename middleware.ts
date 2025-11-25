@@ -3,19 +3,8 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const hostname = request.headers.get('host') || '';
 
-  // TEMPORARILY DISABLED: www redirect causing loop - investigate separately
-  // TODO: Re-enable once root cause is identified
-  // CRITICAL: Force www to non-www redirect (301 Permanent Redirect)
-  // This ensures consistent canonical URLs and prevents duplicate content issues
-  // Only redirect if hostname actually starts with www. (not in development/staging)
-  // if (hostname && hostname.startsWith('www.') && !hostname.includes('localhost') && !hostname.includes('127.0.0.1') && !hostname.includes('.vercel.app')) {
-  //   const nonWwwHost = hostname.replace(/^www\./, '');
-  //   // Construct redirect URL manually to avoid any Next.js URL manipulation issues
-  //   const redirectUrl = `https://${nonWwwHost}${pathname}${request.nextUrl.search}`;
-  //   return NextResponse.redirect(redirectUrl, 301);
-  // }
+  // Note: www to non-www redirect is handled in next.config.ts redirects (more reliable)
 
   // CRITICAL: Redirect all /en/* routes to homepage (301 Permanent Redirect)
   // This removes ghost English pages that are causing canonical tag errors
