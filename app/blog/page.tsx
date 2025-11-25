@@ -38,14 +38,14 @@ export const revalidate = 0;
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Blog | TinyTalks - English Learning Tips & Guides',
-  description: 'Explore our collection of helpful resources and articles to support your English learning journey. Get tips, learning strategies, and insights to accelerate your English progress.',
-  keywords: ['learn english online', 'english tutor', 'online english lessons', 'английский онлайн', 'репетитор английского', 'english learning blog', 'english tips'],
+  title: 'Блог | Tiny Talks — Статьи об изучении английского',
+  description: 'Полезные статьи и ресурсы для изучения английского языка. Советы, стратегии обучения и практические рекомендации от преподавателей Tiny Talks.',
+  keywords: ['статьи об английском', 'изучение английского', 'советы по английскому', 'английский онлайн', 'репетитор английского', 'блог Tiny Talks'],
   openGraph: {
-    title: 'Blog | TinyTalks',
-    description: 'Explore our collection of helpful resources and articles to support your English learning journey.',
+    title: 'Блог | Tiny Talks',
+    description: 'Полезные статьи и ресурсы для изучения английского языка. Советы, стратегии обучения и практические рекомендации.',
     url: 'https://tinytalks.pro/blog',
-    siteName: 'TinyTalks',
+    siteName: 'Tiny Talks',
     images: [
       {
         url: 'https://tinytalks.pro/images/og-image.jpg',
@@ -58,8 +58,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Blog | TinyTalks',
-    description: 'Explore our collection of helpful resources and articles to support your English learning journey.',
+    title: 'Блог | Tiny Talks',
+    description: 'Полезные статьи и ресурсы для изучения английского языка. Советы, стратегии обучения и практические рекомендации.',
     images: ['https://tinytalks.pro/images/twitter-card.jpg'],
   },
   alternates: {

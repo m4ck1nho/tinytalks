@@ -1,18 +1,16 @@
 import type { Metadata } from 'next';
 import Navbar from '@/components/public/Navbar';
 import Footer from '@/components/public/Footer';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Политика cookie',
-  description: 'Политика использования cookie на веб-сайте TinyTalks - как мы используем файлы cookie и аналогичные технологии.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: {
-    canonical: 'https://tinytalks.pro/cookie-policy',
-  },
-};
+export const metadata: Metadata = createPageMetadata({
+  title: 'Политика cookie | TinyTalks',
+  description:
+    'Узнайте, какие cookie использует TinyTalks, зачем они нужны и как вы можете управлять настройками файлов cookie.',
+  path: '/cookie-policy',
+  keywords: ['политика cookie', 'cookie-файлы', 'конфиденциальность TinyTalks'],
+  type: 'article',
+});
 
 export default function CookiePolicy() {
   return (

@@ -2,6 +2,16 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // CRITICAL: Redirect all /en/* routes to homepage (301 Permanent Redirect)
+  // This removes ghost English pages that are causing canonical tag errors
+  if (pathname.startsWith('/en/')) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/';
+    return NextResponse.redirect(url, 301);
+  }
+
   const response = NextResponse.next();
 
   // CRITICAL: Ensure Google can index the site

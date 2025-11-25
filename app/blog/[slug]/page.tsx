@@ -140,21 +140,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   const finalDescription = description;
   const postUrl = `${baseUrl}/blog/${slug}`;
-  const enPostUrl = 'slug_en' in post && post.slug_en ? `${baseUrl}/en/blog/${post.slug_en}` : null;
 
-  // Build hreflang alternates
+  // Build canonical - no English versions (removed)
   const alternates: Metadata['alternates'] = {
     canonical: postUrl,
-    languages: {},
   };
-
-  // Add Russian version
-  alternates.languages!['ru'] = postUrl;
-  
-  // Add English version if available
-  if (enPostUrl) {
-    alternates.languages!['en'] = enPostUrl;
-  }
 
   // Optimize title: ensure it's 50-60 characters with keywords
   const optimizedTitle = post.title.length > 50 
@@ -175,7 +165,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       modifiedTime: post.updated_at,
       authors: ['TinyTalks'],
       locale: 'ru_RU',
-      alternateLocale: enPostUrl ? ['en_US'] : undefined,
       images: post.image 
         ? [
             {

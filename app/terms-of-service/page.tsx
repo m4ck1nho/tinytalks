@@ -1,18 +1,16 @@
 import type { Metadata } from 'next';
 import Navbar from '@/components/public/Navbar';
 import Footer from '@/components/public/Footer';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Условия использования',
-  description: 'Условия использования сервиса TinyTalks - правила предоставления образовательных услуг онлайн.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: {
-    canonical: 'https://tinytalks.pro/terms-of-service',
-  },
-};
+export const metadata: Metadata = createPageMetadata({
+  title: 'Условия использования | TinyTalks',
+  description:
+    'Правила оказания образовательных услуг TinyTalks: бронирование занятий, оплаты, возвраты и ответственность сторон.',
+  path: '/terms-of-service',
+  keywords: ['условия использования TinyTalks', 'договор TinyTalks', 'правила сервиса'],
+  type: 'article',
+});
 
 export default function TermsOfService() {
   return (

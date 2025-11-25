@@ -1,18 +1,16 @@
 import type { Metadata } from 'next';
 import Navbar from '@/components/public/Navbar';
 import Footer from '@/components/public/Footer';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Политика конфиденциальности',
-  description: 'Политика конфиденциальности TinyTalks - как мы собираем, используем и защищаем ваши персональные данные.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: {
-    canonical: 'https://tinytalks.pro/privacy-policy',
-  },
-};
+export const metadata: Metadata = createPageMetadata({
+  title: 'Политика конфиденциальности | TinyTalks',
+  description:
+    'Подробно объясняем, какие персональные данные собирает TinyTalks, как мы их используем и как обеспечиваем безопасность.',
+  path: '/privacy-policy',
+  keywords: ['политика конфиденциальности', 'персональные данные', 'TinyTalks'],
+  type: 'article',
+});
 
 export default function PrivacyPolicy() {
   return (

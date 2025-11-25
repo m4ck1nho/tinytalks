@@ -1,21 +1,5 @@
-# Allow all crawlers
 User-agent: *
 Allow: /
 
-# Block private routes
-Disallow: /auth
-Disallow: /dashboard
-Disallow: /admin
-Disallow: /api/
-
-# Yandex-specific rules
-User-agent: Yandex
-Allow: /
-Crawl-delay: 1
-
-User-agent: YandexBot
-Allow: /
-
-# Sitemap location
 Sitemap: https://tinytalks.pro/sitemap.xml
 

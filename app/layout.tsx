@@ -6,6 +6,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
 import FaviconUpdater from '@/components/shared/FaviconUpdater';
 import TitleUpdater from '@/components/shared/TitleUpdater';
+import CanonicalLink from '@/components/shared/CanonicalLink';
 import { YandexMetrica } from '@/components/shared/YandexMetrica';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -13,8 +14,8 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   metadataBase: new URL('https://tinytalks.pro'),
   title: {
-    default: 'TinyTalks — Онлайн-уроки английского для детей и взрослых | Асинхронное обучение',
-    template: '%s | TinyTalks',
+    default: 'Tiny Talks — Английский по коротким видео',
+    template: '%s | Tiny Talks',
   },
   description: 'Учите английский в своём темпе с TinyTalks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
   keywords: ['онлайн уроки английского', 'асинхронное обучение английскому', 'репетитор английского', 'английский для детей онлайн'],
@@ -25,9 +26,9 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ru_RU',
     url: 'https://tinytalks.pro',
-    siteName: 'TinyTalks',
-    title: 'TinyTalks — Онлайн-уроки английского для детей и взрослых | Асинхронное обучение',
-    description: 'Учите английский в своём темпе с TinyTalks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
+    siteName: 'Tiny Talks',
+    title: 'Tiny Talks — Английский по коротким видео',
+    description: 'Учите английский в своём темпе с Tiny Talks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
     images: [
       {
         url: 'https://tinytalks.pro/images/og-image.jpg',
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'TinyTalks - Изучайте английский онлайн',
+    title: 'Tiny Talks — Английский по коротким видео',
     description: 'Персональное обучение английскому',
     images: ['https://tinytalks.pro/images/twitter-card.jpg'],
     creator: '@tinytalks',
@@ -90,6 +91,7 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
+        <link rel="manifest" href="/manifest.json" />
         
         {/* Yandex Logo Manifest */}
         <link rel="yandex-tableau-widget" href="/manifest-yandex.json" />
@@ -134,6 +136,7 @@ export default function RootLayout({
         {/* /Yandex.Metrika counter */}
       </head>
       <body className={inter.className}>
+        <CanonicalLink />
         <FaviconUpdater />
         <TitleUpdater />
         {children}

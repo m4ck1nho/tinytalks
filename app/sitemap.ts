@@ -5,26 +5,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://tinytalks.pro';
   
   // Static pages
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/auth`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
+  const importantPages: Array<{
+    path: string;
+    priority: number;
+    changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'];
+  }> = [
+    { path: '/', priority: 1.0, changeFrequency: 'weekly' },
+    { path: '/blog', priority: 0.8, changeFrequency: 'weekly' },
+    { path: '/cookie-policy', priority: 0.3, changeFrequency: 'yearly' },
+    { path: '/privacy-policy', priority: 0.3, changeFrequency: 'yearly' },
+    { path: '/terms-of-service', priority: 0.3, changeFrequency: 'yearly' },
+    { path: '/auth', priority: 0.5, changeFrequency: 'monthly' },
   ];
+
+  const staticPages: MetadataRoute.Sitemap = importantPages.map((page) => ({
+    url: `${baseUrl}${page.path === '/' ? '' : page.path}`,
+    lastModified: new Date(),
+    changeFrequency: page.changeFrequency,
+    priority: page.priority,
+  }));
 
   // Fetch all published blog posts
   const blogPosts: MetadataRoute.Sitemap = [];
@@ -34,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (!error && data) {
       // Add both Russian and English versions
       data.forEach((post: { slug: string; slug_en?: string; updated_at: string }) => {
-        // Add Russian version
+        // Add Russian version only - English pages removed
         blogPosts.push({
           url: `${baseUrl}/blog/${post.slug}`,
           lastModified: new Date(post.updated_at),
@@ -42,15 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           priority: 0.7,
         });
         
-        // Add English version if available
-        if (post.slug_en) {
-          blogPosts.push({
-            url: `${baseUrl}/en/blog/${post.slug_en}`,
-            lastModified: new Date(post.updated_at),
-            changeFrequency: 'weekly' as const,
-            priority: 0.7,
-          });
-        }
+        // English versions removed - redirecting to homepage
       });
     }
   } catch (error) {
