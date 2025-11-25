@@ -7,13 +7,12 @@ export function middleware(request: NextRequest) {
 
   // CRITICAL: Force www to non-www redirect (301 Permanent Redirect)
   // This ensures consistent canonical URLs and prevents duplicate content issues
-  if (hostname.startsWith('www.')) {
-    const url = request.nextUrl.clone();
-    // Remove www. prefix from hostname
+  // Only redirect if hostname actually starts with www. (not in development/staging)
+  if (hostname && hostname.startsWith('www.') && !hostname.includes('localhost') && !hostname.includes('127.0.0.1') && !hostname.includes('.vercel.app')) {
     const nonWwwHost = hostname.replace(/^www\./, '');
-    url.host = nonWwwHost;
-    url.protocol = 'https:';
-    return NextResponse.redirect(url, 301);
+    // Construct redirect URL manually to avoid any Next.js URL manipulation issues
+    const redirectUrl = `https://${nonWwwHost}${pathname}${request.nextUrl.search}`;
+    return NextResponse.redirect(redirectUrl, 301);
   }
 
   // CRITICAL: Redirect all /en/* routes to homepage (301 Permanent Redirect)
