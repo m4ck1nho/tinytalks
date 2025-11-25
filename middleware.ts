@@ -3,6 +3,18 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const hostname = request.headers.get('host') || '';
+
+  // CRITICAL: Force www to non-www redirect (301 Permanent Redirect)
+  // This ensures consistent canonical URLs and prevents duplicate content issues
+  if (hostname.startsWith('www.')) {
+    const url = request.nextUrl.clone();
+    // Remove www. prefix from hostname
+    const nonWwwHost = hostname.replace(/^www\./, '');
+    url.host = nonWwwHost;
+    url.protocol = 'https:';
+    return NextResponse.redirect(url, 301);
+  }
 
   // CRITICAL: Redirect all /en/* routes to homepage (301 Permanent Redirect)
   // This removes ghost English pages that are causing canonical tag errors

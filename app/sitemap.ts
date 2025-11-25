@@ -15,7 +15,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/cookie-policy', priority: 0.3, changeFrequency: 'yearly' },
     { path: '/privacy-policy', priority: 0.3, changeFrequency: 'yearly' },
     { path: '/terms-of-service', priority: 0.3, changeFrequency: 'yearly' },
-    { path: '/auth', priority: 0.5, changeFrequency: 'monthly' },
   ];
 
   const staticPages: MetadataRoute.Sitemap = importantPages.map((page) => ({
@@ -31,17 +30,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const { data, error } = await db.getBlogPosts(true); // Only published posts
     
     if (!error && data) {
-      // Add both Russian and English versions
+      // Add Russian blog posts only - English pages removed and redirecting to homepage
       data.forEach((post: { slug: string; slug_en?: string; updated_at: string }) => {
-        // Add Russian version only - English pages removed
         blogPosts.push({
           url: `${baseUrl}/blog/${post.slug}`,
           lastModified: new Date(post.updated_at),
           changeFrequency: 'weekly' as const,
           priority: 0.7,
         });
-        
-        // English versions removed - redirecting to homepage
       });
     }
   } catch (error) {
