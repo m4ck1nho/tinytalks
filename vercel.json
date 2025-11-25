@@ -1,16 +1,2 @@
-{
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.tinytalks.pro"
-        }
-      ],
-      "destination": "https://tinytalks.pro/$1",
-      "permanent": true
-    }
-  ]
-}
+{}
 
