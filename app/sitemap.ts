@@ -3,8 +3,8 @@ import { db } from '@/lib/supabase';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.tinytalks.pro';
-  
-  // Static pages
+
+  // Static pages (top-level routes only)
   const importantPages: Array<{
     path: string;
     priority: number;
@@ -24,27 +24,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: page.priority,
   }));
 
-  // Fetch all published blog posts
+  // Dynamic blog pages from Supabase (only published posts)
   const blogPosts: MetadataRoute.Sitemap = [];
   try {
-    const { data, error } = await db.getBlogPosts(true); // Only published posts
-    
+    const { data, error } = await db.getBlogPosts(true);
+
     if (!error && data) {
-      // Add Russian blog posts only - English pages removed and redirecting to homepage
-      data.forEach((post: { slug: string; slug_en?: string; updated_at: string }) => {
-        blogPosts.push({
-          url: `${baseUrl}/blog/${post.slug}`,
-          lastModified: new Date(post.updated_at),
-          changeFrequency: 'weekly' as const,
-          priority: 0.7,
-        });
-      });
+      data.forEach(
+        (post: { slug: string; updated_at: string | null | undefined }) => {
+          if (!post.slug) return;
+
+          blogPosts.push({
+            url: `${baseUrl}/blog/${post.slug}`,
+            lastModified: post.updated_at
+              ? new Date(post.updated_at)
+              : new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.7,
+          });
+        },
+      );
     }
   } catch (error) {
+    // Fail gracefully so build doesn't crash if Supabase is unavailable
     console.error('Error fetching blog posts for sitemap:', error);
   }
 
-  // Combine static and dynamic pages
   return [...staticPages, ...blogPosts];
 }
 
