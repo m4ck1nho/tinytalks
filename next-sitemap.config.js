@@ -1,7 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: 'https://www.tinytalks.pro',
-  generateRobotsTxt: false, // Using static robots.txt file instead
+  generateRobotsTxt: true,
   generateIndexSitemap: false,
   exclude: [
     '/admin/*',

@@ -17,8 +17,14 @@ export const metadata: Metadata = {
     default: 'Tiny Talks — Английский по коротким видео',
     template: '%s | Tiny Talks',
   },
-  description: 'Учите английский в своём темпе с TinyTalks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
-  keywords: ['онлайн уроки английского', 'асинхронное обучение английскому', 'репетитор английского', 'английский для детей онлайн'],
+  description:
+    'Учите английский в своём темпе с TinyTalks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
+  keywords: [
+    'онлайн уроки английского',
+    'асинхронное обучение английскому',
+    'репетитор английского',
+    'английский для детей онлайн',
+  ],
   authors: [{ name: 'TinyTalks' }],
   creator: 'TinyTalks',
   publisher: 'TinyTalks',
@@ -28,7 +34,8 @@ export const metadata: Metadata = {
     url: 'https://www.tinytalks.pro',
     siteName: 'Tiny Talks',
     title: 'Tiny Talks — Английский по коротким видео',
-    description: 'Учите английский в своём темпе с Tiny Talks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
+    description:
+      'Учите английский в своём темпе с Tiny Talks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
     images: [
       {
         url: 'https://www.tinytalks.pro/images/og-image.jpg',
@@ -57,7 +64,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'https://www.tinytalks.pro',
+    canonical: './',
   },
   icons: {
     icon: [
@@ -82,24 +89,42 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html
+      lang="ru"
+      className="scroll-smooth"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         {/* Favicons */}
         <link rel="icon" type="image/png" href="/favicon.png" sizes="48x48" />
-        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link
+          rel="icon"
+          type="image/png"
+          href="/favicon-96x96.png"
+          sizes="96x96"
+        />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="manifest" href="/manifest.json" />
-        
+
         {/* Yandex Logo Manifest */}
         <link rel="yandex-tableau-widget" href="/manifest-yandex.json" />
-        
+
         {/* Verification meta tags are handled via metadata.other in Next.js */}
         {/* Preconnect for Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <Script
           id="adsense-script"
           async
