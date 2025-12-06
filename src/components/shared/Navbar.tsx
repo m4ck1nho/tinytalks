@@ -61,18 +61,26 @@ export function Navbar() {
         {/* Auth Section */}
         <div className="flex items-center space-x-4">
           {user ? (
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/dashboard">
+          <div className="flex items-center space-x-2">
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/dashboard">
+                <User className="h-4 w-4 mr-2" />
+                Dashboard
+              </Link>
+            </Button>
+            {user?.user_metadata?.role === 'admin' && (
+              <Button variant="secondary" size="sm" asChild>
+                <Link href="/admin/dashboard">
                   <User className="h-4 w-4 mr-2" />
-                  Dashboard
+                  Admin
                 </Link>
               </Button>
-              <Button variant="outline" size="sm" onClick={signOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
+            )}
+            <Button variant="outline" size="sm" onClick={signOut}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
+          </div>
           ) : (
             <div className="flex items-center space-x-2">
               <Button variant="ghost" size="sm" asChild>
