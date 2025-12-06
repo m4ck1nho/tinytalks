@@ -73,10 +73,12 @@ export const auth = {
   getUser: () => 
     supabase.auth.getUser(),
   
-  onAuthStateChange: (callback: (user: unknown) => void) => 
-    supabase.auth.onAuthStateChange((event, session) => {
+  onAuthStateChange: (callback: (user: unknown) => void) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       callback(session?.user ?? null);
-    }),
+    });
+    return { data: { subscription } };
+  },
 };
 
 // Database helpers

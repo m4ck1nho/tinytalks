@@ -15,9 +15,19 @@ export async function middleware(request: NextRequest) {
   // Check if Supabase environment variables are available
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     // If Supabase is not configured, allow public routes and redirect protected routes
-    if (pathname.startsWith('/crm/') || pathname.startsWith('/admin/') || pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
+    // Allow /admin/login to be accessed without authentication
+    if ((pathname.startsWith('/crm/') || 
+         (pathname.startsWith('/admin/') && pathname !== '/admin/login') || 
+         pathname === '/dashboard' || 
+         pathname.startsWith('/dashboard/')) && 
+        !pathname.startsWith('/admin/login')) {
       const url = request.nextUrl.clone()
-      url.pathname = '/auth/login'
+      // Redirect admin routes to admin login, others to regular login
+      if (pathname.startsWith('/admin/')) {
+        url.pathname = '/admin/login'
+      } else {
+        url.pathname = '/auth/login'
+      }
       return NextResponse.redirect(url)
     }
     
@@ -63,12 +73,20 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     // Protected routes that require authentication
-    if (pathname.startsWith('/crm/') || pathname.startsWith('/admin/') || pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
-      if (!user) {
-        const url = request.nextUrl.clone()
+    // Allow /admin/login to be accessed without authentication
+    if ((pathname.startsWith('/crm/') || 
+         (pathname.startsWith('/admin/') && pathname !== '/admin/login') || 
+         pathname === '/dashboard' || 
+         pathname.startsWith('/dashboard/')) && 
+        !user) {
+      const url = request.nextUrl.clone()
+      // Redirect admin routes to admin login, others to regular login
+      if (pathname.startsWith('/admin/')) {
+        url.pathname = '/admin/login'
+      } else {
         url.pathname = '/auth/login'
-        return NextResponse.redirect(url)
       }
+      return NextResponse.redirect(url)
     }
 
     // Redirect authenticated users away from auth pages
