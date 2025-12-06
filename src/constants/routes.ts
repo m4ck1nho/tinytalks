@@ -9,7 +9,7 @@ export const ROUTES = {
   SIGNUP: '/auth/signup',
   
   // CRM routes
-  DASHBOARD: '/crm/dashboard',
+  DASHBOARD: '/dashboard',
   
   // Student routes
   STUDENT_SCHEDULE: '/crm/student/schedule',

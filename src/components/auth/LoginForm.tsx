@@ -30,7 +30,7 @@ export function LoginForm() {
         setError(error.message)
       } else if (data.user) {
         // Redirect to dashboard based on user role
-        router.push('/crm/dashboard')
+        router.push('/dashboard')
       }
     } catch (err) {
       setError('An unexpected error occurred')

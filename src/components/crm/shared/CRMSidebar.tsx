@@ -20,10 +20,11 @@ export function CRMSidebar() {
   const { user } = useAuth()
 
   // Mock user role - in real app this would come from the database
-  const userRole = 'student' // This should be fetched from user profile
+  // This should be fetched from user profile
+  const userRole = 'student' as 'student' | 'teacher'
 
   const studentNavItems = [
-    { href: '/crm/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/crm/student/schedule', label: 'My Schedule', icon: Calendar },
     { href: '/crm/student/requests', label: 'Class Requests', icon: UserPlus },
     { href: '/crm/student/homework', label: 'Homework', icon: BookOpen },
@@ -32,7 +33,7 @@ export function CRMSidebar() {
   ]
 
   const teacherNavItems = [
-    { href: '/crm/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/crm/teacher/classes', label: 'My Classes', icon: Calendar },
     { href: '/crm/teacher/students', label: 'Students', icon: Users },
     { href: '/crm/teacher/requests', label: 'Requests', icon: UserPlus },

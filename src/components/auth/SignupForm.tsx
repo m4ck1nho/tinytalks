@@ -69,7 +69,7 @@ export function SignupForm() {
         }
 
         // Redirect to dashboard
-        router.push('/crm/dashboard')
+        router.push('/dashboard')
       }
     } catch (err) {
       setError('An unexpected error occurred')
