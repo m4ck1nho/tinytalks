@@ -14,7 +14,8 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.tinytalks.pro'),
   title: {
-    default: 'Tiny Talks — Английский по коротким видео',
+    default:
+      'TinyTalks- Английский для начинающих, асинхронное обучение за 15 минут в день',
     template: '%s | Tiny Talks',
   },
   description:
@@ -33,7 +34,8 @@ export const metadata: Metadata = {
     locale: 'ru_RU',
     url: 'https://www.tinytalks.pro',
     siteName: 'Tiny Talks',
-    title: 'Tiny Talks — Английский по коротким видео',
+    title:
+      'TinyTalks- Английский для начинающих, асинхронное обучение за 15 минут в день',
     description:
       'Учите английский в своём темпе с Tiny Talks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
     images: [
@@ -47,8 +49,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Tiny Talks — Английский по коротким видео',
-    description: 'Персональное обучение английскому',
+    title:
+      'TinyTalks- Английский для начинающих, асинхронное обучение за 15 минут в день',
+    description:
+      'TinyTalks- Английский для начинающих, асинхронное обучение за 15 минут в день',
     images: ['https://www.tinytalks.pro/images/twitter-card.jpg'],
     creator: '@tinytalks',
   },

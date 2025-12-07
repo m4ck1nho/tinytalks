@@ -18,11 +18,13 @@ export function generateMetadata(): Metadata {
   const baseUrl = 'https://www.tinytalks.pro';
 
   return {
-    title: 'Tiny Talks — Английский по коротким видео',
+    title:
+      'TinyTalks- Английский для начинающих, асинхронное обучение за 15 минут в день',
     description: 'Учите английский в своём темпе с TinyTalks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
     keywords: ['онлайн уроки английского', 'асинхронное обучение английскому', 'репетитор английского', 'английский для детей онлайн'],
     openGraph: {
-      title: 'Tiny Talks — Английский по коротким видео',
+      title:
+        'TinyTalks- Английский для начинающих, асинхронное обучение за 15 минут в день',
       description: 'Учите английский в своём темпе с Tiny Talks. Асинхронные уроки по 15 минут + индивидуальные занятия онлайн. Без стресса и давления. Пробное занятие бесплатно.',
       url: baseUrl,
       siteName: 'Tiny Talks',
@@ -39,8 +41,10 @@ export function generateMetadata(): Metadata {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Tiny Talks — Английский по коротким видео',
-      description: 'Персональное обучение английскому',
+      title:
+        'TinyTalks- Английский для начинающих, асинхронное обучение за 15 минут в день',
+      description:
+        'TinyTalks- Английский для начинающих, асинхронное обучение за 15 минут в день',
       images: [`${baseUrl}/images/twitter-card.jpg`],
     },
     alternates: {
