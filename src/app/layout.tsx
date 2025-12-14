@@ -131,15 +131,14 @@ export default function RootLayout({
         />
         <Script
           id="adsense-script"
-          async
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7536252176755420"
           crossOrigin="anonymous"
         />
         {/* Yandex.Metrika counter */}
         <Script
           id="yandex-metrika"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
               (function(m,e,t,r,i,k,a){

@@ -40,8 +40,8 @@ export default function About() {
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 className="object-cover"
-                unoptimized
                 priority
+                quality={85}
               />
             </div>
           </div>
