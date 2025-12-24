@@ -1,6 +1,14 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
+  const country = request.headers.get('x-vercel-ip-country');
+  if (country === 'RU') {
+    return new NextResponse('Access Denied', {
+      status: 403,
+      headers: { 'content-type': 'text/plain' },
+    });
+  }
+
   const { pathname } = request.nextUrl;
 
   // Redirect /en/* to homepage (fix ghost English pages)
