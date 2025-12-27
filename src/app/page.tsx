@@ -168,6 +168,11 @@ export default function Home() {
         '@type': 'Person' as const,
         name: 'Анна К.',
       },
+      itemReviewed: {
+        '@type': 'EducationalOrganization',
+        name: 'TinyTalks',
+        url: 'https://www.tinytalks.pro',
+      },
       reviewBody: 'Евгения, добрый вечер! Спасибо! Прогресс чувствуется, сама приходит, чтобы ей помогли с домашним заданием. И оценки стали лучше по английскому.',
       reviewRating: {
         '@type': 'Rating' as const,
@@ -180,6 +185,11 @@ export default function Home() {
       author: {
         '@type': 'Person' as const,
         name: 'Юлия К.',
+      },
+      itemReviewed: {
+        '@type': 'EducationalOrganization',
+        name: 'TinyTalks',
+        url: 'https://www.tinytalks.pro',
       },
       reviewBody: 'Женя, асинхронная неделя + один урок в неделю онлайн — идеально. Очень довольна и чувствую результат, потому что впервые работаю с языком ежедневно.',
       reviewRating: {
@@ -194,6 +204,11 @@ export default function Home() {
         '@type': 'Person' as const,
         name: 'Иван Д.',
       },
+      itemReviewed: {
+        '@type': 'EducationalOrganization',
+        name: 'TinyTalks',
+        url: 'https://www.tinytalks.pro',
+      },
       reviewBody: 'Формат асинхрона — огонь! Удобно, гибко и виден прогресс. Спасибо за грамотную организацию процесса. Для занятых — must have.',
       reviewRating: {
         '@type': 'Rating' as const,
@@ -206,6 +221,11 @@ export default function Home() {
       author: {
         '@type': 'Person' as const,
         name: 'Екатерина С.',
+      },
+      itemReviewed: {
+        '@type': 'EducationalOrganization',
+        name: 'TinyTalks',
+        url: 'https://www.tinytalks.pro',
       },
       reviewBody: 'Евгения, спасибо большое! Вы — внимательный и приятный преподаватель. Чувствуется профессионализм. С удовольствием иду на занятие, потому что интересно, что же на этот раз вы подготовили!',
       reviewRating: {
@@ -220,6 +240,11 @@ export default function Home() {
         '@type': 'Person' as const,
         name: 'Анастасия Б.',
       },
+      itemReviewed: {
+        '@type': 'EducationalOrganization',
+        name: 'TinyTalks',
+        url: 'https://www.tinytalks.pro',
+      },
       reviewBody: 'Хочу поделиться впечатлением о первом занятии моего сына в группе по английскому языку. Урок прошёл в очень тёплой и дружелюбной атмосфере. Сын вышел с занятия с горящими глазами и сказал, что ему всё очень понравилось. Спасибо за отличный старт! Будем с радостью продолжать.',
       reviewRating: {
         '@type': 'Rating' as const,
@@ -232,6 +257,11 @@ export default function Home() {
       author: {
         '@type': 'Person' as const,
         name: 'Мария Л.',
+      },
+      itemReviewed: {
+        '@type': 'EducationalOrganization',
+        name: 'TinyTalks',
+        url: 'https://www.tinytalks.pro',
       },
       reviewBody: 'Дочка (8 лет) была увлечена и включена во всё занятие. Занимаемся по системе Phonics — чётко, понятно и в игровой форме. Спасибо за профессиональный подход и доброжелательную атмосферу!',
       reviewRating: {
