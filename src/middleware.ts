@@ -1,14 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const country = request.headers.get('x-vercel-ip-country');
-  if (country === 'RU') {
-    return new NextResponse('Access Denied', {
-      status: 403,
-      headers: { 'content-type': 'text/plain' },
-    });
-  }
-
   const { pathname } = request.nextUrl;
 
   // Redirect /en/* to homepage (fix ghost English pages)
@@ -26,8 +18,6 @@ export function middleware(request: NextRequest) {
   response.headers.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
   // Remove any blocking headers
   response.headers.delete('X-Google-Extended-Opt-Out');
-  // Cache policy
-  response.headers.set('Cache-Control', 'public, max-age=3600, must-revalidate');
 
   return response;
 }

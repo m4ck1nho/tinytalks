@@ -1,35 +1,25 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// Create supabase client only when we have valid credentials
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase credentials are not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.');
+}
+
+if (!supabaseUrl.startsWith('https://')) {
+  throw new Error('Supabase URL must start with https://');
+}
+
 let supabase: SupabaseClient;
 
-try {
-  if (supabaseUrl && supabaseAnonKey && 
-      supabaseUrl.startsWith('https://') && 
-      !supabaseUrl.includes('dummy') &&
-      supabaseAnonKey.length > 20) {
-    supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
-      }
-    });
-    console.log('✅ Supabase client initialized successfully');
-  } else {
-    console.warn('⚠️ Supabase credentials missing or invalid. Using dummy client.');
-    console.warn('URL:', supabaseUrl ? 'Set' : 'Missing', 'Key:', supabaseAnonKey ? 'Set' : 'Missing');
-    // Create dummy client for build time
-    supabase = createClient('https://dummy.supabase.co', 'dummy-key');
-  }
-} catch (error) {
-  console.error('❌ Supabase initialization error:', error);
-  // Fallback for any initialization errors
-  supabase = createClient('https://dummy.supabase.co', 'dummy-key');
-}
+supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
 
 // Helper functions for common operations
 export const supabaseClient = supabase;
