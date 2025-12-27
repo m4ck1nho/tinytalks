@@ -6,13 +6,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CalendarIcon, ArrowRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-const FALLBACK_IMAGE = '/images/og-image.jpg';
-const SITE_URL = 'https://www.tinytalks.pro';
+const FALLBACK_IMAGE = '/tinytalkslogo.png';
 
 const resolveImageUrl = (url?: string | null) => {
   if (!url || url.trim() === '') return FALLBACK_IMAGE;
-  if (url.startsWith('http')) return url;
-  return `${SITE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+  // Keep relative paths as-is for local images, return http(s) URLs directly
+  return url;
 };
 
 interface BlogListProps {

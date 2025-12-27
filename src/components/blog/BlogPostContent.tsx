@@ -7,13 +7,11 @@ import Link from 'next/link';
 import { CalendarIcon, ArrowLeftIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { BlogCTA } from './BlogCTA';
 
-const FALLBACK_IMAGE = '/images/og-image.jpg';
-const SITE_URL = 'https://www.tinytalks.pro';
+const FALLBACK_IMAGE = '/tinytalkslogo.png';
 
 const resolveImageUrl = (url?: string | null) => {
   if (!url || url.trim() === '') return FALLBACK_IMAGE;
-  if (url.startsWith('http')) return url;
-  return `${SITE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+  return url;
 };
 
 interface BlogPostContentProps {
