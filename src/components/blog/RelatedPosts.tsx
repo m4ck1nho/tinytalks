@@ -5,6 +5,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
+const FALLBACK_IMAGE = '/images/og-image.jpg';
+const SITE_URL = 'https://www.tinytalks.pro';
+
+const resolveImageUrl = (url?: string | null) => {
+  if (!url || url.trim() === '') return FALLBACK_IMAGE;
+  if (url.startsWith('http')) return url;
+  return `${SITE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
 interface RelatedPostsProps {
   currentPostSlug: string;
   posts: BlogPost[];
@@ -30,10 +39,10 @@ export function RelatedPosts({ currentPostSlug, posts, limit = 3 }: RelatedPosts
             key={post.id}
             className="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
-            {post.image && (
+            {(
               <Link href={`/blog/${post.slug}`} className="block relative h-48 overflow-hidden">
                 <Image
-                  src={post.image}
+                  src={resolveImageUrl(post.image)}
                   alt={post.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

@@ -7,6 +7,15 @@ import Link from 'next/link';
 import { CalendarIcon, ArrowLeftIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { BlogCTA } from './BlogCTA';
 
+const FALLBACK_IMAGE = '/images/og-image.jpg';
+const SITE_URL = 'https://www.tinytalks.pro';
+
+const resolveImageUrl = (url?: string | null) => {
+  if (!url || url.trim() === '') return FALLBACK_IMAGE;
+  if (url.startsWith('http')) return url;
+  return `${SITE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
 interface BlogPostContentProps {
   post: BlogPost;
   readingTime: number;
@@ -51,11 +60,11 @@ export function BlogPostContent({ post, readingTime }: BlogPostContentProps) {
         </div>
       </div>
 
-      {post.image && (
+      {(
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="relative h-64 sm:h-96 rounded-lg overflow-hidden">
             <Image
-              src={post.image}
+              src={resolveImageUrl(post.image)}
               alt={post.title || 'Изображение статьи'}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 896px"
